@@ -188,16 +188,18 @@ input[type="range"]::-webkit-slider-thumb{
   font-size:16px;font-weight:700;color:#f0d060;letter-spacing:.4px;line-height:1.8;
 }
 /* BOTÃO ESTÁGIO */
+.btn-stage-wrap{display:flex;flex-direction:column;gap:6px;}
 .btn-stage{
-  width:100%;padding:14px;border:0;border-radius:12px;
+  width:100%;padding:12px 16px;border:0;border-radius:10px;
   font-size:13px;font-weight:900;cursor:pointer;
-  transition:all .2s;letter-spacing:.5px;text-transform:uppercase;
+  transition:all .2s;letter-spacing:.4px;
   display:flex;align-items:center;justify-content:center;gap:8px;
+  opacity:.45;
 }
-.btn-stage.s0{background:linear-gradient(135deg,#25d7f3,#1ab8d4);color:#04101e;}
-.btn-stage.s1{background:linear-gradient(135deg,#ffd700,#e6b800);color:#04101e;}
-.btn-stage.s2{background:linear-gradient(135deg,#7dd3fc,#4ab8f0);color:#04101e;}
-.btn-stage:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-stage.active{opacity:1;}
+.btn-stage.sb-26{background:linear-gradient(135deg,#ffd700,#e6b800);color:#04101e;}
+.btn-stage.sb-27{background:linear-gradient(135deg,#7dd3fc,#4ab8f0);color:#04101e;}
+.btn-stage:hover{filter:brightness(1.08);transform:translateY(-1px);}
 /* animação de entrada */
 .cmp-row{transition:opacity .3s, transform .3s;}
 .cmp-row.hidden{display:none;}
@@ -259,6 +261,7 @@ input[type="range"]::-webkit-slider-thumb{
   gap:6px;
   margin-bottom:6px;
 }
+.cmp-row.hidden{display:none;margin-bottom:0;}
 .cmp-row-title{
   display:flex;align-items:center;
   border:1px solid rgba(255,255,255,.09);border-radius:10px;
@@ -279,6 +282,25 @@ input[type="range"]::-webkit-slider-thumb{
 .fc-sub{font-size:8px;color:#5a7a94;margin-top:3px;}
 .cmp-row.row-26 .fc.hl-06 .fc-val{color:#ffd700;}
 .cmp-row.row-26 .fc.hl-06{border-color:rgba(255,200,0,.3);}
+/* DESTAQUE +42 FLEX 2027 */
+.fc-299{
+  position:relative;
+  border-color:rgba(255,215,0,.55)!important;
+  background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,215,0,.04))!important;
+}
+.fc-299 .fc-val{
+  color:#ffd700!important;
+  text-decoration:underline;
+  text-underline-offset:4px;
+  text-decoration-thickness:2px;
+}
+.badge-299{
+  position:absolute;top:-10px;right:8px;
+  background:#ffd700;color:#04101e;
+  font-size:9px;font-weight:900;
+  padding:2px 7px;border-radius:99px;
+  letter-spacing:.3px;white-space:nowrap;
+}
 /* EXPORT */
 .exp-wrap{position:fixed;left:-99999px;top:0;width:1050px;padding:22px;
   background:linear-gradient(135deg,#04101e,#020c14);z-index:-1;}
@@ -320,100 +342,116 @@ input[type="range"]::-webkit-slider-thumb{
   <!-- ESQUERDO -->
   <div class="left">
 
+    <!-- BLOCO 1: VEÍCULO & SIMULAÇÃO -->
     <div class="blk">
       <div class="blk-title">Veículo &amp; Simulação</div>
-      <div class="field" style="margin-bottom:7px;">
-        <label>Modelo</label>
-        <select id="modelo">
-          <option value="Fiat Fastback">Fiat Fastback</option>
-          <option value="Fiat Pulse" selected>Fiat Pulse</option>
-          <option value="Fiat Toro">Fiat Toro</option>
-          <option value="Fiat Strada">Fiat Strada</option>
-        </select>
-      </div>
-      <div class="g2">
+      <div class="g2" style="margin-bottom:8px;">
         <div class="field">
-          <label>Valor do Veículo (R$)</label>
-          <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 99000">
+          <label>Veículo</label>
+          <select id="modelo">
+            <option value="Fiat Fastback">Fiat Fastback</option>
+            <option value="Fiat Pulse" selected>Fiat Pulse</option>
+            <option value="Fiat Toro">Fiat Toro</option>
+            <option value="Fiat Strada">Fiat Strada</option>
+          </select>
         </div>
         <div class="field">
-          <label>Parcela 48x Banco (R$)</label>
+          <label>Preço do Veículo (R$)</label>
+          <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 99000">
+        </div>
+      </div>
+
+      <!-- ENTRADA FINANCIAMENTO -->
+      <div class="rng-row">
+        <span class="rng-lbl">Entrada Financiamento (%)</span>
+        <span class="rng-val"><span id="ePctLbl">50</span>%</span>
+      </div>
+      <input id="ePct" type="range" min="10" max="60" step="5" value="50">
+      <div class="marks">
+        <span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span><span>60%</span>
+      </div>
+
+      <!-- 3 CARDS: Valor Entrada / Parcelas / Valor Parcela -->
+      <div class="g3" style="margin-top:8px;">
+        <div class="field">
+          <label>Valor de Entrada</label>
+          <input id="eVal" type="text" readonly class="ro" placeholder="—">
+        </div>
+        <div class="field">
+          <label>Parcelas</label>
+          <input type="text" readonly class="ro" value="48x" style="text-align:center;">
+        </div>
+        <div class="field">
+          <label>Valor da Parcela</label>
           <input id="parc" type="text" inputmode="numeric" placeholder="Ex: 1600">
         </div>
       </div>
     </div>
 
+    <!-- BLOCO 2: PLANO FLEX 2026 -->
     <div class="blk flex-blk">
-      <div class="blk-title">⭐ San Marino Flex — Entrada</div>
+      <div class="blk-title" style="text-align:center;font-size:13px;color:#ffd700;">Plano Flex 2026</div>
 
-      <div class="rng-row">
-        <span class="rng-lbl">% Entrada Banco</span>
-        <span class="rng-val"><span id="ePctLbl">50</span>%</span>
-      </div>
-      <input id="ePct" type="range" min="30" max="80" step="5" value="50">
-      <div class="marks">
-        <span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span>80</span>
+      <div class="g2" style="margin-bottom:4px;">
+        <!-- Entrada Flex -->
+        <div>
+          <div class="rng-row">
+            <span class="rng-lbl">Entrada Flex (%)</span>
+            <span class="rng-val"><span id="eFlexPctLbl">50</span>%</span>
+          </div>
+          <input id="eFlexPct" type="range" min="30" max="60" step="5" value="50">
+          <div class="marks">
+            <span>30%</span><span>40%</span><span>50%</span><span>60%</span>
+          </div>
+        </div>
+        <!-- Sinal Flex -->
+        <div>
+          <div class="rng-row">
+            <span class="rng-lbl">Sinal Flex (%)</span>
+            <span class="rng-val"><span id="sPctLbl">15</span>%</span>
+          </div>
+          <input id="sPct" type="range" min="10" max="30" step="5" value="15">
+          <div class="marks">
+            <span>10%</span><span>15%</span><span>20%</span><span>25%</span><span>30%</span>
+          </div>
+        </div>
       </div>
 
-      <div class="rng-row" style="margin-top:10px;">
-        <span class="rng-lbl">% Entrada Flex</span>
-        <span class="rng-val"><span id="eFlexPctLbl">50</span>%</span>
-      </div>
-      <input id="eFlexPct" type="range" min="30" max="80" step="5" value="50">
-      <div class="marks">
-        <span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span>80</span>
-      </div>
-
-      <div class="g2" style="margin-top:7px;">
+      <!-- Sinal à Vista + Entrada Dezembro -->
+      <div class="g2" style="margin-top:6px;">
         <div class="field">
-          <label>Valor Entrada Banco (auto)</label>
-          <input id="eVal" type="text" readonly class="ro" placeholder="—">
+          <label>Sinal à Vista</label>
+          <input id="sVal" type="text" readonly class="ro" placeholder="—">
         </div>
         <div class="field">
-          <label>Valor Entrada Flex (auto)</label>
+          <label>Entrada (Dezembro/2026)</label>
+          <input id="cVal" type="text" readonly class="ro" placeholder="—">
+        </div>
+      </div>
+
+      <!-- % Complemento -->
+      <div class="g2" style="margin-top:6px;">
+        <div class="field">
+          <label>% após 6m</label>
+          <input id="cPct" type="text" readonly class="ro" placeholder="—">
+        </div>
+        <div class="field">
+          <label>Entrada Flex (auto)</label>
           <input id="eFlexVal" type="text" readonly class="ro" placeholder="—">
         </div>
       </div>
     </div>
 
-    <div class="blk flex-blk">
-      <div class="blk-title">⭐ San Marino Flex — Sinal</div>
-
-      <div class="rng-row">
-        <span class="rng-lbl">% Sinal a Vista</span>
-        <span class="rng-val"><span id="sPctLbl">15</span>%</span>
-      </div>
-      <input id="sPct" type="range" min="15" max="80" step="5" value="15">
-      <div class="marks">
-        <span>15</span><span>25</span><span>35</span><span>45</span><span>55</span><span>65</span><span>75</span>
-      </div>
-      <div class="g2" style="margin-top:7px;">
-        <div class="field">
-          <label>Valor Sinal</label>
-          <input id="sVal" type="text" readonly class="ro" placeholder="—">
-        </div>
-        <div class="field">
-          <label>% após 6m</label>
-          <input id="cPct" type="text" readonly class="ro" placeholder="—">
-        </div>
-      </div>
-      <div style="margin-top:6px;">
-        <div class="field">
-          <label>Valor após 6m</label>
-          <input id="cVal" type="text" readonly class="ro" placeholder="—">
-        </div>
-      </div>
-    </div>
-
+    <!-- STATUS -->
     <div class="status" id="sBar">
       <div class="status-txt" id="sTxt">Preencha valor e parcela</div>
       <span id="sIco">—</span>
     </div>
 
+    <!-- BOTÃO DOWNLOAD -->
     <button class="btn" id="dlBtn">⬇ Baixar imagem</button>
 
   </div>
-
   <!-- DIREITO -->
   <div class="right">
 
@@ -426,11 +464,15 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="tv-42">—</div></div>
     </div>
 
-    <!-- BOTÃO DE ESTÁGIO -->
-    <button class="btn-stage s0" id="btnStage" onclick="nextStage()">
-      <span id="stageIcon">▶</span>
-      <span id="stageTxt">Comparar com Flex 2026</span>
-    </button>
+    <!-- BOTÕES DE ESTÁGIO -->
+    <div class="btn-stage-wrap">
+      <button class="btn-stage sb-26 active" id="btn26" onclick="toggleStage(1)">
+        ▶ San Marino Flex 2026
+      </button>
+      <button class="btn-stage sb-27" id="btn27" onclick="toggleStage(2)">
+        ▶ San Marino Flex 2027
+      </button>
+    </div>
 
     <!-- LINHA 2: FLEX 2026 — oculta por padrão -->
     <div class="cmp-row row-26 hidden" id="rowFlex26">
@@ -447,7 +489,7 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f27-av">—</div></div>
       <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f27-dz">—</div></div>
       <div class="fc"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="f27-06">—</div></div>
-      <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f27-42">—</div></div>
+      <div class="fc fc-299" style="position:relative"><span class="badge-299">+ R$ 299</span><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f27-42">—</div></div>
     </div>
 
     <!-- BENEFÍCIOS -->
@@ -669,7 +711,7 @@ function calc(){
   const tvO6 = p ? parc48*(pctEB/pctEF)            : null;
   const tvO42= p ? (parc48/pctEF)*(1-pctEF)        : null;
   $("tv-av").textContent = tvAv!=null ? brR(tvAv) : "—";
-  $("tv-dz").textContent = tvDz!=null ? "R$ 0"    : "—";
+  $("tv-dz").textContent = "";
   $("tv-06").textContent = tvO6!=null ? brR(tvO6) : "—";
   $("tv-42").textContent = tvO42!=null? brR(tvO42): "—";
 
@@ -693,7 +735,7 @@ function calc(){
   $("expSum").textContent = preco
     ? `${mod} | Banco ${Math.round(pctEB*100)}% | Flex ${Math.round(pctEF*100)}% | Sinal ${Math.round(pctS*100)}%`
     : "—";
-  $("etv-av").textContent=tvAv!=null?brR(tvAv):"—"; $("etv-dz").textContent=p?"R$ 0":"—";
+  $("etv-av").textContent=tvAv!=null?brR(tvAv):"—"; $("etv-dz").textContent="";
   $("etv-06").textContent=tvO6!=null?brR(tvO6):"—"; $("etv-42").textContent=tvO42!=null?brR(tvO42):"—";
   sc("ef26-av",p?F5:"—"); sc("ef26-dz",p?H5:"—"); sc("ef26-06",p?G5:"—"); sc("ef26-42",p?I5:"—");
   sc("ef27-av",p?F5:"—"); sc("ef27-dz",p?H5:"—"); sc("ef27-06",p?G5:"—"); sc("ef27-42",p?I9:"—");
@@ -716,30 +758,37 @@ async function download(){
 }
 
 // ── ESTÁGIOS DE COMPARAÇÃO ───────────────────────────────────
-let stage = 0; // 0=só varejo, 1=+flex26, 2=+flex27
-function nextStage(){
-  stage = (stage + 1) % 3;
-  const r26 = document.getElementById('rowFlex26');
-  const r27 = document.getElementById('rowFlex27');
-  const btn = document.getElementById('btnStage');
-  const ico = document.getElementById('stageIcon');
-  const txt = document.getElementById('stageTxt');
+// Cada botão é independente — toggle on/off
+function toggleStage(which){
+  const r26  = document.getElementById('rowFlex26');
+  const r27  = document.getElementById('rowFlex27');
+  const b26  = document.getElementById('btn26');
+  const b27  = document.getElementById('btn27');
 
-  if(stage === 0){
-    // volta ao início: oculta os dois
-    r26.classList.add('hidden'); r26.classList.remove('showing');
-    r27.classList.add('hidden'); r27.classList.remove('showing');
-    btn.className='btn-stage s0'; ico.textContent='▶'; txt.textContent='Comparar com Flex 2026';
-  } else if(stage === 1){
-    // mostra Flex 2026
-    r26.classList.remove('hidden'); r26.classList.add('showing');
-    r27.classList.add('hidden'); r27.classList.remove('showing');
-    btn.className='btn-stage s1'; ico.textContent='▶'; txt.textContent='Comparar com Flex 2027';
+  if(which === 1){
+    const open = !r26.classList.contains('hidden');
+    if(open){
+      r26.classList.add('hidden');
+      // se 27 estava aberto e depende do 26, fecha também
+      r27.classList.add('hidden');
+      b26.classList.remove('active'); b26.innerHTML='▶ San Marino Flex 2026';
+      b27.classList.remove('active'); b27.innerHTML='▶ San Marino Flex 2027';
+    } else {
+      r26.classList.remove('hidden'); r26.classList.add('showing');
+      b26.classList.add('active'); b26.innerHTML='✓ San Marino Flex 2026';
+    }
   } else {
-    // mostra Flex 2026 + Flex 2027
-    r26.classList.remove('hidden');
-    r27.classList.remove('hidden'); r27.classList.add('showing');
-    btn.className='btn-stage s2'; ico.textContent='↺'; txt.textContent='Voltar ao início';
+    const open = !r27.classList.contains('hidden');
+    if(open){
+      r27.classList.add('hidden');
+      b27.classList.remove('active'); b27.innerHTML='▶ San Marino Flex 2027';
+    } else {
+      // garante que 2026 está aberto antes de abrir 2027
+      r26.classList.remove('hidden');
+      b26.classList.add('active'); b26.innerHTML='✓ San Marino Flex 2026';
+      r27.classList.remove('hidden'); r27.classList.add('showing');
+      b27.classList.add('active'); b27.innerHTML='✓ San Marino Flex 2027';
+    }
   }
 }
 
