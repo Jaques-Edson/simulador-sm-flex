@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#04101e"/>
+<title>Simulador San Marino Flex</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;background:#04101e;-webkit-text-size-adjust:100%}
+body{
+  height:100vh;overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:#f0f4ff;
+  background:linear-gradient(135deg,#04101e 0%,#061728 60%,#020c14 100%);
+  display:flex;flex-direction:column;
+}
+input,select,button{font:inherit}
+
+/* TOPBAR */
+.topbar{
+  flex:0 0 auto;
+  display:flex;align-items:center;gap:12px;
+  padding:6px 16px;height:50px;
+  background:rgba(2,6,14,.98);
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.topbar img{height:36px;object-fit:contain;}
+.topbar-divider{width:1px;height:28px;background:rgba(255,255,255,.15);margin:0 4px;}
+.topbar-info{line-height:1.2;}
+.topbar-title{font-size:14px;font-weight:900;color:#f0f4ff;}
+.topbar-sub{font-size:10px;color:#7a9ab8;}
+
+/* CORPO */
+.body{
+  flex:1 1 0;min-height:0;
+  display:grid;
+  grid-template-columns:300px 1fr;
+}
+
+/* ESQUERDO */
+.left{
+  border-right:1px solid rgba(255,255,255,.08);
+  overflow-y:auto;
+  padding:10px 12px;
+  display:flex;flex-direction:column;gap:8px;
+  background:rgba(5,14,26,.7);
+}
+
+/* DIREITO */
+.right{
+  overflow-y:auto;
+  padding:10px 14px;
+  display:flex;flex-direction:column;gap:8px;
+  justify-content:space-between;
+}
+
+/* BLOCOS */
+.blk{
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:10px;
+  padding:10px 12px;
+  background:rgba(8,22,42,.7);
+}
+.blk.flex-blk{
+  border-color:rgba(255,200,0,.2);
+  background:rgba(255,200,0,.025);
+}
+.blk-title{
+  font-size:9px;font-weight:900;
+  text-transform:uppercase;letter-spacing:1.1px;
+  color:#7a9ab8;margin-bottom:8px;
+}
+.blk.flex-blk .blk-title{color:#ffd700;}
+
+/* CAMPOS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.field{display:flex;flex-direction:column;gap:3px;}
+.field label{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#7a9ab8;}
+input[type="text"],input[type="number"],select{
+  height:34px;width:100%;border:1px solid rgba(255,255,255,.15);border-radius:7px;
+  background:rgba(2,8,18,.9);color:#f0f4ff;padding:0 10px;font-size:13px;font-weight:700;
+  outline:none;transition:border-color .15s;
+}
+input::placeholder{color:rgba(120,155,185,.4);font-weight:400;}
+input:focus,select:focus{border-color:rgba(37,215,243,.65);box-shadow:0 0 0 2px rgba(37,215,243,.1);}
+select{
+  appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,#fff 50%),linear-gradient(135deg,#fff 50%,transparent 50%);
+  background-position:calc(100% - 14px) 14px,calc(100% - 9px) 14px;
+  background-size:5px 5px;background-repeat:no-repeat;padding-right:28px;
+}
+.ro{background:rgba(255,200,0,.06)!important;border-color:rgba(255,200,0,.22)!important;color:#ffd700!important;font-weight:900!important;cursor:default;}
+
+/* RANGE */
+.rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.rng-lbl{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#7a9ab8;}
+.rng-val{font-size:13px;font-weight:900;color:#25d7f3;}
+input[type="range"]{
+  width:100%;height:24px;border:0;padding:0;background:transparent;cursor:pointer;accent-color:#25d7f3;
+}
+input[type="range"]::-webkit-slider-runnable-track{
+  height:5px;border-radius:99px;
+  background:linear-gradient(90deg,#25d7f3 var(--rf,0%),rgba(255,255,255,.15) var(--rf,0%));
+}
+input[type="range"]::-webkit-slider-thumb{
+  appearance:none;width:18px;height:18px;margin-top:-6.5px;
+  border-radius:50%;background:#25d7f3;box-shadow:0 0 0 4px rgba(37,215,243,.18);
+}
+.marks{display:flex;justify-content:space-between;margin-top:-2px;}
+.marks span{font-size:8px;color:rgba(120,155,185,.5);font-weight:700;}
+
+/* STATUS */
+.status{
+  padding:8px 12px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.09);background:rgba(13,39,68,.5);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  transition:all .2s;
+}
+.status.ok{border-color:rgba(34,212,126,.5);background:rgba(0,50,20,.5);}
+.status.bad{border-color:rgba(240,82,82,.5);background:rgba(50,0,0,.5);}
+.status-txt{font-size:11px;font-weight:800;color:#7a9ab8;line-height:1.3;}
+.status.ok .status-txt{color:#22d47e;}
+.status.bad .status-txt{color:#f05252;}
+
+/* BOTÃO */
+.btn{
+  width:100%;height:36px;border:0;border-radius:8px;
+  background:linear-gradient(135deg,#ffd700,#e6b800);
+  color:#04101e;font-size:13px;font-weight:900;cursor:pointer;transition:.15s;
+}
+.btn:hover{filter:brightness(1.07);}
+.btn:disabled{opacity:.6;cursor:wait;}
+
+/* TABELA */
+.cmp{width:100%;border-collapse:collapse;font-size:12px;}
+.cmp th{
+  padding:7px 8px;text-align:center;font-size:9px;font-weight:900;
+  text-transform:uppercase;letter-spacing:.7px;color:#7a9ab8;
+  border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);
+}
+.cmp th:first-child{text-align:left;}
+.cmp td{
+  padding:8px 8px;text-align:center;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-weight:700;color:#c8d8e8;font-size:13px;
+}
+.cmp td:first-child{text-align:left;font-size:11px;font-weight:900;}
+.cmp .r-v td:first-child{color:#25d7f3;}
+.cmp .r-f26{background:rgba(255,200,0,.02);}
+.cmp .r-f26 td:first-child{color:#ffd700;}
+.cmp .r-f26 td.hl{color:#ffd700;font-size:15px;}
+.cmp .r-f27 td:first-child{color:#7dd3fc;}
+.cmp .r-f27 td{color:#a8c0d8;}
+.th-hl{color:#25d7f3!important;background:rgba(37,215,243,.05)!important;}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.card{
+  border:1px solid rgba(255,255,255,.09);border-radius:9px;
+  background:rgba(8,22,42,.8);padding:14px 14px;
+}
+.card.yl{border-color:rgba(255,200,0,.35);background:rgba(255,200,0,.04);}
+.card.gr{border-color:rgba(34,212,126,.3);background:rgba(34,212,126,.03);}
+.c-lbl{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;color:#7a9ab8;margin-bottom:5px;}
+.card.yl .c-lbl{color:#ffd700;}
+.card.gr .c-lbl{color:#22d47e;}
+.c-val{font-size:clamp(15px,1.6vw,24px);font-weight:950;color:#f0f4ff;letter-spacing:-.4px;}
+.card.yl .c-val{color:#ffd700;}
+.card.gr .c-val{color:#22d47e;}
+.c-txt{font-size:9px;color:#7a9ab8;margin-top:2px;line-height:1.3;}
+
+/* BENEFÍCIOS */
+.benef{display:none;} /* substituído por .benef-cards */
+.benef-cards{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+}
+.benef-item{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  padding:14px 10px;
+  border:1px solid rgba(255,200,0,.25);border-radius:12px;
+  background:linear-gradient(135deg,rgba(255,200,0,.07),rgba(255,200,0,.02));
+  transition:border-color .2s, background .2s;
+}
+.benef-item:hover{border-color:rgba(255,200,0,.5);background:rgba(255,200,0,.1);}
+.benef-icon{font-size:22px;line-height:1;}
+.benef-txt{font-size:11px;font-weight:900;color:#ffd700;text-transform:uppercase;letter-spacing:.6px;text-align:center;line-height:1.3;}
+/* NOTA */
+.nota{
+  padding:12px 14px;display:flex;gap:10px;align-items:flex-start;
+  border:1px solid rgba(255,255,255,.08);border-radius:8px;
+  background:rgba(13,39,68,.45);color:#8fa8c0;font-size:11px;line-height:1.4;
+}
+.ni{flex:0 0 auto;width:18px;height:18px;border-radius:50%;
+  border:1px solid rgba(37,215,243,.5);color:#25d7f3;
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;}
+
+/* BANNER GIRAR */
+.rotate-banner{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(4,16,30,.97);flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;padding:28px;text-align:center;
+}
+.ri{font-size:48px;animation:giro 2s ease-in-out infinite;}
+@keyframes giro{0%{transform:rotate(0)}50%{transform:rotate(90deg)}100%{transform:rotate(90deg)}}
+.rotate-banner h3{color:#ffd700;font-size:20px;font-weight:900;}
+.rotate-banner p{color:#7a9ab8;font-size:13px;line-height:1.5;max-width:250px;}
+.skip{padding:9px 24px;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#c8d8e8;font-size:13px;font-weight:700;cursor:pointer;}
+@media (max-width:960px) and (orientation:portrait){.rotate-banner{display:flex;}}
+
+@media (max-width:960px){
+  body{overflow-y:auto;height:auto;min-height:100vh;}
+  .body{grid-template-columns:1fr;overflow:visible;}
+  .left{border-right:0;border-bottom:1px solid rgba(255,255,255,.08);overflow-y:visible;}
+  .right{overflow-y:visible;justify-content:flex-start;}
+  .cmp-header{display:none;}
+  .cmp-row{grid-template-columns:1fr;gap:6px;}
+  .cmp-row-title{justify-content:center;text-align:center;padding:8px;}
+  .fc{padding:10px 12px;}
+  .fc-val{font-size:18px!important;}
+  .benef-cards{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:500px){
+  .cards{grid-template-columns:1fr;}
+}
+
+/* LAYOUT DE LINHAS — comparação vertical */
+/* cabeçalho de colunas */
+.cmp-header{
+  display:grid;
+  grid-template-columns:160px 1fr 1fr 1fr 1fr;
+  gap:6px;
+  padding:0 0 4px 0;
+}
+.cmp-header-lbl{
+  font-size:9px;font-weight:900;text-transform:uppercase;
+  letter-spacing:.7px;color:#7a9ab8;text-align:center;
+  padding:6px 4px;
+}
+.cmp-header-lbl:first-child{text-align:left;}
+/* linha de plano */
+.cmp-row{
+  display:grid;
+  grid-template-columns:160px 1fr 1fr 1fr 1fr;
+  gap:6px;
+  margin-bottom:6px;
+}
+.cmp-row-title{
+  display:flex;align-items:center;
+  border:1px solid rgba(255,255,255,.09);border-radius:10px;
+  padding:10px 12px;background:rgba(8,22,42,.8);
+  font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;
+  line-height:1.3;
+}
+.cmp-row.row-v  .cmp-row-title{border-color:rgba(37,215,243,.28);color:#25d7f3;background:rgba(37,215,243,.022);}
+.cmp-row.row-26 .cmp-row-title{border-color:rgba(255,200,0,.32);color:#ffd700;background:rgba(255,200,0,.03);}
+.cmp-row.row-27 .cmp-row-title{border-color:rgba(125,211,252,.22);color:#7dd3fc;background:rgba(125,211,252,.018);}
+/* célula de valor */
+.fc{border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:10px 12px;background:rgba(4,12,26,.6);}
+.cmp-row.row-v  .fc{border-color:rgba(37,215,243,.12);}
+.cmp-row.row-26 .fc{border-color:rgba(255,200,0,.12);}
+.cmp-row.row-27 .fc{border-color:rgba(125,211,252,.1);}
+.fc-lbl{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#7a9ab8;margin-bottom:4px;}
+.fc-val{font-size:clamp(13px,1.3vw,20px);font-weight:950;color:#f0f4ff;letter-spacing:-.3px;}
+.fc-sub{font-size:8px;color:#5a7a94;margin-top:3px;}
+.cmp-row.row-26 .fc.hl-06 .fc-val{color:#ffd700;}
+.cmp-row.row-26 .fc.hl-06{border-color:rgba(255,200,0,.3);}
+/* EXPORT */
+.exp-wrap{position:fixed;left:-99999px;top:0;width:1050px;padding:22px;
+  background:linear-gradient(135deg,#04101e,#020c14);z-index:-1;}
+.exp-sheet{border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:22px;
+  background:rgba(8,22,42,.99);}
+.exp-top{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center;margin-bottom:14px;}
+.exp-logo{height:52px;display:flex;align-items:center;}
+.exp-logo img{height:100%;object-fit:contain;}
+.exp-title{font-size:28px;font-weight:950;color:#f0f4ff;letter-spacing:-.8px;}
+.exp-sub{font-size:13px;color:#7a9ab8;margin-top:4px;}
+.exp-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
+.exp-legal{padding:9px 12px;display:flex;gap:8px;
+  border:1px solid rgba(255,255,255,.08);border-radius:10px;
+  background:rgba(13,39,68,.4);color:#8fa8c0;font-size:11px;line-height:1.4;}
+</style>
+</head>
+<body>
+
+<div class="rotate-banner" id="rotateBanner">
+  <div class="ri">📱</div>
+  <h3>Gire o celular</h3>
+  <p>Para melhor experiência, use o smartphone na <strong style="color:#ffd700">posição horizontal</strong>.</p>
+  <button class="skip" onclick="document.getElementById('rotateBanner').style.display='none'">Continuar mesmo assim</button>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <img src="logo_sm_flex.jpeg" alt="San Marino Flex">
+  <div class="topbar-divider"></div>
+  <div class="topbar-info">
+    <div class="topbar-title">Simulador de Planos</div>
+    <div class="topbar-sub">Varejo 2026 · Flex 2026 · Flex 2027</div>
+  </div>
+</div>
+
+<!-- CORPO -->
+<div class="body">
+
+  <!-- ESQUERDO -->
+  <div class="left">
+
+    <div class="blk">
+      <div class="blk-title">Veículo &amp; Simulação</div>
+      <div class="field" style="margin-bottom:7px;">
+        <label>Modelo</label>
+        <select id="modelo">
+          <option value="Fiat Fastback">Fiat Fastback</option>
+          <option value="Fiat Pulse" selected>Fiat Pulse</option>
+          <option value="Fiat Toro">Fiat Toro</option>
+          <option value="Fiat Strada">Fiat Strada</option>
+        </select>
+      </div>
+      <div class="g2">
+        <div class="field">
+          <label>Valor do Veículo (R$)</label>
+          <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 99000">
+        </div>
+        <div class="field">
+          <label>Parcela 48x Banco (R$)</label>
+          <input id="parc" type="text" inputmode="numeric" placeholder="Ex: 1600">
+        </div>
+      </div>
+    </div>
+
+    <div class="blk flex-blk">
+      <div class="blk-title">⭐ San Marino Flex — Entrada</div>
+
+      <div class="rng-row">
+        <span class="rng-lbl">% Entrada Total</span>
+        <span class="rng-val"><span id="ePctLbl">30</span>%</span>
+      </div>
+      <input id="ePct" type="range" min="30" max="80" step="5" value="30">
+      <div class="marks">
+        <span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span>80</span>
+      </div>
+      <div class="g2" style="margin-top:7px;">
+        <div class="field">
+          <label>Valor Entrada (auto)</label>
+          <input id="eVal" type="text" readonly class="ro" placeholder="—">
+        </div>
+        <div></div>
+      </div>
+    </div>
+
+    <div class="blk flex-blk">
+      <div class="blk-title">⭐ San Marino Flex — Sinal</div>
+
+      <div class="rng-row">
+        <span class="rng-lbl">% Sinal a Vista</span>
+        <span class="rng-val"><span id="sPctLbl">15</span>%</span>
+      </div>
+      <input id="sPct" type="range" min="15" max="80" step="5" value="15">
+      <div class="marks">
+        <span>15</span><span>25</span><span>35</span><span>45</span><span>55</span><span>65</span><span>75</span>
+      </div>
+      <div class="g3" style="margin-top:7px;">
+        <div class="field">
+          <label>Valor Sinal</label>
+          <input id="sVal" type="text" readonly class="ro" placeholder="—">
+        </div>
+        <div class="field">
+          <label>% após 6m</label>
+          <input id="cPct" type="text" readonly class="ro" placeholder="—">
+        </div>
+        <div class="field">
+          <label>Valor após 6m</label>
+          <input id="cVal" type="text" readonly class="ro" placeholder="—">
+        </div>
+      </div>
+    </div>
+
+    <div class="status" id="sBar">
+      <div class="status-txt" id="sTxt">Preencha valor e parcela</div>
+      <span id="sIco">—</span>
+    </div>
+
+    <button class="btn" id="dlBtn">⬇ Baixar imagem</button>
+
+  </div>
+
+  <!-- DIREITO -->
+  <div class="right">
+
+    <!-- CABEÇALHO DE COLUNAS -->
+    <div class="cmp-header">
+      <div class="cmp-header-lbl">Plano</div>
+      <div class="cmp-header-lbl">À Vista</div>
+      <div class="cmp-header-lbl">dez/2026</div>
+      <div class="cmp-header-lbl">+06 Parcelas</div>
+      <div class="cmp-header-lbl">+42 Parcelas</div>
+    </div>
+
+    <!-- LINHA 1: VAREJO -->
+    <div class="cmp-row row-v">
+      <div class="cmp-row-title">Compra<br>Varejo</div>
+      <div class="fc"><div class="fc-lbl">À Vista</div><div class="fc-val" id="tv-av">—</div></div>
+      <div class="fc"><div class="fc-lbl">dez/2026</div><div class="fc-val" id="tv-dz">—</div></div>
+      <div class="fc"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="tv-06">—</div></div>
+      <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="tv-42">—</div></div>
+    </div>
+
+    <!-- LINHA 2: FLEX 2026 -->
+    <div class="cmp-row row-26">
+      <div class="cmp-row-title">Compra<br>Flex 2026</div>
+      <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f26-av">—</div></div>
+      <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f26-dz">—</div></div>
+      <div class="fc hl-06"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="f26-06">—</div></div>
+      <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f26-42">—</div></div>
+    </div>
+
+    <!-- LINHA 3: FLEX 2027 -->
+    <div class="cmp-row row-27">
+      <div class="cmp-row-title">Compra<br>Flex 2027</div>
+      <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f27-av">—</div></div>
+      <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f27-dz">—</div></div>
+      <div class="fc"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="f27-06">—</div></div>
+      <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f27-42">—</div></div>
+    </div>
+
+    <!-- BENEFÍCIOS -->
+    <div class="benef-cards">
+      <div class="benef-item"><div class="benef-icon">📋</div><div class="benef-txt">IPVA 2026</div></div>
+      <div class="benef-item"><div class="benef-icon">🛡️</div><div class="benef-txt">Seguro</div></div>
+      <div class="benef-item"><div class="benef-icon">🪪</div><div class="benef-txt">Emplacamento</div></div>
+      <div class="benef-item"><div class="benef-icon">🔧</div><div class="benef-txt">Revisão 10.000 km</div></div>
+    </div>
+
+    <div class="nota">
+      <div class="ni">i</div>
+      <span>Simulação ilustrativa, sujeita a análise de crédito e condições comerciais vigentes. Entrada ≥ 30%, sinal ≥ 15%, sinal ≤ complemento.</span>
+    </div>
+
+  </div>
+</div>
+<!-- EXPORT OCULTO -->
+<div class="exp-wrap">
+  <div id="expCanvas" class="exp-sheet">
+    <div class="exp-top">
+      <div class="exp-logo"><img src="logo_sm_flex.jpeg" alt="San Marino Flex"></div>
+      <div>
+        <div class="exp-title">Simulador de Planos</div>
+        <div id="expSum" class="exp-sub">—</div>
+      </div>
+    </div>
+    <table class="cmp" style="margin-bottom:12px;">
+      <thead><tr>
+        <th></th><th>À Vista</th><th class="th-hl">dez/2026</th><th>+06 Parcelas</th><th>+42 Parcelas</th>
+      </tr></thead>
+      <tbody>
+        <tr class="r-v"><td>Varejo 2026</td><td id="etv-av">—</td><td id="etv-dz">—</td><td id="etv-06">—</td><td id="etv-42">—</td></tr>
+        <tr class="r-f26"><td>Plano Flex 2026</td><td id="ef26-av">—</td><td id="ef26-dz">—</td><td id="ef26-06" class="hl">—</td><td id="ef26-42">—</td></tr>
+        <tr class="r-f27"><td>Plano Flex 2027</td><td id="ef27-av">—</td><td id="ef27-dz">—</td><td id="ef27-06">—</td><td id="ef27-42">—</td></tr>
+      </tbody>
+    </table>
+    <div class="exp-cards">
+      <div class="card yl"><div class="c-lbl">Sinal a Vista</div><div class="c-val" id="ecSinal">—</div><div class="c-txt">Pago na assinatura</div></div>
+      <div class="card"><div class="c-lbl">Entrada após 6m</div><div class="c-val" id="ecComp">—</div><div class="c-txt">Complemento dez/2026</div></div>
+      <div class="card gr"><div class="c-lbl">Parcela Flex +06</div><div class="c-val" id="ecF06">—</div><div class="c-txt">Parcelas intermediárias</div></div>
+      <div class="card"><div class="c-lbl">Parcela Flex +42</div><div class="c-val" id="ecF42">—</div><div class="c-txt">Parcelas finais banco</div></div>
+    </div>
+    <div class="benef" style="margin-bottom:10px;">BENEFÍCIOS INCLUSOS: IPVA ★ SEGURO ★ EMPLACAMENTO ★ REVISÃO 10 MIL KM</div>
+    <div class="exp-legal">
+      <div class="ni">i</div>
+      <span>Simulação ilustrativa, sujeita a análise de crédito e condições comerciais vigentes. Entrada ≥ 30%, sinal ≥ 15%. Grupo San Marino.</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const NE="Não Elegível";
+
+/*
+  ═══════════════════════════════════════════════════════════
+  FÓRMULAS IDÊNTICAS AO EXCEL — Co_pia_de_SM_Flex_Simulador
+  ═══════════════════════════════════════════════════════════
+
+  INPUTS (células editáveis):
+    C4  = preco          (Preço do veículo)
+    C5  = pctE           (% Entrada — decimal, ex: 0.50)
+    C7  = parc48         (+ 48 Parcelas banco)
+    C9  = pctS           (% Sinal a Vista — decimal, ex: 0.15)
+    B13 = 0.0175         (Taxa mensal fixa)
+
+  CALCULADOS:
+    C6  = C4 * C5                          → Valor Entrada
+    C13 = PMT(B13,48,C4,0,0) * -1 * -C5   → Parcela mínima aceita
+          = (C4 * B13 / (1-(1+B13)^-48)) * C5
+
+    C10 = IF(C7 < C13,   "Não Elegível",   ← trava 1: parcela abaixo do mínimo
+            IF(C9 < 15%, "Não Elegível",   ← trava 2: sinal < 15%
+              IF((C5-C9) < C9, "Não Elegível",  ← trava 3: complemento < sinal
+                (C5-C9))))                 ← OK: retorna % complemento (decimal)
+
+  VAREJO 2026:
+    F3 = C6           → À Vista = Valor Entrada
+    G3 = 0            → dez/2026 = 0
+    H3 = C7           → +06 = parcela banco
+    I3 = C7           → +42 = parcela banco
+
+  PLANO FLEX 2026:
+    F6 = IF(C10=NE, NE, C9*C4)              → À Vista = sinal
+    G6 = IF(C10=NE, NE, C10*C4)             → dez/2026 = complemento
+    H6 = IF(C10=NE, NE, C7/C5*(1-C9))      → +06 parcelas
+    I6 = IF(C10=NE, NE, C7/C5*(1-C9-C10))  → +42 parcelas
+
+  PLANO FLEX 2027:
+    F9 = IF(C10=NE, NE, C9*C4)              → = F6
+    G9 = G6                                  → = G6
+    H9 = H6                                  → = H6
+    I9 = IF(C10=NE, NE, (C7/C5*(1-C9-C10))+299)  → +42 = I6 + 299
+*/
+
+function pmtMin(preco, pctE){
+  // C13 = (PMT(B13,48,C4,0,0))*-C5
+  // Excel PMT retorna negativo; *-C5 torna positivo
+  const r=0.0175, n=48;
+  return (preco * r / (1 - Math.pow(1+r,-n))) * pctE;
+}
+
+function numVal(id){
+  return Number(String($(id).value||"").replace(/\D/g,""))||0;
+}
+function brR(v){
+  return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",
+    minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(v));
+}
+function rf(el){
+  const mn=+el.min,mx=+el.max,v=+el.value;
+  el.style.setProperty("--rf",((v-mn)/(mx-mn)*100)+"%");
+}
+function fileSafe(s){
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]+/gi,"-").toLowerCase();
+}
+function sc(id,v){
+  const el=$(id); if(!el) return;
+  if(v===NE) el.innerHTML=`<span style="color:#f05252;font-size:9px;font-weight:900">${NE}</span>`;
+  else if(typeof v==="number") el.textContent=brR(v);
+  else el.textContent="—";
+}
+
+function calc(){
+  // ── INPUTS ──────────────────────────────────────────────
+  const preco  = numVal("preco");           // C4
+  const parc48 = numVal("parc");            // C7
+  const pctE   = (+$("ePct").value||0)/100; // C5  (converte % → decimal)
+  const pctS   = (+$("sPct").value||0)/100; // C9
+
+  // ── C6: Valor Entrada ────────────────────────────────────
+  const C6 = preco * pctE;
+
+  // ── C13: Parcela mínima aceita ───────────────────────────
+  const C13 = pmtMin(preco, pctE);
+
+  // ── C10: % Complemento ou "Não Elegível" ─────────────────
+  let C10;
+  if      (preco===0 || parc48===0) C10 = null;          // sem dados
+  else if (parc48 < C13)            C10 = NE;            // trava 1
+  else if (pctS   < 0.15)           C10 = NE;            // trava 2
+  else if ((pctE - pctS) < pctS)    C10 = NE;            // trava 3
+  else                              C10 = pctE - pctS;   // complemento decimal
+
+  const eligible = (C10 !== null && C10 !== NE);
+
+  // ── Labels e campos automáticos ──────────────────────────
+  $("ePctLbl").textContent = Math.round(pctE*100);
+  $("sPctLbl").textContent = Math.round(pctS*100);
+  rf($("ePct")); rf($("sPct"));
+
+  $("eVal").value = preco ? brR(C6) : "";
+  $("sVal").value = preco ? brR(preco * pctS) : "";
+  $("cPct").value = (eligible) ? (Math.round(C10*1000)/10).toFixed(1)+"%" : (C10===NE?"Não Elegível":"");
+  $("cVal").value = (eligible) ? brR(C10 * preco) : (C10===NE?"Não Elegível":"");
+
+  // ── STATUS ───────────────────────────────────────────────
+  const bar=$("sBar"),txt=$("sTxt"),ico=$("sIco");
+  let motivo="";
+  if(!preco||!parc48)         motivo="Preencha valor e parcela";
+  else if(parc48<C13)         motivo=`Parcela abaixo do mínimo aceito (${brR(C13)})`;
+  else if(pctS<0.15)          motivo="Sinal mínimo é 15%";
+  else if((pctE-pctS)<pctS)   motivo="Complemento não pode ser menor que o sinal";
+
+  if(!preco||!parc48){ bar.className="status";  txt.textContent="Preencha valor e parcela"; ico.textContent="—"; }
+  else if(eligible)  { bar.className="status ok";  txt.textContent="✓ ELEGÍVEL — Flex disponível"; ico.textContent="✅"; }
+  else               { bar.className="status bad"; txt.textContent="⚠ Refaça a Simulação — "+motivo; ico.textContent="⚠️"; }
+
+  // ── VAREJO 2026 ──────────────────────────────────────────
+  // F3=C6  G3=0  H3=C7  I3=C7
+  $("tv-av").textContent = preco  ? brR(C6)    : "—";
+  $("tv-dz").textContent = preco  ? "R$ 0"     : "—";
+  $("tv-06").textContent = parc48 ? brR(parc48): "—";
+  $("tv-42").textContent = parc48 ? brR(parc48): "—";
+
+  // ── PLANO FLEX 2026 ──────────────────────────────────────
+  // F6 = C9*C4 | G6 = C10*C4 | H6 = C7/C5*(1-C9) | I6 = C7/C5*(1-C9-C10)
+  const F6 = eligible ? preco*pctS                             : NE;
+  const G6 = eligible ? C10*preco                              : NE;
+  const H6 = eligible ? (parc48/pctE)*(1-pctS)                : NE;
+  const I6 = eligible ? (parc48/pctE)*(1-pctS-C10)            : NE;
+
+  // ── PLANO FLEX 2027 ──────────────────────────────────────
+  // F9=F6 | G9=G6 | H9=H6 | I9 = C7/C5*(1-C9-C10)+299
+  const F9 = F6;
+  const G9 = G6;
+  const H9 = H6;
+  const I9 = eligible ? (parc48/pctE)*(1-pctS-C10)+299        : NE;
+
+  // preenche tabela
+  const p = preco && parc48;
+  sc("f26-av",p?F6:NE); sc("f26-dz",p?G6:NE); sc("f26-06",p?H6:NE); sc("f26-42",p?I6:NE);
+  sc("f27-av",p?F9:NE); sc("f27-dz",p?G9:NE); sc("f27-06",p?H9:NE); sc("f27-42",p?I9:NE);
+
+  // se não tiver dados, mostra —
+  if(!p){
+    ["f26-av","f26-dz","f26-06","f26-42","f27-av","f27-dz","f27-06","f27-42"]
+      .forEach(id=>{ const el=$(id); if(el) el.textContent="—"; });
+  }
+
+  // cards
+  sc("cSinal", p?F6:null); sc("cComp", p?G6:null);
+  sc("cF06",   p?H6:null); sc("cF42",  p?I6:null);
+  if(!p){["cSinal","cComp","cF06","cF42"].forEach(id=>{const el=$(id);if(el)el.textContent="—";});}
+
+  // ── EXPORT ───────────────────────────────────────────────
+  const mod=$("modelo").value;
+  $("expSum").textContent = preco
+    ? `${mod} | Entrada ${Math.round(pctE*100)}% | Sinal ${Math.round(pctS*100)}%`
+    : "—";
+  $("etv-av").textContent=preco?brR(C6):"—"; $("etv-dz").textContent=preco?"R$ 0":"—";
+  $("etv-06").textContent=parc48?brR(parc48):"—"; $("etv-42").textContent=parc48?brR(parc48):"—";
+  sc("ef26-av",p?F6:NE); sc("ef26-dz",p?G6:NE); sc("ef26-06",p?H6:NE); sc("ef26-42",p?I6:NE);
+  sc("ef27-av",p?F9:NE); sc("ef27-dz",p?G9:NE); sc("ef27-06",p?H9:NE); sc("ef27-42",p?I9:NE);
+  if(!p){["ef26-av","ef26-dz","ef26-06","ef26-42","ef27-av","ef27-dz","ef27-06","ef27-42"]
+    .forEach(id=>{const el=$(id);if(el)el.textContent="—";});}
+  sc("ecSinal",p?F6:null); sc("ecComp",p?G6:null);
+  sc("ecF06",p?H6:null);   sc("ecF42",p?I6:null);
+  if(!p){["ecSinal","ecComp","ecF06","ecF42"].forEach(id=>{const el=$(id);if(el)el.textContent="—";});}
+}
+
+async function download(){
+  if(!window.html2canvas){alert("html2canvas não carregado.");return;}
+  const btn=$("dlBtn");btn.disabled=true;btn.textContent="Gerando...";
+  try{
+    await document.fonts.ready;
+    await new Promise(r=>setTimeout(r,200));
+    const c=await html2canvas($("expCanvas"),{backgroundColor:null,scale:2,
+      useCORS:true,allowTaint:true,logging:false});
+    const a=document.createElement("a");
+    a.href=c.toDataURL("image/png",1);
+    a.download=`sm-flex-${fileSafe($("modelo").value)}.png`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+  }catch(e){alert("Erro ao gerar imagem.");console.error(e);}
+  finally{btn.disabled=false;btn.textContent="⬇ Baixar imagem";}
+}
+
+$("ePct").addEventListener("input",calc);
+$("sPct").addEventListener("input",calc);
+$("preco").addEventListener("input",calc);
+$("parc").addEventListener("input",calc);
+$("modelo").addEventListener("change",calc);
+$("dlBtn").addEventListener("click",download);
+calc();
+</script>
+</body>
+</html>
