@@ -52,7 +52,7 @@ input,select,button{font:inherit}
 .right{
   overflow-y:auto;
   padding:10px 14px;
-  display:flex;flex-direction:column;gap:8px;
+  display:flex;flex-direction:column;gap:10px;
   justify-content:space-between;
 }
 
@@ -110,7 +110,7 @@ input[type="range"]::-webkit-slider-thumb{
   border-radius:50%;background:#25d7f3;box-shadow:0 0 0 4px rgba(37,215,243,.18);
 }
 .marks{display:flex;justify-content:space-between;margin-top:-2px;}
-.marks span{font-size:8px;color:rgba(120,155,185,.5);font-weight:700;}
+.marks span{font-size:7.5px;color:rgba(120,155,185,.45);font-weight:700;}
 
 /* STATUS */
 .status{
@@ -174,17 +174,18 @@ input[type="range"]::-webkit-slider-thumb{
 
 /* BENEFÍCIOS */
 .benef-cards{
-  border:1px solid rgba(255,200,0,.25);border-radius:12px;
-  background:linear-gradient(135deg,rgba(255,200,0,.06),rgba(255,200,0,.02));
-  padding:14px 20px;
-  display:flex;flex-direction:column;gap:6px;
+  border:1px solid rgba(255,200,0,.35);border-radius:14px;
+  background:linear-gradient(135deg,rgba(255,200,0,.09),rgba(255,200,0,.03));
+  padding:18px 24px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  text-align:center;
 }
 .benef-title{
-  font-size:11px;font-weight:900;text-transform:uppercase;
-  letter-spacing:1px;color:#ffd700;margin-bottom:2px;
+  font-size:13px;font-weight:900;text-transform:uppercase;
+  letter-spacing:1.5px;color:#ffd700;
 }
 .benef-list{
-  font-size:13px;font-weight:700;color:#e8d080;letter-spacing:.3px;line-height:1.7;
+  font-size:16px;font-weight:700;color:#f0d060;letter-spacing:.4px;line-height:1.8;
 }
 /* NOTA */
 .nota{
@@ -214,55 +215,51 @@ input[type="range"]::-webkit-slider-thumb{
   .body{grid-template-columns:1fr;overflow:visible;}
   .left{border-right:0;border-bottom:1px solid rgba(255,255,255,.08);overflow-y:visible;}
   .right{overflow-y:visible;justify-content:flex-start;}
-  .cmp-header{display:none;}
-  .cmp-row{grid-template-columns:1fr;gap:6px;}
-  .cmp-row-title{justify-content:center;text-align:center;padding:8px;}
-  .fc{padding:10px 12px;}
-  .fc-val{font-size:18px!important;}
-  .benef-cards{grid-template-columns:1fr 1fr;}
+  /* sinal: 3 campos em 2 colunas (Valor Sinal + % após 6m em cima, Valor após 6m embaixo) */
+  .g3{grid-template-columns:1fr 1fr;}
+  .g3 .field:last-child{grid-column:1 / -1;}
+  /* linhas de comparação: empilha em coluna */
+  .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
+  .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
+  .fc{padding:12px 12px;}
+  .fc-val{font-size:16px!important;}
+  .fc-lbl{font-size:9px!important;}
+  /* bloco esquerdo mais compacto */
+  .blk{padding:10px 10px;}
+  input[type="text"],input[type="number"],select{height:38px;font-size:13px;}
 }
 @media (max-width:500px){
-  .cards{grid-template-columns:1fr;}
+  .cmp-row{grid-template-columns:1fr 1fr;}
+  .fc-val{font-size:14px!important;}
 }
 
 /* LAYOUT DE LINHAS — comparação vertical */
 /* cabeçalho de colunas */
-.cmp-header{
-  display:grid;
-  grid-template-columns:160px 1fr 1fr 1fr 1fr;
-  gap:6px;
-  padding:0 0 4px 0;
-}
-.cmp-header-lbl{
-  font-size:9px;font-weight:900;text-transform:uppercase;
-  letter-spacing:.7px;color:#7a9ab8;text-align:center;
-  padding:6px 4px;
-}
-.cmp-header-lbl:first-child{text-align:left;}
+
 /* linha de plano */
 .cmp-row{
   display:grid;
-  grid-template-columns:160px 1fr 1fr 1fr 1fr;
+  grid-template-columns:140px 1fr 1fr 1fr 1fr;
   gap:6px;
   margin-bottom:6px;
 }
 .cmp-row-title{
   display:flex;align-items:center;
   border:1px solid rgba(255,255,255,.09);border-radius:10px;
-  padding:10px 12px;background:rgba(8,22,42,.8);
-  font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;
-  line-height:1.3;
+  padding:14px 12px;background:rgba(8,22,42,.8);
+  font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;
+  line-height:1.4;
 }
 .cmp-row.row-v  .cmp-row-title{border-color:rgba(37,215,243,.28);color:#25d7f3;background:rgba(37,215,243,.022);}
 .cmp-row.row-26 .cmp-row-title{border-color:rgba(255,200,0,.32);color:#ffd700;background:rgba(255,200,0,.03);}
 .cmp-row.row-27 .cmp-row-title{border-color:rgba(125,211,252,.22);color:#7dd3fc;background:rgba(125,211,252,.018);}
 /* célula de valor */
-.fc{border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:10px 12px;background:rgba(4,12,26,.6);}
+.fc{border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:16px 16px;background:rgba(4,12,26,.6);}
 .cmp-row.row-v  .fc{border-color:rgba(37,215,243,.12);}
 .cmp-row.row-26 .fc{border-color:rgba(255,200,0,.12);}
 .cmp-row.row-27 .fc{border-color:rgba(125,211,252,.1);}
-.fc-lbl{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#7a9ab8;margin-bottom:4px;}
-.fc-val{font-size:clamp(13px,1.3vw,20px);font-weight:950;color:#f0f4ff;letter-spacing:-.3px;}
+.fc-lbl{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#7a9ab8;margin-bottom:6px;}
+.fc-val{font-size:clamp(15px,1.6vw,26px);font-weight:950;color:#f0f4ff;letter-spacing:-.3px;}
 .fc-sub{font-size:8px;color:#5a7a94;margin-top:3px;}
 .cmp-row.row-26 .fc.hl-06 .fc-val{color:#ffd700;}
 .cmp-row.row-26 .fc.hl-06{border-color:rgba(255,200,0,.3);}
@@ -388,15 +385,6 @@ input[type="range"]::-webkit-slider-thumb{
 
   <!-- DIREITO -->
   <div class="right">
-
-    <!-- CABEÇALHO DE COLUNAS -->
-    <div class="cmp-header">
-      <div class="cmp-header-lbl">Plano</div>
-      <div class="cmp-header-lbl">À Vista</div>
-      <div class="cmp-header-lbl">dez/2026</div>
-      <div class="cmp-header-lbl">+06 Parcelas</div>
-      <div class="cmp-header-lbl">+42 Parcelas</div>
-    </div>
 
     <!-- LINHA 1: VAREJO -->
     <div class="cmp-row row-v">
