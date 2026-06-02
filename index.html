@@ -92,7 +92,7 @@ select{
   background-position:calc(100% - 14px) 14px,calc(100% - 9px) 14px;
   background-size:5px 5px;background-repeat:no-repeat;padding-right:28px;
 }
-.ro{background:rgba(255,200,0,.06)!important;border-color:rgba(255,200,0,.22)!important;color:#ffd700!important;font-weight:900!important;cursor:default;}
+.ro{background:rgba(255,200,0,.08)!important;border-color:rgba(255,200,0,.35)!important;color:#ffd700!important;font-weight:900!important;cursor:default;font-size:14px!important;height:38px!important;}
 
 /* RANGE */
 .rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
@@ -187,6 +187,22 @@ input[type="range"]::-webkit-slider-thumb{
 .benef-list{
   font-size:16px;font-weight:700;color:#f0d060;letter-spacing:.4px;line-height:1.8;
 }
+/* BOTÃO ESTÁGIO */
+.btn-stage{
+  width:100%;padding:14px;border:0;border-radius:12px;
+  font-size:13px;font-weight:900;cursor:pointer;
+  transition:all .2s;letter-spacing:.5px;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-stage.s0{background:linear-gradient(135deg,#25d7f3,#1ab8d4);color:#04101e;}
+.btn-stage.s1{background:linear-gradient(135deg,#ffd700,#e6b800);color:#04101e;}
+.btn-stage.s2{background:linear-gradient(135deg,#7dd3fc,#4ab8f0);color:#04101e;}
+.btn-stage:hover{filter:brightness(1.1);transform:translateY(-1px);}
+/* animação de entrada */
+.cmp-row{transition:opacity .3s, transform .3s;}
+.cmp-row.hidden{display:none;}
+.cmp-row.showing{animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 /* NOTA */
 .nota{
   padding:12px 14px;display:flex;gap:10px;align-items:flex-start;
@@ -331,19 +347,32 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="blk-title">⭐ San Marino Flex — Entrada</div>
 
       <div class="rng-row">
-        <span class="rng-lbl">% Entrada Total</span>
-        <span class="rng-val"><span id="ePctLbl">30</span>%</span>
+        <span class="rng-lbl">% Entrada Banco</span>
+        <span class="rng-val"><span id="ePctLbl">50</span>%</span>
       </div>
-      <input id="ePct" type="range" min="30" max="80" step="5" value="30">
+      <input id="ePct" type="range" min="30" max="80" step="5" value="50">
       <div class="marks">
         <span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span>80</span>
       </div>
+
+      <div class="rng-row" style="margin-top:10px;">
+        <span class="rng-lbl">% Entrada Flex</span>
+        <span class="rng-val"><span id="eFlexPctLbl">50</span>%</span>
+      </div>
+      <input id="eFlexPct" type="range" min="30" max="80" step="5" value="50">
+      <div class="marks">
+        <span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span>80</span>
+      </div>
+
       <div class="g2" style="margin-top:7px;">
         <div class="field">
-          <label>Valor Entrada (auto)</label>
+          <label>Valor Entrada Banco (auto)</label>
           <input id="eVal" type="text" readonly class="ro" placeholder="—">
         </div>
-        <div></div>
+        <div class="field">
+          <label>Valor Entrada Flex (auto)</label>
+          <input id="eFlexVal" type="text" readonly class="ro" placeholder="—">
+        </div>
       </div>
     </div>
 
@@ -358,7 +387,7 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="marks">
         <span>15</span><span>25</span><span>35</span><span>45</span><span>55</span><span>65</span><span>75</span>
       </div>
-      <div class="g3" style="margin-top:7px;">
+      <div class="g2" style="margin-top:7px;">
         <div class="field">
           <label>Valor Sinal</label>
           <input id="sVal" type="text" readonly class="ro" placeholder="—">
@@ -367,6 +396,8 @@ input[type="range"]::-webkit-slider-thumb{
           <label>% após 6m</label>
           <input id="cPct" type="text" readonly class="ro" placeholder="—">
         </div>
+      </div>
+      <div style="margin-top:6px;">
         <div class="field">
           <label>Valor após 6m</label>
           <input id="cVal" type="text" readonly class="ro" placeholder="—">
@@ -386,8 +417,8 @@ input[type="range"]::-webkit-slider-thumb{
   <!-- DIREITO -->
   <div class="right">
 
-    <!-- LINHA 1: VAREJO -->
-    <div class="cmp-row row-v">
+    <!-- LINHA 1: VAREJO — sempre visível -->
+    <div class="cmp-row row-v" id="rowVarejo">
       <div class="cmp-row-title">Compra<br>Varejo</div>
       <div class="fc"><div class="fc-lbl">À Vista</div><div class="fc-val" id="tv-av">—</div></div>
       <div class="fc"><div class="fc-lbl">dez/2026</div><div class="fc-val" id="tv-dz">—</div></div>
@@ -395,8 +426,14 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="tv-42">—</div></div>
     </div>
 
-    <!-- LINHA 2: FLEX 2026 -->
-    <div class="cmp-row row-26">
+    <!-- BOTÃO DE ESTÁGIO -->
+    <button class="btn-stage s0" id="btnStage" onclick="nextStage()">
+      <span id="stageIcon">▶</span>
+      <span id="stageTxt">Comparar com Flex 2026</span>
+    </button>
+
+    <!-- LINHA 2: FLEX 2026 — oculta por padrão -->
+    <div class="cmp-row row-26 hidden" id="rowFlex26">
       <div class="cmp-row-title">Compra<br>Flex 2026</div>
       <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f26-av">—</div></div>
       <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f26-dz">—</div></div>
@@ -404,8 +441,8 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f26-42">—</div></div>
     </div>
 
-    <!-- LINHA 3: FLEX 2027 -->
-    <div class="cmp-row row-27">
+    <!-- LINHA 3: FLEX 2027 — oculta por padrão -->
+    <div class="cmp-row row-27 hidden" id="rowFlex27">
       <div class="cmp-row-title">Compra<br>Flex 2027</div>
       <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f27-av">—</div></div>
       <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f27-dz">—</div></div>
@@ -466,7 +503,7 @@ const NE="Não Elegível";
 
 /*
   ═══════════════════════════════════════════════════════════
-  FÓRMULAS IDÊNTICAS AO EXCEL — Co_pia_de_SM_Flex_Simulador
+  FÓRMULAS IDÊNTICAS AO EXCEL — SM_Flex_Simulador_M6_02Junho_2026
   ═══════════════════════════════════════════════════════════
 
   INPUTS (células editáveis):
@@ -505,11 +542,48 @@ const NE="Não Elegível";
     I9 = IF(C10=NE, NE, (C7/C5*(1-C9-C10))+299)  → +42 = I6 + 299
 */
 
-function pmtMin(preco, pctE){
-  // C13 = (PMT(B13,48,C4,0,0))*-C5
-  // Excel PMT retorna negativo; *-C5 torna positivo
+/*
+  ═══════════════════════════════════════════════════════════
+  EXCEL: SM_Flex_Simulador_M6_02Junho_2026
+  ═══════════════════════════════════════════════════════════
+  INPUTS:
+    C4  = preco           Preço do veículo
+    C5  = pctEB           % Entrada Banco
+    C7  = parc48          + 48 Parcelas banco
+    C8  = pctEF           % Entrada Plano FLEX (novo campo)
+    C9  = pctS            % Sinal a Vista
+    B11 = 0.0175          Taxa mensal fixa
+
+  CALCULADOS:
+    C6  = C4*C5                            Valor Entrada Banco
+    C11 = PMT(B11,48,C4)*(1-C5)           Parcela mínima  ← mudou!
+
+    C10 = IF(C7<C11,     "Parcela Banco",  ← trava 1
+            IF(C8<C5,    "Entrada Flex",   ← trava 2
+              IF(C9<15%, "Aumentar Sinal", ← trava 3
+                IF((C8-C9)<C9,"Reduzir Sinal", ← trava 4
+                  (C8-C9)))))              ← OK: % complemento
+
+  VAREJO 0KM 2026:
+    F3 = C4*C8                    À Vista
+    G3 = C7*(C5/C8)               +06 parcelas
+    H3 = 0                        dez/2026
+    I3 = (C7/C8)*(1-C8)          +42 parcelas
+
+  FLEX 0KM 2026 (IF ISTEXT(C10) → "XXX"):
+    F5 = C9*C4                    Sinal
+    G5 = C7/C5*(1-C9)             +06 parcelas  [simplificado]
+    H5 = C10*C4                   Entrada dez/2026
+    I5 = C7/C5*(1-C8)             +42 parcelas  ← usa C8!
+
+  FLEX 0KM 2027:
+    I9 = I5 + 299                 +42 parcelas
+*/
+
+function pmtMin(preco, pctEB){
+  // C11 = PMT(B11,48,C4) * (1-C5)  ← NOVO: era *C5, agora *(1-C5)
   const r=0.0175, n=48;
-  return (preco * r / (1 - Math.pow(1+r,-n))) * pctE;
+  return (preco * r / (1 - Math.pow(1+r,-n))) * (1 - pctEB);
 }
 
 function numVal(id){
@@ -529,107 +603,100 @@ function fileSafe(s){
 }
 function sc(id,v){
   const el=$(id); if(!el) return;
-  if(v===NE) el.innerHTML=`<span style="color:#f05252;font-size:9px;font-weight:900">${NE}</span>`;
-  else if(typeof v==="number") el.textContent=brR(v);
+  if(typeof v==="string" && v!=="—"){
+    el.innerHTML=`<span style="color:#f05252;font-size:9px;font-weight:900">${v}</span>`;
+  } else if(typeof v==="number") el.textContent=brR(v);
   else el.textContent="—";
 }
 
 function calc(){
   // ── INPUTS ──────────────────────────────────────────────
-  const preco  = numVal("preco");           // C4
-  const parc48 = numVal("parc");            // C7
-  const pctE   = (+$("ePct").value||0)/100; // C5  (converte % → decimal)
-  const pctS   = (+$("sPct").value||0)/100; // C9
+  const preco  = numVal("preco");              // C4
+  const parc48 = numVal("parc");               // C7
+  const pctEB  = (+$("ePct").value||0)/100;    // C5 % Entrada Banco
+  const pctEF  = (+$("eFlexPct").value||0)/100;// C8 % Entrada Flex
+  const pctS   = (+$("sPct").value||0)/100;    // C9
 
-  // ── C6: Valor Entrada ────────────────────────────────────
-  const C6 = preco * pctE;
+  // ── C6: Valor Entrada Banco ──────────────────────────────
+  const C6 = preco * pctEB;
+  // ── Valor Entrada Flex ───────────────────────────────────
+  const C6F = preco * pctEF;
 
-  // ── C13: Parcela mínima aceita ───────────────────────────
-  const C13 = pmtMin(preco, pctE);
+  // ── C11: Parcela mínima ──────────────────────────────────
+  const C11 = pmtMin(preco, pctEB);
 
-  // ── C10: % Complemento ou "Não Elegível" ─────────────────
+  // ── C10: Complemento ou mensagem de trava ────────────────
   let C10;
-  if      (preco===0 || parc48===0) C10 = null;          // sem dados
-  else if (parc48 < C13)            C10 = NE;            // trava 1
-  else if (pctS   < 0.15)           C10 = NE;            // trava 2
-  else if ((pctE - pctS) < pctS)    C10 = NE;            // trava 3
-  else                              C10 = pctE - pctS;   // complemento decimal
+  if      (!preco || !parc48)       C10 = null;
+  else if (parc48 < C11)            C10 = "Parcela Banco";
+  else if (pctEF  < pctEB)          C10 = "Entrada Flex";
+  else if (pctS   < 0.15)           C10 = "Aumentar Sinal";
+  else if ((pctEF - pctS) < pctS)   C10 = "Reduzir Sinal";
+  else                              C10 = pctEF - pctS;
 
-  const eligible = (C10 !== null && C10 !== NE);
+  const eligible = (C10 !== null && typeof C10 === "number");
 
   // ── Labels e campos automáticos ──────────────────────────
-  $("ePctLbl").textContent = Math.round(pctE*100);
-  $("sPctLbl").textContent = Math.round(pctS*100);
-  rf($("ePct")); rf($("sPct"));
+  $("ePctLbl").textContent    = Math.round(pctEB*100);
+  $("eFlexPctLbl").textContent= Math.round(pctEF*100);
+  $("sPctLbl").textContent    = Math.round(pctS*100);
+  rf($("ePct")); rf($("eFlexPct")); rf($("sPct"));
 
-  $("eVal").value = preco ? brR(C6) : "";
-  $("sVal").value = preco ? brR(preco * pctS) : "";
-  $("cPct").value = (eligible) ? (Math.round(C10*1000)/10).toFixed(1)+"%" : (C10===NE?"Não Elegível":"");
-  $("cVal").value = (eligible) ? brR(C10 * preco) : (C10===NE?"Não Elegível":"");
+  $("eVal").value     = preco ? brR(C6)  : "";
+  $("eFlexVal").value = preco ? brR(C6F) : "";
+  $("sVal").value     = preco ? brR(preco * pctS) : "";
+  $("cPct").value     = eligible ? (Math.round(C10*1000)/10).toFixed(1)+"%" : (C10 ? C10 : "");
+  $("cVal").value     = eligible ? brR(C10 * preco) : (C10 ? C10 : "");
 
   // ── STATUS ───────────────────────────────────────────────
   const bar=$("sBar"),txt=$("sTxt"),ico=$("sIco");
-  let motivo="";
-  if(!preco||!parc48)         motivo="Preencha valor e parcela";
-  else if(parc48<C13)         motivo=`Parcela abaixo do mínimo aceito (${brR(C13)})`;
-  else if(pctS<0.15)          motivo="Sinal mínimo é 15%";
-  else if((pctE-pctS)<pctS)   motivo="Complemento não pode ser menor que o sinal";
+  const msgs = {
+    "Parcela Banco":  `Parcela abaixo do mínimo (${brR(C11)})`,
+    "Entrada Flex":   "Entrada Flex deve ser ≥ Entrada Banco",
+    "Aumentar Sinal": "Sinal mínimo é 15%",
+    "Reduzir Sinal":  "Sinal não pode superar o complemento"
+  };
+  if(!preco||!parc48){ bar.className="status";   txt.textContent="Preencha valor e parcela"; ico.textContent="—"; }
+  else if(eligible)  { bar.className="status ok"; txt.textContent="✓ ELEGÍVEL — Flex disponível"; ico.textContent="✅"; }
+  else               { bar.className="status bad"; txt.textContent="⚠ Refaça a Simulação — "+(msgs[C10]||C10); ico.textContent="⚠️"; }
 
-  if(!preco||!parc48){ bar.className="status";  txt.textContent="Preencha valor e parcela"; ico.textContent="—"; }
-  else if(eligible)  { bar.className="status ok";  txt.textContent="✓ ELEGÍVEL — Flex disponível"; ico.textContent="✅"; }
-  else               { bar.className="status bad"; txt.textContent="⚠ Refaça a Simulação — "+motivo; ico.textContent="⚠️"; }
-
-  // ── VAREJO 2026 ──────────────────────────────────────────
-  // F3=C6  G3=0  H3=C7  I3=C7
-  $("tv-av").textContent = preco  ? brR(C6)    : "—";
-  $("tv-dz").textContent = preco  ? "R$ 0"     : "—";
-  $("tv-06").textContent = parc48 ? brR(parc48): "—";
-  $("tv-42").textContent = parc48 ? brR(parc48): "—";
-
-  // ── PLANO FLEX 2026 ──────────────────────────────────────
-  // F6 = C9*C4 | G6 = C10*C4 | H6 = C7/C5*(1-C9) | I6 = C7/C5*(1-C9-C10)
-  const F6 = eligible ? preco*pctS                             : NE;
-  const G6 = eligible ? C10*preco                              : NE;
-  const H6 = eligible ? (parc48/pctE)*(1-pctS)                : NE;
-  const I6 = eligible ? (parc48/pctE)*(1-pctS-C10)            : NE;
-
-  // ── PLANO FLEX 2027 ──────────────────────────────────────
-  // F9=F6 | G9=G6 | H9=H6 | I9 = C7/C5*(1-C9-C10)+299
-  const F9 = F6;
-  const G9 = G6;
-  const H9 = H6;
-  const I9 = eligible ? (parc48/pctE)*(1-pctS-C10)+299        : NE;
-
-  // preenche tabela
   const p = preco && parc48;
-  sc("f26-av",p?F6:NE); sc("f26-dz",p?G6:NE); sc("f26-06",p?H6:NE); sc("f26-42",p?I6:NE);
-  sc("f27-av",p?F9:NE); sc("f27-dz",p?G9:NE); sc("f27-06",p?H9:NE); sc("f27-42",p?I9:NE);
 
-  // se não tiver dados, mostra —
-  if(!p){
-    ["f26-av","f26-dz","f26-06","f26-42","f27-av","f27-dz","f27-06","f27-42"]
-      .forEach(id=>{ const el=$(id); if(el) el.textContent="—"; });
-  }
+  // ── VAREJO 0KM 2026 ─────────────────────────────────────
+  // F3=C4*C8  G3=C7*(C5/C8)  H3=0  I3=C7/C8*(1-C8)
+  const tvAv = p ? preco*pctEF                    : null;
+  const tvDz = p ? 0                               : null;
+  const tvO6 = p ? parc48*(pctEB/pctEF)            : null;
+  const tvO42= p ? (parc48/pctEF)*(1-pctEF)        : null;
+  $("tv-av").textContent = tvAv!=null ? brR(tvAv) : "—";
+  $("tv-dz").textContent = tvDz!=null ? "R$ 0"    : "—";
+  $("tv-06").textContent = tvO6!=null ? brR(tvO6) : "—";
+  $("tv-42").textContent = tvO42!=null? brR(tvO42): "—";
 
-  // cards
-  sc("cSinal", p?F6:null); sc("cComp", p?G6:null);
-  sc("cF06",   p?H6:null); sc("cF42",  p?I6:null);
-  if(!p){["cSinal","cComp","cF06","cF42"].forEach(id=>{const el=$(id);if(el)el.textContent="—";});}
+  // ── FLEX 0KM 2026 ────────────────────────────────────────
+  // F5=C9*C4  G5=C7/C5*(1-C9)  H5=C10*C4  I5=C7/C5*(1-C8)
+  const F5 = eligible ? preco*pctS                : "XXX";
+  const G5 = eligible ? (parc48/pctEB)*(1-pctS)   : "XXX";
+  const H5 = eligible ? C10*preco                  : "XXX";
+  const I5 = eligible ? (parc48/pctEB)*(1-pctEF)  : "XXX";
+
+  // ── FLEX 0KM 2027 ────────────────────────────────────────
+  // I9 = I5 + 299
+  const I9 = eligible ? (parc48/pctEB)*(1-pctEF)+299 : "XXX";
+  // F9=F5  H9=H5  G9=G5 (mesmos valores)
+
+  sc("f26-av",p?F5:"—"); sc("f26-dz",p?H5:"—"); sc("f26-06",p?G5:"—"); sc("f26-42",p?I5:"—");
+  sc("f27-av",p?F5:"—"); sc("f27-dz",p?H5:"—"); sc("f27-06",p?G5:"—"); sc("f27-42",p?I9:"—");
 
   // ── EXPORT ───────────────────────────────────────────────
   const mod=$("modelo").value;
   $("expSum").textContent = preco
-    ? `${mod} | Entrada ${Math.round(pctE*100)}% | Sinal ${Math.round(pctS*100)}%`
+    ? `${mod} | Banco ${Math.round(pctEB*100)}% | Flex ${Math.round(pctEF*100)}% | Sinal ${Math.round(pctS*100)}%`
     : "—";
-  $("etv-av").textContent=preco?brR(C6):"—"; $("etv-dz").textContent=preco?"R$ 0":"—";
-  $("etv-06").textContent=parc48?brR(parc48):"—"; $("etv-42").textContent=parc48?brR(parc48):"—";
-  sc("ef26-av",p?F6:NE); sc("ef26-dz",p?G6:NE); sc("ef26-06",p?H6:NE); sc("ef26-42",p?I6:NE);
-  sc("ef27-av",p?F9:NE); sc("ef27-dz",p?G9:NE); sc("ef27-06",p?H9:NE); sc("ef27-42",p?I9:NE);
-  if(!p){["ef26-av","ef26-dz","ef26-06","ef26-42","ef27-av","ef27-dz","ef27-06","ef27-42"]
-    .forEach(id=>{const el=$(id);if(el)el.textContent="—";});}
-  sc("ecSinal",p?F6:null); sc("ecComp",p?G6:null);
-  sc("ecF06",p?H6:null);   sc("ecF42",p?I6:null);
-  if(!p){["ecSinal","ecComp","ecF06","ecF42"].forEach(id=>{const el=$(id);if(el)el.textContent="—";});}
+  $("etv-av").textContent=tvAv!=null?brR(tvAv):"—"; $("etv-dz").textContent=p?"R$ 0":"—";
+  $("etv-06").textContent=tvO6!=null?brR(tvO6):"—"; $("etv-42").textContent=tvO42!=null?brR(tvO42):"—";
+  sc("ef26-av",p?F5:"—"); sc("ef26-dz",p?H5:"—"); sc("ef26-06",p?G5:"—"); sc("ef26-42",p?I5:"—");
+  sc("ef27-av",p?F5:"—"); sc("ef27-dz",p?H5:"—"); sc("ef27-06",p?G5:"—"); sc("ef27-42",p?I9:"—");
 }
 
 async function download(){
@@ -648,7 +715,36 @@ async function download(){
   finally{btn.disabled=false;btn.textContent="⬇ Baixar imagem";}
 }
 
+// ── ESTÁGIOS DE COMPARAÇÃO ───────────────────────────────────
+let stage = 0; // 0=só varejo, 1=+flex26, 2=+flex27
+function nextStage(){
+  stage = (stage + 1) % 3;
+  const r26 = document.getElementById('rowFlex26');
+  const r27 = document.getElementById('rowFlex27');
+  const btn = document.getElementById('btnStage');
+  const ico = document.getElementById('stageIcon');
+  const txt = document.getElementById('stageTxt');
+
+  if(stage === 0){
+    // volta ao início: oculta os dois
+    r26.classList.add('hidden'); r26.classList.remove('showing');
+    r27.classList.add('hidden'); r27.classList.remove('showing');
+    btn.className='btn-stage s0'; ico.textContent='▶'; txt.textContent='Comparar com Flex 2026';
+  } else if(stage === 1){
+    // mostra Flex 2026
+    r26.classList.remove('hidden'); r26.classList.add('showing');
+    r27.classList.add('hidden'); r27.classList.remove('showing');
+    btn.className='btn-stage s1'; ico.textContent='▶'; txt.textContent='Comparar com Flex 2027';
+  } else {
+    // mostra Flex 2026 + Flex 2027
+    r26.classList.remove('hidden');
+    r27.classList.remove('hidden'); r27.classList.add('showing');
+    btn.className='btn-stage s2'; ico.textContent='↺'; txt.textContent='Voltar ao início';
+  }
+}
+
 $("ePct").addEventListener("input",calc);
+$("eFlexPct").addEventListener("input",calc);
 $("sPct").addEventListener("input",calc);
 $("preco").addEventListener("input",calc);
 $("parc").addEventListener("input",calc);
