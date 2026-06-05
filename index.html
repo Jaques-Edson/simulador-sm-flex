@@ -76,12 +76,17 @@ input,select,button{font:inherit}
 
 /* CAMPOS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
-.field{display:flex;flex-direction:column;gap:3px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
+.dates-grid{grid-template-columns:1fr 1fr 1fr;}
+.dates-grid .field{min-width:0;}
+.dates-grid .field label{font-size:8px;line-height:1.2;}
+.dates-grid input{padding:0 4px!important;text-align:center;font-size:11px!important;}
+.field{display:flex;flex-direction:column;gap:3px;min-width:0;}
 .field label{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#7a9ab8;}
 input[type="text"],input[type="number"],select{
   height:34px;width:100%;border:1px solid rgba(255,255,255,.15);border-radius:7px;
-  background:rgba(2,8,18,.9);color:#f0f4ff;padding:0 10px;font-size:13px;font-weight:700;
+  background:rgba(2,8,18,.9);color:#f0f4ff;padding:0 8px;font-size:12px;font-weight:700;
+  letter-spacing:-.2px;font-variant-numeric:tabular-nums;
   outline:none;transition:border-color .15s;
 }
 input::placeholder{color:rgba(120,155,185,.4);font-weight:400;}
@@ -92,7 +97,7 @@ select{
   background-position:calc(100% - 14px) 14px,calc(100% - 9px) 14px;
   background-size:5px 5px;background-repeat:no-repeat;padding-right:28px;
 }
-.ro{background:rgba(255,200,0,.08)!important;border-color:rgba(255,200,0,.35)!important;color:#ffd700!important;font-weight:900!important;cursor:default;font-size:14px!important;height:38px!important;}
+.ro{background:rgba(255,200,0,.08)!important;border-color:rgba(255,200,0,.35)!important;color:#ffd700!important;font-weight:900!important;cursor:default;font-size:13px!important;height:38px!important;padding:0 6px!important;text-align:center;letter-spacing:-.25px;}
 
 /* RANGE */
 .rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
@@ -187,22 +192,10 @@ input[type="range"]::-webkit-slider-thumb{
 .benef-list{
   font-size:16px;font-weight:700;color:#f0d060;letter-spacing:.4px;line-height:1.8;
 }
-/* BOTÃO ESTÁGIO */
-.btn-stage-wrap{display:flex;flex-direction:column;gap:6px;}
-.btn-stage{
-  width:100%;padding:12px 16px;border:0;border-radius:10px;
-  font-size:13px;font-weight:900;cursor:pointer;
-  transition:all .2s;letter-spacing:.4px;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  opacity:.45;
-}
-.btn-stage.active{opacity:1;}
-.btn-stage.sb-26{background:linear-gradient(135deg,#ffd700,#e6b800);color:#04101e;}
-.btn-stage.sb-27{background:linear-gradient(135deg,#7dd3fc,#4ab8f0);color:#04101e;}
-.btn-stage:hover{filter:brightness(1.08);transform:translateY(-1px);}
+
 /* animação de entrada */
 .cmp-row{transition:opacity .3s, transform .3s;}
-.cmp-row.hidden{display:none;}
+
 .cmp-row.showing{animation:fadeIn .3s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 /* NOTA */
@@ -236,6 +229,10 @@ input[type="range"]::-webkit-slider-thumb{
   /* sinal: 3 campos em 2 colunas (Valor Sinal + % após 6m em cima, Valor após 6m embaixo) */
   .g3{grid-template-columns:1fr 1fr;}
   .g3 .field:last-child{grid-column:1 / -1;}
+  .dates-grid{grid-template-columns:1fr 1fr;}
+  .dates-grid .field:last-child{grid-column:1 / -1;}
+  .dates-grid input{font-size:12px!important;padding:0 6px;}
+  .dates-grid .field label{font-size:8px;}
   /* linhas de comparação: empilha em coluna */
   .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
   .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
@@ -249,6 +246,14 @@ input[type="range"]::-webkit-slider-thumb{
 @media (max-width:500px){
   .cmp-row{grid-template-columns:1fr 1fr;}
   .fc-val{font-size:14px!important;}
+  .g2{gap:6px;}
+  .g3{gap:4px;}
+  .field label{font-size:8px;line-height:1.15;}
+  .ro{font-size:11px!important;padding:0 4px!important;}
+  .dates-grid{grid-template-columns:1fr 1fr 1fr;}
+  .dates-grid .field:last-child{grid-column:auto;}
+  .dates-grid .field label{font-size:7px;}
+  .dates-grid input{font-size:10px!important;padding:0 2px!important;}
 }
 
 /* LAYOUT DE LINHAS — comparação vertical */
@@ -261,7 +266,7 @@ input[type="range"]::-webkit-slider-thumb{
   gap:6px;
   margin-bottom:6px;
 }
-.cmp-row.hidden{display:none;margin-bottom:0;}
+
 .cmp-row-title{
   display:flex;align-items:center;
   border:1px solid rgba(255,255,255,.09);border-radius:10px;
@@ -417,27 +422,53 @@ input[type="range"]::-webkit-slider-thumb{
         </div>
       </div>
 
-      <!-- Sinal à Vista + Entrada Dezembro -->
+      <!-- Meses Flex -->
+      <div class="rng-row" style="margin-top:8px;">
+        <span class="rng-lbl">Meses Flex <span id="mesesMaxInfo" style="color:#f05252;font-size:9px;"></span></span>
+        <span class="rng-val"><span id="mesesLbl">5</span> meses</span>
+      </div>
+      <input id="mesesFlex" type="range" min="3" max="6" step="1" value="5">
+      <div class="marks" id="mesesMarks"><span>3</span><span>4</span><span>5</span><span>6</span></div>
+
+      <!-- Entrada Total Flex + Sinal à Vista -->
       <div class="g2" style="margin-top:6px;">
+        <div class="field">
+          <label>Entrada Total Flex</label>
+          <input id="eFlexVal" type="text" readonly class="ro" placeholder="—">
+        </div>
         <div class="field">
           <label>Sinal à Vista</label>
           <input id="sVal" type="text" readonly class="ro" placeholder="—">
         </div>
-        <div class="field">
-          <label>Entrada (Dezembro/2026)</label>
-          <input id="cVal" type="text" readonly class="ro" placeholder="—">
-        </div>
       </div>
 
-      <!-- % Complemento -->
+      <!-- % após 6m + Valor dos 6m -->
       <div class="g2" style="margin-top:6px;">
         <div class="field">
-          <label>% após 6m</label>
+          <label>Após 6m</label>
           <input id="cPct" type="text" readonly class="ro" placeholder="—">
         </div>
         <div class="field">
-          <label>Entrada Flex (auto)</label>
-          <input id="eFlexVal" type="text" readonly class="ro" placeholder="—">
+          <label>Valor dos 6m</label>
+          <input id="cVal" type="text" readonly class="ro" placeholder="—">
+        </div>
+      </div>
+    </div>
+
+    <!-- DATAS -->
+    <div class="blk" style="padding:8px 12px;">
+      <div class="g3 dates-grid">
+        <div class="field">
+          <label>Data da Simulação</label>
+          <input id="dataSimulacaoField" type="text" readonly class="ro" placeholder="—">
+        </div>
+        <div class="field">
+          <label>Data da Proposta</label>
+          <input id="dataPropostaField" type="text" readonly class="ro" placeholder="—">
+        </div>
+        <div class="field">
+          <label id="lblDataComp">Data Complemento</label>
+          <input id="dataComplemento" type="text" readonly class="ro" placeholder="—">
         </div>
       </div>
     </div>
@@ -459,23 +490,12 @@ input[type="range"]::-webkit-slider-thumb{
     <div class="cmp-row row-v" id="rowVarejo">
       <div class="cmp-row-title">Compra<br>Varejo</div>
       <div class="fc"><div class="fc-lbl">À Vista</div><div class="fc-val" id="tv-av">—</div></div>
-      <div class="fc"><div class="fc-lbl">dez/2026</div><div class="fc-val" id="tv-dz">—</div></div>
+      <div class="fc" id="tv-dz" style="background:transparent;border-color:transparent;"></div>
       <div class="fc"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="tv-06">—</div></div>
       <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="tv-42">—</div></div>
     </div>
-
-    <!-- BOTÕES DE ESTÁGIO -->
-    <div class="btn-stage-wrap">
-      <button class="btn-stage sb-26 active" id="btn26" onclick="toggleStage(1)">
-        ▶ San Marino Flex 2026
-      </button>
-      <button class="btn-stage sb-27" id="btn27" onclick="toggleStage(2)">
-        ▶ San Marino Flex 2027
-      </button>
-    </div>
-
-    <!-- LINHA 2: FLEX 2026 — oculta por padrão -->
-    <div class="cmp-row row-26 hidden" id="rowFlex26">
+    <!-- LINHA 2: FLEX 2026 — sempre visível -->
+    <div class="cmp-row row-26" id="rowFlex26">
       <div class="cmp-row-title">Compra<br>Flex 2026</div>
       <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f26-av">—</div></div>
       <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f26-dz">—</div></div>
@@ -483,13 +503,13 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f26-42">—</div></div>
     </div>
 
-    <!-- LINHA 3: FLEX 2027 — oculta por padrão -->
-    <div class="cmp-row row-27 hidden" id="rowFlex27">
+    <!-- LINHA 3: FLEX 2027 — sempre visível -->
+    <div class="cmp-row row-27" id="rowFlex27">
       <div class="cmp-row-title">Compra<br>Flex 2027</div>
       <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f27-av">—</div></div>
       <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f27-dz">—</div></div>
       <div class="fc"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="f27-06">—</div></div>
-      <div class="fc fc-299" style="position:relative"><span class="badge-299">+ R$ 299</span><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f27-42">—</div></div>
+      <div class="fc fc-299"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f27-42">—</div></div>
     </div>
 
     <!-- BENEFÍCIOS -->
@@ -622,15 +642,24 @@ const NE="Não Elegível";
     I9 = I5 + 299                 +42 parcelas
 */
 
-function pmtMin(preco, pctEB){
-  // C11 = PMT(B11,48,C4) * (1-C5)  ← NOVO: era *C5, agora *(1-C5)
-  const r=0.0175, n=48;
-  return (preco * r / (1 - Math.pow(1+r,-n))) * (1 - pctEB);
+// ═══════════════════════════════════════════════════════════
+// EXCEL: SM_Flex_Simulador_M6_V5_6_2026_Revisado — COMPLETO
+// ═══════════════════════════════════════════════════════════
+// CONSTANTES (células fixas da planilha)
+const B12 = 0.018;          // CET taxa mensal
+const B15 = 3;              // Mínimo meses flex
+const B16 = new Date(2026,11,20); // Data limite (20/dez/2026)
+const B17 = 299;            // Adicional UP Flex 2027
+const B18 = 0.15;           // Sinal mínimo
+const B19 = 0.10;           // GAP máx entrada banco x flex
+
+// B14 = ((YEAR(B16)-YEAR(F2))*12 + 12 - MONTH(B16) - MONTH(F2)) * -1
+function calcB14(F2){
+  return ((B16.getFullYear()-F2.getFullYear())*12
+    + 12 - (B16.getMonth()+1) - (F2.getMonth()+1)) * -1;
 }
 
-function numVal(id){
-  return Number(String($(id).value||"").replace(/\D/g,""))||0;
-}
+function numVal(id){return Number(String($(id).value||"").replace(/\D/g,""))||0;}
 function brR(v){
   return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",
     minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(v));
@@ -645,101 +674,188 @@ function fileSafe(s){
 }
 function sc(id,v){
   const el=$(id); if(!el) return;
-  if(typeof v==="string" && v!=="—"){
-    el.innerHTML=`<span style="color:#f05252;font-size:9px;font-weight:900">${v}</span>`;
-  } else if(typeof v==="number") el.textContent=brR(v);
+  if(typeof v==="string"&&v!=="—")
+    el.innerHTML=`<span style="color:#f05252;font-size:10px;font-weight:900">${v}</span>`;
+  else if(typeof v==="number") el.textContent=brR(v);
   else el.textContent="—";
+}
+function fmtData(d){
+  return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"});
+}
+function fmtMesAno(d){
+  return d.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+}
+function fmtMesAnoCurto(d){
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  return `${mm}/${d.getFullYear()}`;
+}
+function addMonths(d,m){
+  return new Date(d.getFullYear(), d.getMonth()+m, d.getDate());
 }
 
 function calc(){
-  // ── INPUTS ──────────────────────────────────────────────
-  const preco  = numVal("preco");              // C4
-  const parc48 = numVal("parc");               // C7
-  const pctEB  = (+$("ePct").value||0)/100;    // C5 % Entrada Banco
-  const pctEF  = (+$("eFlexPct").value||0)/100;// C8 % Entrada Flex
-  const pctS   = (+$("sPct").value||0)/100;    // C9
+  // ── INPUTS (campos sublinhados na planilha) ──────────────
+  const F2    = new Date();              // Data proposta (hoje automático)
+  const F3    = numVal("preco");         // Preço do veículo
+  const C4    = (+$("ePct").value||0)/100;    // % Entrada Banco
+  const F4    = numVal("parc");          // Parcela banco 48x
+  const D5    = (+$("eFlexPct").value||0)/100; // % Entrada Flex
+  const F5    = +$("mesesFlex").value||3;      // Meses Flex
+  const C6    = (+$("sPct").value||0)/100;     // % Sinal
 
-  // ── C6: Valor Entrada Banco ──────────────────────────────
-  const C6 = preco * pctEB;
-  // ── Valor Entrada Flex ───────────────────────────────────
-  const C6F = preco * pctEF;
+  // ── AUTOMÁTICOS ─────────────────────────────────────────
+  // D4 = F3*C4
+  const D4 = F3 * C4;
 
-  // ── C11: Parcela mínima ──────────────────────────────────
-  const C11 = pmtMin(preco, pctEB);
+  // B14 = máximo meses flex (dinâmico pela data)
+  const B14 = Math.max(B15, Math.min(6, calcB14(F2)));
 
-  // ── C10: Complemento ou mensagem de trava ────────────────
-  let C10;
-  if      (!preco || !parc48)       C10 = null;
-  else if (parc48 < C11)            C10 = "Parcela Banco";
-  else if (pctEF  < pctEB)          C10 = "Entrada Flex";
-  else if (pctS   < 0.15)           C10 = "Aumentar Sinal";
-  else if ((pctEF - pctS) < pctS)   C10 = "Reduzir Sinal";
-  else                              C10 = pctEF - pctS;
+  // B13 = PMT(B12,48,F3)*-(1-D5)
+  const B13 = (F3*B12/(1-Math.pow(1+B12,-48))) * (1-D5);
 
-  const eligible = (C10 !== null && typeof C10 === "number");
+  // C7 = IF((D5-C6)<C6, "Reduzir Sinal", D5-C6)
+  const C7 = (D5-C6) < C6 ? "Reduzir Sinal" : (D5-C6);
 
-  // ── Labels e campos automáticos ──────────────────────────
-  $("ePctLbl").textContent    = Math.round(pctEB*100);
-  $("eFlexPctLbl").textContent= Math.round(pctEF*100);
-  $("sPctLbl").textContent    = Math.round(pctS*100);
-  rf($("ePct")); rf($("eFlexPct")); rf($("sPct"));
+  // D6 — sinal R$ ou trava
+  let D6;
+  if(!F3 || !F4)                      D6 = null;
+  else if(F5 < B15)                   D6 = "Meses Flex";
+  else if(F5 > B14)                   D6 = `Meses Flex (máx ${B14})`;
+  else if(D5 < (C4 - B19))            D6 = "Check Banco";
+  else if(C6 < B18)                   D6 = "Check Sinal";
+  else if(typeof C7==="string")       D6 = "Reduzir Sinal";
+  else                                D6 = F3 * C6;
 
-  $("eVal").value     = preco ? brR(C6)  : "";
-  $("eFlexVal").value = preco ? brR(C6F) : "";
-  $("sVal").value     = preco ? brR(preco * pctS) : "";
-  $("cPct").value     = eligible ? (Math.round(C10*1000)/10).toFixed(1)+"%" : (C10 ? C10 : "");
-  $("cVal").value     = eligible ? brR(C10 * preco) : (C10 ? C10 : "");
+  // D7 = IF(ISTEXT(D6),"0", F3*(D5-C6))
+  const D7 = (typeof D6==="number") ? F3*(D5-C6) : 0;
+
+  // F6 = IF(ISTEXT(D6),"0", (F4/(1-C4))*(1-C6))
+  const F6 = (typeof D6==="number") ? (F4/(1-C4))*(1-C6) : 0;
+
+  // F7 = IF(ISTEXT(D6),"0", F6/(1-C6)*(1-D5))
+  const F7raw = (typeof D6==="number") ? F6/(1-C6)*(1-D5) : 0;
+
+  // E13 = IF(F7<B13,"Check Banco",F7) — trava parcela mínima
+  let F7 = F7raw;
+  if(typeof D6==="number" && F7raw < B13) D6 = "Check Banco";
+  if(typeof D6==="number") F7 = F7raw;
+
+  // F8 = F7 + B17
+  const F8 = (typeof D6==="number") ? F7 + B17 : 0;
+
+  // B7 = EDATE(F2, F5)
+  const B7 = addMonths(F2, F5);
+
+  // E6 = F5 & " Parcelas" / E7 = (48-F5) & " Parcelas"
+  const E6 = `+${F5} Parcelas`;
+  const E7 = `+${48-F5} Parcelas`;
+
+  const ok = (typeof D6==="number");
+
+  // ── ATUALIZAR SLIDER MESES (máximo dinâmico) ─────────────
+  const slMeses = $("mesesFlex");
+  if(slMeses){
+    slMeses.max = B14;
+    if(+slMeses.value > B14) slMeses.value = B14;
+    const marksEl = document.getElementById('mesesMarks');
+    if(marksEl){
+      let mk='';
+      for(let m=B15;m<=B14;m++) mk+=`<span>${m}</span>`;
+      marksEl.innerHTML=mk;
+    }
+  }
+  const mesesAtual = Math.min(F5, B14);
+
+  // ── LABELS ──────────────────────────────────────────────
+  $("ePctLbl").textContent    = Math.round(C4*100);
+  $("eFlexPctLbl").textContent= Math.round(D5*100);
+  $("sPctLbl").textContent    = Math.round(C6*100);
+  $("mesesLbl").textContent   = mesesAtual;
+  if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = `(máx ${B14})`;
+  rf($("ePct")); rf($("eFlexPct")); rf($("sPct")); rf($("mesesFlex"));
+
+  // Labels dinâmicos das parcelas
+  if(document.getElementById('lbl06')) document.getElementById('lbl06').textContent = E6;
+  if(document.getElementById('lbl42')) document.getElementById('lbl42').textContent = E7;
+  const th06=document.querySelector('.th-06'), th42=document.querySelector('.th-42');
+  if(th06) th06.textContent = E6;
+  if(th42) th42.textContent = E7;
+
+  // ── DATAS ────────────────────────────────────────────────
+  const propStr = fmtData(F2);
+  const compStr = fmtMesAnoCurto(B7);
+  if($("dataPropostaTop"))   $("dataPropostaTop").textContent = propStr;
+  if($("dataSimulacaoField")) $("dataSimulacaoField").value   = propStr;
+  if($("dataPropostaField")) $("dataPropostaField").value     = propStr;
+  if($("dataComplemento"))   $("dataComplemento").value       = ok ? compStr : "";
+  const lblComp = document.getElementById('lblDataComp');
+  if(lblComp) lblComp.textContent = `Complemento (${mesesAtual}m)`;
+
+  // ── CAMPOS AUTOMÁTICOS ───────────────────────────────────
+  $("eVal").value     = F3 ? brR(D4) : "";
+  $("eFlexVal").value = F3  ? brR(F3*D5) : "";
+  $("sVal").value     = ok  ? brR(D6) : "";
+  $("cPct").value     = ok  ? `${Math.round(C7*100)}%` : (D6&&typeof D6==="string" ? D6 : "");
+  $("cVal").value     = ok  ? brR(D7) : "";
 
   // ── STATUS ───────────────────────────────────────────────
-  const bar=$("sBar"),txt=$("sTxt"),ico=$("sIco");
-  const msgs = {
-    "Parcela Banco":  `Parcela abaixo do mínimo (${brR(C11)})`,
-    "Entrada Flex":   "Entrada Flex deve ser ≥ Entrada Banco",
-    "Aumentar Sinal": "Sinal mínimo é 15%",
-    "Reduzir Sinal":  "Sinal não pode superar o complemento"
+  const msgs={
+    "Meses Flex":    `Meses Flex deve ser entre ${B15} e ${B14}`,
+    "Check Banco":   `Parcela ou entrada fora dos parâmetros (mín ${brR(B13)})`,
+    "Check Sinal":   "Sinal mínimo é 15%",
+    "Reduzir Sinal": "Sinal não pode superar o complemento"
   };
-  if(!preco||!parc48){ bar.className="status";   txt.textContent="Preencha valor e parcela"; ico.textContent="—"; }
-  else if(eligible)  { bar.className="status ok"; txt.textContent="✓ ELEGÍVEL — Flex disponível"; ico.textContent="✅"; }
-  else               { bar.className="status bad"; txt.textContent="⚠ Refaça a Simulação — "+(msgs[C10]||C10); ico.textContent="⚠️"; }
+  const bar=$("sBar"),txt=$("sTxt"),ico=$("sIco");
+  if(!F3||!F4){bar.className="status";  txt.textContent="Preencha valor e parcela"; ico.textContent="—";}
+  else if(ok) {bar.className="status ok"; txt.textContent="✓ ELEGÍVEL — Flex disponível"; ico.textContent="✅";}
+  else        {bar.className="status bad";
+               txt.textContent="⚠ Refaça a Simulação — "+(msgs[D6]||(typeof D6==="string"?D6:""));
+               ico.textContent="⚠️";}
 
-  const p = preco && parc48;
+  const p = F3 && F4;
 
-  // ── VAREJO 0KM 2026 ─────────────────────────────────────
-  // F3=C4*C8  G3=C7*(C5/C8)  H3=0  I3=C7/C8*(1-C8)
-  const tvAv = p ? preco*pctEF                    : null;
-  const tvDz = p ? 0                               : null;
-  const tvO6 = p ? parc48*(pctEB/pctEF)            : null;
-  const tvO42= p ? (parc48/pctEF)*(1-pctEF)        : null;
-  $("tv-av").textContent = tvAv!=null ? brR(tvAv) : "—";
-  $("tv-dz").textContent = "";
-  $("tv-06").textContent = tvO6!=null ? brR(tvO6) : "—";
-  $("tv-42").textContent = tvO42!=null? brR(tvO42): "—";
+  // ── VAREJO ───────────────────────────────────────────────
+  // À Vista=D4, dez=vazio, +Mx=F4, +(48-M)x=F4
+  $("tv-av").textContent  = p ? brR(D4) : "—";
+  $("tv-dz").textContent  = "";
+  $("tv-06").textContent  = p ? brR(F4) : "—";
+  $("tv-42").textContent  = p ? brR(F4) : "—";
 
-  // ── FLEX 0KM 2026 ────────────────────────────────────────
-  // F5=C9*C4  G5=C7/C5*(1-C9)  H5=C10*C4  I5=C7/C5*(1-C8)
-  const F5 = eligible ? preco*pctS                : "XXX";
-  const G5 = eligible ? (parc48/pctEB)*(1-pctS)   : "XXX";
-  const H5 = eligible ? C10*preco                  : "XXX";
-  const I5 = eligible ? (parc48/pctEB)*(1-pctEF)  : "XXX";
+  // ── FLEX 2026 ────────────────────────────────────────────
+  // Sinal=D6, Entr.dez=D7, +Mx=F6, +(48-M)x=F7
+  sc("f26-av", p ? D6 : "—");
+  sc("f26-dz", p ? (ok?D7:"—") : "—");
+  sc("f26-06", p ? (ok?F6:"—") : "—");
+  sc("f26-42", p ? (ok?F7:"—") : "—");
 
-  // ── FLEX 0KM 2027 ────────────────────────────────────────
-  // I9 = I5 + 299
-  const I9 = eligible ? (parc48/pctEB)*(1-pctEF)+299 : "XXX";
-  // F9=F5  H9=H5  G9=G5 (mesmos valores)
+  // ── FLEX 2027 ────────────────────────────────────────────
+  // Sinal=D6, Entr.dez=D7, +Mx=F6, +(48-M)x=F8
+  sc("f27-av", p ? D6 : "—");
+  sc("f27-dz", p ? (ok?D7:"—") : "—");
+  sc("f27-06", p ? (ok?F6:"—") : "—");
+  sc("f27-42", p ? (ok?F8:"—") : "—");
 
-  sc("f26-av",p?F5:"—"); sc("f26-dz",p?H5:"—"); sc("f26-06",p?G5:"—"); sc("f26-42",p?I5:"—");
-  sc("f27-av",p?F5:"—"); sc("f27-dz",p?H5:"—"); sc("f27-06",p?G5:"—"); sc("f27-42",p?I9:"—");
+  if(!p){
+    ["f26-av","f26-dz","f26-06","f26-42","f27-av","f27-dz","f27-06","f27-42"]
+      .forEach(id=>{const el=$(id);if(el)el.textContent="—";});
+  }
 
   // ── EXPORT ───────────────────────────────────────────────
-  const mod=$("modelo").value;
-  $("expSum").textContent = preco
-    ? `${mod} | Banco ${Math.round(pctEB*100)}% | Flex ${Math.round(pctEF*100)}% | Sinal ${Math.round(pctS*100)}%`
+  $("expSum").textContent = F3
+    ? `${$("modelo").value} | ${brR(F3)} | Banco ${Math.round(C4*100)}% | Flex ${Math.round(D5*100)}% | Sinal ${Math.round(C6*100)}% | ${mesesAtual}m`
     : "—";
-  $("etv-av").textContent=tvAv!=null?brR(tvAv):"—"; $("etv-dz").textContent="";
-  $("etv-06").textContent=tvO6!=null?brR(tvO6):"—"; $("etv-42").textContent=tvO42!=null?brR(tvO42):"—";
-  sc("ef26-av",p?F5:"—"); sc("ef26-dz",p?H5:"—"); sc("ef26-06",p?G5:"—"); sc("ef26-42",p?I5:"—");
-  sc("ef27-av",p?F5:"—"); sc("ef27-dz",p?H5:"—"); sc("ef27-06",p?G5:"—"); sc("ef27-42",p?I9:"—");
+  $("etv-av").textContent=p?brR(D4):"—"; $("etv-dz").textContent="";
+  $("etv-06").textContent=p?brR(F4):"—"; $("etv-42").textContent=p?brR(F4):"—";
+  sc("ef26-av",p?D6:"—"); sc("ef26-dz",p?(ok?D7:"—"):"—");
+  sc("ef26-06",p?(ok?F6:"—"):"—"); sc("ef26-42",p?(ok?F7:"—"):"—");
+  sc("ef27-av",p?D6:"—"); sc("ef27-dz",p?(ok?D7:"—"):"—");
+  sc("ef27-06",p?(ok?F6:"—"):"—"); sc("ef27-42",p?(ok?F8:"—"):"—");
+  if(!p){
+    ["ef26-av","ef26-dz","ef26-06","ef26-42","ef27-av","ef27-dz","ef27-06","ef27-42"]
+      .forEach(id=>{const el=$(id);if(el)el.textContent="—";});
+  }
 }
+
 
 async function download(){
   if(!window.html2canvas){alert("html2canvas não carregado.");return;}
@@ -757,43 +873,11 @@ async function download(){
   finally{btn.disabled=false;btn.textContent="⬇ Baixar imagem";}
 }
 
-// ── ESTÁGIOS DE COMPARAÇÃO ───────────────────────────────────
-// Cada botão é independente — toggle on/off
-function toggleStage(which){
-  const r26  = document.getElementById('rowFlex26');
-  const r27  = document.getElementById('rowFlex27');
-  const b26  = document.getElementById('btn26');
-  const b27  = document.getElementById('btn27');
 
-  if(which === 1){
-    const open = !r26.classList.contains('hidden');
-    if(open){
-      r26.classList.add('hidden');
-      // se 27 estava aberto e depende do 26, fecha também
-      r27.classList.add('hidden');
-      b26.classList.remove('active'); b26.innerHTML='▶ San Marino Flex 2026';
-      b27.classList.remove('active'); b27.innerHTML='▶ San Marino Flex 2027';
-    } else {
-      r26.classList.remove('hidden'); r26.classList.add('showing');
-      b26.classList.add('active'); b26.innerHTML='✓ San Marino Flex 2026';
-    }
-  } else {
-    const open = !r27.classList.contains('hidden');
-    if(open){
-      r27.classList.add('hidden');
-      b27.classList.remove('active'); b27.innerHTML='▶ San Marino Flex 2027';
-    } else {
-      // garante que 2026 está aberto antes de abrir 2027
-      r26.classList.remove('hidden');
-      b26.classList.add('active'); b26.innerHTML='✓ San Marino Flex 2026';
-      r27.classList.remove('hidden'); r27.classList.add('showing');
-      b27.classList.add('active'); b27.innerHTML='✓ San Marino Flex 2027';
-    }
-  }
-}
 
 $("ePct").addEventListener("input",calc);
 $("eFlexPct").addEventListener("input",calc);
+$("mesesFlex").addEventListener("input",calc);
 $("sPct").addEventListener("input",calc);
 $("preco").addEventListener("input",calc);
 $("parc").addEventListener("input",calc);
