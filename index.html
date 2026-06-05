@@ -77,10 +77,13 @@ input,select,button{font:inherit}
 /* CAMPOS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
-.dates-grid{grid-template-columns:1fr 1fr 1fr;}
+.dates-grid{grid-template-columns:1fr;}
 .dates-grid .field{min-width:0;}
 .dates-grid .field label{font-size:8px;line-height:1.2;}
 .dates-grid input{padding:0 4px!important;text-align:center;font-size:11px!important;}
+.final-left{display:grid;grid-template-columns:1.35fr .65fr;gap:6px;min-width:0;}
+.final-left .field{min-width:0;}
+.final-left .field label{text-wrap:balance;}
 .field{display:flex;flex-direction:column;gap:3px;min-width:0;}
 .field label{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#7a9ab8;}
 input[type="text"],input[type="number"],select{
@@ -229,10 +232,12 @@ input[type="range"]::-webkit-slider-thumb{
   /* sinal: 3 campos em 2 colunas (Valor Sinal + % após 6m em cima, Valor após 6m embaixo) */
   .g3{grid-template-columns:1fr 1fr;}
   .g3 .field:last-child{grid-column:1 / -1;}
-  .dates-grid{grid-template-columns:1fr 1fr;}
-  .dates-grid .field:last-child{grid-column:1 / -1;}
+  .dates-grid{grid-template-columns:1fr;}
+  .dates-grid .field:last-child{grid-column:auto;}
   .dates-grid input{font-size:12px!important;padding:0 6px;}
   .dates-grid .field label{font-size:8px;}
+  .final-left{grid-template-columns:1.2fr .8fr;gap:5px;}
+  .final-left .field label{font-size:7.5px;}
   /* linhas de comparação: empilha em coluna */
   .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
   .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
@@ -250,10 +255,12 @@ input[type="range"]::-webkit-slider-thumb{
   .g3{gap:4px;}
   .field label{font-size:8px;line-height:1.15;}
   .ro{font-size:11px!important;padding:0 4px!important;}
-  .dates-grid{grid-template-columns:1fr 1fr 1fr;}
+  .dates-grid{grid-template-columns:1fr;}
   .dates-grid .field:last-child{grid-column:auto;}
   .dates-grid .field label{font-size:7px;}
   .dates-grid input{font-size:10px!important;padding:0 2px!important;}
+  .final-left{grid-template-columns:1.15fr .85fr;gap:4px;}
+  .final-left .field label{font-size:7px;}
 }
 
 /* LAYOUT DE LINHAS — comparação vertical */
@@ -442,33 +449,31 @@ input[type="range"]::-webkit-slider-thumb{
         </div>
       </div>
 
-      <!-- % após 6m + Valor dos 6m -->
-      <div class="g2" style="margin-top:6px;">
-        <div class="field">
-          <label>Após 6m</label>
-          <input id="cPct" type="text" readonly class="ro" placeholder="—">
+      <!-- Mês final + % final + Valor final -->
+      <div class="g2" style="margin-top:6px;align-items:end;">
+        <div class="final-left">
+          <div class="field">
+            <label>Mês Entrada Final</label>
+            <input id="compMes" type="text" readonly class="ro" placeholder="—">
+          </div>
+          <div class="field">
+            <label>% Final</label>
+            <input id="cPct" type="text" readonly class="ro" placeholder="—">
+          </div>
         </div>
         <div class="field">
-          <label>Valor dos 6m</label>
+          <label>Valor Entrada Final</label>
           <input id="cVal" type="text" readonly class="ro" placeholder="—">
         </div>
       </div>
     </div>
 
-    <!-- DATAS -->
+    <!-- DATA -->
     <div class="blk" style="padding:8px 12px;">
       <div class="g3 dates-grid">
         <div class="field">
           <label>Data da Simulação</label>
           <input id="dataSimulacaoField" type="text" readonly class="ro" placeholder="—">
-        </div>
-        <div class="field">
-          <label>Data da Proposta</label>
-          <input id="dataPropostaField" type="text" readonly class="ro" placeholder="—">
-        </div>
-        <div class="field">
-          <label id="lblDataComp">Data Complemento</label>
-          <input id="dataComplemento" type="text" readonly class="ro" placeholder="—">
         </div>
       </div>
     </div>
@@ -685,9 +690,10 @@ function fmtData(d){
 function fmtMesAno(d){
   return d.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
 }
-function fmtMesAnoCurto(d){
-  const mm = String(d.getMonth()+1).padStart(2,"0");
-  return `${mm}/${d.getFullYear()}`;
+function fmtMesAnoCampo(d){
+  const mes = d.toLocaleDateString("pt-BR",{month:"long"});
+  const ano = String(d.getFullYear()).slice(-2);
+  return `${mes}/${ano}`;
 }
 function addMonths(d,m){
   return new Date(d.getFullYear(), d.getMonth()+m, d.getDate());
@@ -783,18 +789,15 @@ function calc(){
 
   // ── DATAS ────────────────────────────────────────────────
   const propStr = fmtData(F2);
-  const compStr = fmtMesAnoCurto(B7);
+  const compStr = fmtMesAnoCampo(B7);
   if($("dataPropostaTop"))   $("dataPropostaTop").textContent = propStr;
   if($("dataSimulacaoField")) $("dataSimulacaoField").value   = propStr;
-  if($("dataPropostaField")) $("dataPropostaField").value     = propStr;
-  if($("dataComplemento"))   $("dataComplemento").value       = ok ? compStr : "";
-  const lblComp = document.getElementById('lblDataComp');
-  if(lblComp) lblComp.textContent = `Complemento (${mesesAtual}m)`;
 
   // ── CAMPOS AUTOMÁTICOS ───────────────────────────────────
   $("eVal").value     = F3 ? brR(D4) : "";
   $("eFlexVal").value = F3  ? brR(F3*D5) : "";
   $("sVal").value     = ok  ? brR(D6) : "";
+  $("compMes").value  = ok  ? compStr : "";
   $("cPct").value     = ok  ? `${Math.round(C7*100)}%` : (D6&&typeof D6==="string" ? D6 : "");
   $("cVal").value     = ok  ? brR(D7) : "";
 
