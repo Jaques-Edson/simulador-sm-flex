@@ -294,7 +294,7 @@ input[type="range"]::-webkit-slider-thumb{
 .fc-sub{font-size:8px;color:#5a7a94;margin-top:3px;}
 .cmp-row.row-26 .fc.hl-06 .fc-val{color:#ffd700;}
 .cmp-row.row-26 .fc.hl-06{border-color:rgba(255,200,0,.3);}
-/* DESTAQUE +42 FLEX 2027 */
+/* DESTAQUE +42 MULTIFLEX 2027 */
 .fc-299{
   position:relative;
   border-color:rgba(255,215,0,.55)!important;
@@ -332,7 +332,7 @@ input[type="range"]::-webkit-slider-thumb{
 <body>
 
 <div class="rotate-banner" id="rotateBanner">
-  <div class="ri">📱</div>
+  <div class="ri">↻</div>
   <h3>Gire o celular</h3>
   <p>Para melhor experiência, use o smartphone na <strong style="color:#ffd700">posição horizontal</strong>.</p>
   <button class="skip" onclick="document.getElementById('rotateBanner').style.display='none'">Continuar mesmo assim</button>
@@ -344,7 +344,7 @@ input[type="range"]::-webkit-slider-thumb{
   <div class="topbar-divider"></div>
   <div class="topbar-info">
     <div class="topbar-title">Simulador de Planos</div>
-    <div class="topbar-sub">Varejo 2026 · Flex 2026 · Flex 2027</div>
+    <div class="topbar-sub">Varejo 2026 · MultiFlex 2026 · MultiFlex 2027</div>
   </div>
 </div>
 
@@ -368,14 +368,24 @@ input[type="range"]::-webkit-slider-thumb{
           </select>
         </div>
         <div class="field">
+          <label>Preço Tabela (R$)</label>
+          <input id="precoTabela" type="text" inputmode="numeric" placeholder="Ex: 100000">
+        </div>
+      </div>
+      <div class="g2" style="margin-bottom:8px;">
+        <div class="field">
           <label>Preço do Veículo (R$)</label>
           <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 99000">
+        </div>
+        <div class="field">
+          <label>Desconto Comercial</label>
+          <input id="descontoComercial" type="text" readonly class="ro" placeholder="—">
         </div>
       </div>
 
       <!-- ENTRADA FINANCIAMENTO -->
       <div class="rng-row">
-        <span class="rng-lbl">Entrada Financiamento (%)</span>
+        <span class="rng-lbl">Entrada do Financiamento (%)</span>
         <span class="rng-val"><span id="ePctLbl">50</span>%</span>
       </div>
       <input id="ePct" type="range" min="10" max="60" step="5" value="50">
@@ -400,47 +410,33 @@ input[type="range"]::-webkit-slider-thumb{
       </div>
     </div>
 
-    <!-- BLOCO 2: PLANO FLEX 2026 -->
+    <!-- BLOCO 2: PLANO MULTIFLEX -->
     <div class="blk flex-blk">
-      <div class="blk-title" style="text-align:center;font-size:13px;color:#ffd700;">Plano Flex 2026</div>
+      <div class="blk-title" style="text-align:center;font-size:13px;color:#ffd700;">Plano MultiFlex</div>
 
-      <div class="g2" style="margin-bottom:4px;">
-        <!-- Entrada Flex -->
-        <div>
-          <div class="rng-row">
-            <span class="rng-lbl">Entrada Flex (%)</span>
-            <span class="rng-val"><span id="eFlexPctLbl">50</span>%</span>
-          </div>
-          <input id="eFlexPct" type="range" min="30" max="60" step="5" value="50">
-          <div class="marks">
-            <span>30%</span><span>40%</span><span>50%</span><span>60%</span>
-          </div>
+      <div class="g2" style="margin-bottom:8px;">
+        <div class="field">
+          <label>Sinal Calculado</label>
+          <input id="sPctAuto" type="text" readonly class="ro" placeholder="—">
         </div>
-        <!-- Sinal Flex -->
-        <div>
-          <div class="rng-row">
-            <span class="rng-lbl">Sinal Flex (%)</span>
-            <span class="rng-val"><span id="sPctLbl">15</span>%</span>
-          </div>
-          <input id="sPct" type="range" min="10" max="30" step="5" value="15">
-          <div class="marks">
-            <span>10%</span><span>15%</span><span>20%</span><span>25%</span><span>30%</span>
-          </div>
+        <div class="field">
+          <label>Entrada Final Calculada</label>
+          <input id="cPctAuto" type="text" readonly class="ro" placeholder="—">
         </div>
       </div>
 
-      <!-- Meses Flex -->
+      <!-- Prazo MultiFlex -->
       <div class="rng-row" style="margin-top:8px;">
-        <span class="rng-lbl">Meses Flex <span id="mesesMaxInfo" style="color:#f05252;font-size:9px;"></span></span>
+        <span class="rng-lbl">Prazo MultiFlex <span id="mesesMaxInfo" style="color:#f05252;font-size:9px;"></span></span>
         <span class="rng-val"><span id="mesesLbl">5</span> meses</span>
       </div>
-      <input id="mesesFlex" type="range" min="3" max="6" step="1" value="5">
-      <div class="marks" id="mesesMarks"><span>3</span><span>4</span><span>5</span><span>6</span></div>
+      <input id="mesesFlex" type="range" min="4" max="12" step="1" value="12">
+      <div class="marks" id="mesesMarks"><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
 
-      <!-- Entrada Total Flex + Sinal à Vista -->
+      <!-- Entrada Total MultiFlex + Sinal à Vista -->
       <div class="g2" style="margin-top:6px;">
         <div class="field">
-          <label>Entrada Total Flex</label>
+          <label>Entrada Total MultiFlex</label>
           <input id="eFlexVal" type="text" readonly class="ro" placeholder="—">
         </div>
         <div class="field">
@@ -462,7 +458,7 @@ input[type="range"]::-webkit-slider-thumb{
           </div>
         </div>
         <div class="field">
-          <label>Valor Entrada Final</label>
+          <label>Valor da Entrada Final</label>
           <input id="cVal" type="text" readonly class="ro" placeholder="—">
         </div>
       </div>
@@ -485,7 +481,7 @@ input[type="range"]::-webkit-slider-thumb{
     </div>
 
     <!-- BOTÃO DOWNLOAD -->
-    <button class="btn" id="dlBtn">⬇ Baixar imagem</button>
+    <button class="btn" id="dlBtn">Baixar imagem</button>
 
   </div>
   <!-- DIREITO -->
@@ -496,25 +492,25 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="cmp-row-title">Compra<br>Varejo</div>
       <div class="fc"><div class="fc-lbl">À Vista</div><div class="fc-val" id="tv-av">—</div></div>
       <div class="fc" id="tv-dz" style="background:transparent;border-color:transparent;"></div>
-      <div class="fc"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="tv-06">—</div></div>
-      <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="tv-42">—</div></div>
+      <div class="fc"><div class="fc-lbl">Parcelas MultiFlex</div><div class="fc-val" id="tv-06">—</div></div>
+      <div class="fc"><div class="fc-lbl">Parcelas Finais</div><div class="fc-val" id="tv-42">—</div></div>
     </div>
-    <!-- LINHA 2: FLEX 2026 — sempre visível -->
+    <!-- LINHA 2: MULTIFLEX 2026 — sempre visível -->
     <div class="cmp-row row-26" id="rowFlex26">
-      <div class="cmp-row-title">Compra<br>Flex 2026</div>
-      <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f26-av">—</div></div>
-      <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f26-dz">—</div></div>
-      <div class="fc hl-06"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="f26-06">—</div></div>
-      <div class="fc"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f26-42">—</div></div>
+      <div class="cmp-row-title">Compra<br>MultiFlex 2026</div>
+      <div class="fc"><div class="fc-lbl">Sinal ? Vista</div><div class="fc-val" id="f26-av">—</div></div>
+      <div class="fc"><div class="fc-lbl">Entrada Final</div><div class="fc-val" id="f26-dz">—</div></div>
+      <div class="fc hl-06"><div class="fc-lbl">Parcelas MultiFlex</div><div class="fc-val" id="f26-06">—</div></div>
+      <div class="fc"><div class="fc-lbl">Parcelas Finais</div><div class="fc-val" id="f26-42">—</div></div>
     </div>
 
-    <!-- LINHA 3: FLEX 2027 — sempre visível -->
+    <!-- LINHA 3: MULTIFLEX 2027 — sempre visível -->
     <div class="cmp-row row-27" id="rowFlex27">
-      <div class="cmp-row-title">Compra<br>Flex 2027</div>
-      <div class="fc"><div class="fc-lbl">Sinal a Vista</div><div class="fc-val" id="f27-av">—</div></div>
-      <div class="fc"><div class="fc-lbl">Entrada dez/2026</div><div class="fc-val" id="f27-dz">—</div></div>
-      <div class="fc"><div class="fc-lbl">+06 Parcelas</div><div class="fc-val" id="f27-06">—</div></div>
-      <div class="fc fc-299"><div class="fc-lbl">+42 Parcelas</div><div class="fc-val" id="f27-42">—</div></div>
+      <div class="cmp-row-title">Compra<br>MultiFlex 2027</div>
+      <div class="fc"><div class="fc-lbl">Sinal ? Vista</div><div class="fc-val" id="f27-av">—</div></div>
+      <div class="fc"><div class="fc-lbl">Entrada Final</div><div class="fc-val" id="f27-dz">—</div></div>
+      <div class="fc"><div class="fc-lbl">Parcelas MultiFlex</div><div class="fc-val" id="f27-06">—</div></div>
+      <div class="fc fc-299"><div class="fc-lbl">Parcelas Finais</div><div class="fc-val" id="f27-42">—</div></div>
     </div>
 
     <!-- BENEFÍCIOS -->
@@ -542,19 +538,19 @@ input[type="range"]::-webkit-slider-thumb{
     </div>
     <table class="cmp" style="margin-bottom:12px;">
       <thead><tr>
-        <th></th><th>À Vista</th><th class="th-hl">dez/2026</th><th>+06 Parcelas</th><th>+42 Parcelas</th>
+        <th></th><th>À Vista</th><th class="th-hl">Entrada Final</th><th>Parcelas MultiFlex</th><th>Parcelas Finais</th>
       </tr></thead>
       <tbody>
         <tr class="r-v"><td>Varejo 2026</td><td id="etv-av">—</td><td id="etv-dz">—</td><td id="etv-06">—</td><td id="etv-42">—</td></tr>
-        <tr class="r-f26"><td>Plano Flex 2026</td><td id="ef26-av">—</td><td id="ef26-dz">—</td><td id="ef26-06" class="hl">—</td><td id="ef26-42">—</td></tr>
-        <tr class="r-f27"><td>Plano Flex 2027</td><td id="ef27-av">—</td><td id="ef27-dz">—</td><td id="ef27-06">—</td><td id="ef27-42">—</td></tr>
+        <tr class="r-f26"><td>Plano MultiFlex 2026</td><td id="ef26-av">—</td><td id="ef26-dz">—</td><td id="ef26-06" class="hl">—</td><td id="ef26-42">—</td></tr>
+        <tr class="r-f27"><td>Plano MultiFlex 2027</td><td id="ef27-av">—</td><td id="ef27-dz">—</td><td id="ef27-06">—</td><td id="ef27-42">—</td></tr>
       </tbody>
     </table>
     <div class="exp-cards">
-      <div class="card yl"><div class="c-lbl">Sinal a Vista</div><div class="c-val" id="ecSinal">—</div><div class="c-txt">Pago na assinatura</div></div>
-      <div class="card"><div class="c-lbl">Entrada após 6m</div><div class="c-val" id="ecComp">—</div><div class="c-txt">Complemento dez/2026</div></div>
-      <div class="card gr"><div class="c-lbl">Parcela Flex +06</div><div class="c-val" id="ecF06">—</div><div class="c-txt">Parcelas intermediárias</div></div>
-      <div class="card"><div class="c-lbl">Parcela Flex +42</div><div class="c-val" id="ecF42">—</div><div class="c-txt">Parcelas finais banco</div></div>
+      <div class="card yl"><div class="c-lbl">Sinal ? Vista</div><div class="c-val" id="ecSinal">—</div><div class="c-txt">Pago na assinatura da proposta</div></div>
+      <div class="card"><div class="c-lbl">Entrada Final</div><div class="c-val" id="ecComp">—</div><div class="c-txt">Conforme prazo selecionado</div></div>
+      <div class="card gr"><div class="c-lbl">Parcela MultiFlex</div><div class="c-val" id="ecF06">—</div><div class="c-txt">Parcelas intermediárias</div></div>
+      <div class="card"><div class="c-lbl">Parcela Final</div><div class="c-val" id="ecF42">—</div><div class="c-txt">Parcelas finais do financiamento</div></div>
     </div>
     <div class="benef" style="margin-bottom:10px;">BENEFÍCIOS INCLUSOS: IPVA ★ SEGURO ★ EMPLACAMENTO ★ REVISÃO 10 MIL KM</div>
     <div class="exp-legal">
@@ -568,108 +564,25 @@ input[type="range"]::-webkit-slider-thumb{
 const $=id=>document.getElementById(id);
 const NE="Não Elegível";
 
-/*
-  ═══════════════════════════════════════════════════════════
-  FÓRMULAS IDÊNTICAS AO EXCEL — SM_Flex_Simulador_M6_02Junho_2026
-  ═══════════════════════════════════════════════════════════
+// CONSTANTES — Excel: Cópia de SM MultiFlex Simulador Julho 2026 APP.xlsx
+const B12 = 0.019;          // CET mínima simulação efetiva
+const B14 = 12;             // Máximo meses MultiFlex
+const B15 = 4;              // Mínimo meses MultiFlex
+const B18 = 0.20;           // Entrada banco mínima
+const B19 = 0.10;           // GAP máximo entrada banco x MultiFlex
 
-  INPUTS (células editáveis):
-    C4  = preco          (Preço do veículo)
-    C5  = pctE           (% Entrada — decimal, ex: 0.50)
-    C7  = parc48         (+ 48 Parcelas banco)
-    C9  = pctS           (% Sinal a Vista — decimal, ex: 0.15)
-    B13 = 0.0175         (Taxa mensal fixa)
-
-  CALCULADOS:
-    C6  = C4 * C5                          → Valor Entrada
-    C13 = PMT(B13,48,C4,0,0) * -1 * -C5   → Parcela mínima aceita
-          = (C4 * B13 / (1-(1+B13)^-48)) * C5
-
-    C10 = IF(C7 < C13,   "Não Elegível",   ← trava 1: parcela abaixo do mínimo
-            IF(C9 < 15%, "Não Elegível",   ← trava 2: sinal < 15%
-              IF((C5-C9) < C9, "Não Elegível",  ← trava 3: complemento < sinal
-                (C5-C9))))                 ← OK: retorna % complemento (decimal)
-
-  VAREJO 2026:
-    F3 = C6           → À Vista = Valor Entrada
-    G3 = 0            → dez/2026 = 0
-    H3 = C7           → +06 = parcela banco
-    I3 = C7           → +42 = parcela banco
-
-  PLANO FLEX 2026:
-    F6 = IF(C10=NE, NE, C9*C4)              → À Vista = sinal
-    G6 = IF(C10=NE, NE, C10*C4)             → dez/2026 = complemento
-    H6 = IF(C10=NE, NE, C7/C5*(1-C9))      → +06 parcelas
-    I6 = IF(C10=NE, NE, C7/C5*(1-C9-C10))  → +42 parcelas
-
-  PLANO FLEX 2027:
-    F9 = IF(C10=NE, NE, C9*C4)              → = F6
-    G9 = G6                                  → = G6
-    H9 = H6                                  → = H6
-    I9 = IF(C10=NE, NE, (C7/C5*(1-C9-C10))+299)  → +42 = I6 + 299
-*/
-
-/*
-  ═══════════════════════════════════════════════════════════
-  EXCEL: SM_Flex_Simulador_M6_02Junho_2026
-  ═══════════════════════════════════════════════════════════
-  INPUTS:
-    C4  = preco           Preço do veículo
-    C5  = pctEB           % Entrada Banco
-    C7  = parc48          + 48 Parcelas banco
-    C8  = pctEF           % Entrada Plano FLEX (novo campo)
-    C9  = pctS            % Sinal a Vista
-    B11 = 0.0175          Taxa mensal fixa
-
-  CALCULADOS:
-    C6  = C4*C5                            Valor Entrada Banco
-    C11 = PMT(B11,48,C4)*(1-C5)           Parcela mínima  ← mudou!
-
-    C10 = IF(C7<C11,     "Parcela Banco",  ← trava 1
-            IF(C8<C5,    "Entrada Flex",   ← trava 2
-              IF(C9<15%, "Aumentar Sinal", ← trava 3
-                IF((C8-C9)<C9,"Reduzir Sinal", ← trava 4
-                  (C8-C9)))))              ← OK: % complemento
-
-  VAREJO 0KM 2026:
-    F3 = C4*C8                    À Vista
-    G3 = C7*(C5/C8)               +06 parcelas
-    H3 = 0                        dez/2026
-    I3 = (C7/C8)*(1-C8)          +42 parcelas
-
-  FLEX 0KM 2026 (IF ISTEXT(C10) → "XXX"):
-    F5 = C9*C4                    Sinal
-    G5 = C7/C5*(1-C9)             +06 parcelas  [simplificado]
-    H5 = C10*C4                   Entrada dez/2026
-    I5 = C7/C5*(1-C8)             +42 parcelas  ← usa C8!
-
-  FLEX 0KM 2027:
-    I9 = I5 + 299                 +42 parcelas
-*/
-
-// ═══════════════════════════════════════════════════════════
-// EXCEL: SM_Flex_Simulador_M6_V5_6_2026_Revisado — COMPLETO
-// ═══════════════════════════════════════════════════════════
-// CONSTANTES (células fixas da planilha)
-const B12 = 0.018;          // CET taxa mensal
-const B15 = 3;              // Mínimo meses flex
-const B16 = new Date(2026,11,20); // Data limite (20/dez/2026)
-const B17 = 299;            // Adicional UP Flex 2027
-const B18 = 0.15;           // Sinal mínimo
-const B19 = 0.10;           // GAP máx entrada banco x flex
-
-// B14 = ((YEAR(B16)-YEAR(F2))*12 + 12 - MONTH(B16) - MONTH(F2)) * -1
-function calcB14(F2){
-  return ((B16.getFullYear()-F2.getFullYear())*12
-    + 12 - (B16.getMonth()+1) - (F2.getMonth()+1)) * -1;
+function pmt(rate,nper,pv){
+  if(!rate) return pv/nper;
+  return pv*rate/(1-Math.pow(1+rate,-nper));
 }
-
-function numVal(id){return Number(String($(id).value||"").replace(/\D/g,""))||0;}
+function numVal(id){return Number(String($(id)?.value||"").replace(/\D/g,""))||0;}
 function brR(v){
   return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",
     minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(v));
 }
+function pct(v){return `${Math.round(v*100)}%`;}
 function rf(el){
+  if(!el) return;
   const mn=+el.min,mx=+el.max,v=+el.value;
   el.style.setProperty("--rf",((v-mn)/(mx-mn)*100)+"%");
 }
@@ -677,8 +590,13 @@ function fileSafe(s){
   return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"")
     .replace(/[^a-z0-9]+/gi,"-").toLowerCase();
 }
+function uiText(v){
+  const map={"Revisar Banco":"Revisar banco","Entrada do Banco":"Entrada do banco","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N?o Eleg?vel":"N?o eleg?vel"};
+  return map[v] || v;
+}
 function sc(id,v){
   const el=$(id); if(!el) return;
+  if(typeof v==="string") v=uiText(v);
   if(typeof v==="string"&&v!=="—")
     el.innerHTML=`<span style="color:#f05252;font-size:10px;font-weight:900">${v}</span>`;
   else if(typeof v==="number") el.textContent=brR(v);
@@ -686,9 +604,6 @@ function sc(id,v){
 }
 function fmtData(d){
   return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"});
-}
-function fmtMesAno(d){
-  return d.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
 }
 function fmtMesAnoCampo(d){
   const mes = d.toLocaleDateString("pt-BR",{month:"long"});
@@ -698,165 +613,137 @@ function fmtMesAnoCampo(d){
 function addMonths(d,m){
   return new Date(d.getFullYear(), d.getMonth()+m, d.getDate());
 }
+function adicionalUp(desconto){
+  if(desconto <= 0.02) return 299;
+  if(desconto <= 0.03) return 349;
+  if(desconto <= 0.04) return 399;
+  if(desconto <= 0.05) return 449;
+  return "Não Elegível";
+}
 
 function calc(){
-  // ── INPUTS (campos sublinhados na planilha) ──────────────
-  const F2    = new Date();              // Data proposta (hoje automático)
-  const F3    = numVal("preco");         // Preço do veículo
-  const C4    = (+$("ePct").value||0)/100;    // % Entrada Banco
-  const F4    = numVal("parc");          // Parcela banco 48x
-  const D5    = (+$("eFlexPct").value||0)/100; // % Entrada Flex
-  const F5    = +$("mesesFlex").value||3;      // Meses Flex
-  const C6    = (+$("sPct").value||0)/100;     // % Sinal
+  // Entradas equivalentes da planilha Julho/2026:
+  // E3 preço tabela, G3 preço, C4 % entrada banco, G4 parcela 48x, G5 meses MultiFlex.
+  const G2 = new Date();
+  const E3 = numVal("precoTabela") || numVal("preco");
+  const G3 = numVal("preco");
+  const C4 = (+$("ePct").value||0)/100;
+  const G4 = numVal("parc");
+  const G5 = +$("mesesFlex").value || B14;
 
-  // ── AUTOMÁTICOS ─────────────────────────────────────────
-  // D4 = F3*C4
-  const D4 = F3 * C4;
+  const E4 = G3*C4;
+  const B13 = pmt(B12,48,G3);
+  const B20 = E3 ? (E3-G3)/E3 : 0;
+  const C6 = C4 < 0.30 ? 0.10 : C4 - 0.15;
+  const C7 = C4 > 0.29 ? C4 - C6 + 0.10 : C4 - C6 + 0.15;
+  const D5 = C6 + C7;
+  const E5 = D5*G3;
+  const B17 = adicionalUp(B20);
+  const B7 = addMonths(G2,G5);
 
-  // B14 = máximo meses flex (dinâmico pela data)
-  const B14 = Math.max(B15, Math.min(6, calcB14(F2)));
+  let E6;
+  if(!G2) E6 = "DATA";
+  else if(G5 < B15 || G5 > B14) E6 = "Prazo MultiFlex";
+  else if(D5 < (C4-B19)) E6 = "Revisar Banco";
+  else if(C4 < B18) E6 = "Entrada do Banco";
+  else if(C6 > C7) E6 = "Reduzir Sinal";
+  else E6 = G3*C6;
 
-  // B13 = PMT(B12,48,F3)*-(1-D5)
-  const B13 = (F3*B12/(1-Math.pow(1+B12,-48))) * (1-D5);
-
-  // C7 = IF((D5-C6)<C6, "Reduzir Sinal", D5-C6)
-  const C7 = (D5-C6) < C6 ? "Reduzir Sinal" : (D5-C6);
-
-  // D6 — sinal R$ ou trava
-  let D6;
-  if(!F3 || !F4)                      D6 = null;
-  else if(F5 < B15)                   D6 = "Meses Flex";
-  else if(F5 > B14)                   D6 = `Meses Flex (máx ${B14})`;
-  else if(D5 < (C4 - B19))            D6 = "Check Banco";
-  else if(C6 < B18)                   D6 = "Check Sinal";
-  else if(typeof C7==="string")       D6 = "Reduzir Sinal";
-  else                                D6 = F3 * C6;
-
-  // D7 = IF(ISTEXT(D6),"0", F3*(D5-C6))
-  const D7 = (typeof D6==="number") ? F3*(D5-C6) : 0;
-
-  // F6 = IF(ISTEXT(D6),"0", (F4/(1-C4))*(1-C6))
-  const F6 = (typeof D6==="number") ? (F4/(1-C4))*(1-C6) : 0;
-
-  // F7 = IF(ISTEXT(D6),"0", F6/(1-C6)*(1-D5))
-  const F7raw = (typeof D6==="number") ? F6/(1-C6)*(1-D5) : 0;
-
-  // E13 = IF(F7<B13,"Check Banco",F7) — trava parcela mínima
-  let F7 = F7raw;
-  if(typeof D6==="number" && F7raw < B13) D6 = "Check Banco";
-  if(typeof D6==="number") F7 = F7raw;
-
-  // F8 = F7 + B17
-  const F8 = (typeof D6==="number") ? F7 + B17 : 0;
-
-  // B7 = EDATE(F2, F5)
-  const B7 = addMonths(F2, F5);
-
-  // E6 = F5 & " Parcelas" / E7 = (48-F5) & " Parcelas"
-  const E6 = `+${F5} Parcelas`;
-  const E7 = `+${48-F5} Parcelas`;
-
-  const ok = (typeof D6==="number");
-
-  // ── ATUALIZAR SLIDER MESES (máximo dinâmico) ─────────────
-  const slMeses = $("mesesFlex");
-  if(slMeses){
-    slMeses.max = B14;
-    if(+slMeses.value > B14) slMeses.value = B14;
-    const marksEl = document.getElementById('mesesMarks');
-    if(marksEl){
-      let mk='';
-      for(let m=B15;m<=B14;m++) mk+=`<span>${m}</span>`;
-      marksEl.innerHTML=mk;
-    }
+  let G6 = 0;
+  if(typeof E6 === "number"){
+    G6 = (G4/(1-C4)) < B13 ? "Revisar Banco" : (G4/(1-C4))*(1-C6);
+    if(typeof G6 === "string") E6 = G6;
   }
-  const mesesAtual = Math.min(F5, B14);
 
-  // ── LABELS ──────────────────────────────────────────────
-  $("ePctLbl").textContent    = Math.round(C4*100);
-  $("eFlexPctLbl").textContent= Math.round(D5*100);
-  $("sPctLbl").textContent    = Math.round(C6*100);
-  $("mesesLbl").textContent   = mesesAtual;
-  if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = `(máx ${B14})`;
-  rf($("ePct")); rf($("eFlexPct")); rf($("sPct")); rf($("mesesFlex"));
+  const ok26 = typeof E6 === "number" && typeof G6 === "number";
+  const E7 = ok26 ? G3*(D5-C6) : 0;
+  const G7 = ok26 ? G6/(1-C6)*(1-D5) : 0;
+  const adicionalParcela = typeof B17 === "number" ? B17 + ((G5-4)*10) : B17;
+  const G8 = ok26 && typeof adicionalParcela === "number" ? G7 + adicionalParcela : "Não Elegível";
+  const ok27 = ok26 && typeof G8 === "number";
 
-  // Labels dinâmicos das parcelas
-  if(document.getElementById('lbl06')) document.getElementById('lbl06').textContent = E6;
-  if(document.getElementById('lbl42')) document.getElementById('lbl42').textContent = E7;
-  const th06=document.querySelector('.th-06'), th42=document.querySelector('.th-42');
-  if(th06) th06.textContent = E6;
-  if(th42) th42.textContent = E7;
-
-  // ── DATAS ────────────────────────────────────────────────
-  const propStr = fmtData(F2);
+  const F6lbl = `${G5} parcelas`;
+  const F7lbl = `${48-G5} parcelas`;
   const compStr = fmtMesAnoCampo(B7);
-  if($("dataPropostaTop"))   $("dataPropostaTop").textContent = propStr;
-  if($("dataSimulacaoField")) $("dataSimulacaoField").value   = propStr;
+  const propStr = fmtData(G2);
 
-  // ── CAMPOS AUTOMÁTICOS ───────────────────────────────────
-  $("eVal").value     = F3 ? brR(D4) : "";
-  $("eFlexVal").value = F3  ? brR(F3*D5) : "";
-  $("sVal").value     = ok  ? brR(D6) : "";
-  $("compMes").value  = ok  ? compStr : "";
-  $("cPct").value     = ok  ? `${Math.round(C7*100)}%` : (D6&&typeof D6==="string" ? D6 : "");
-  $("cVal").value     = ok  ? brR(D7) : "";
+  $("ePctLbl").textContent = Math.round(C4*100);
+  $("mesesLbl").textContent = G5;
+  if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = `(4 a 12)`;
+  rf($("ePct")); rf($("mesesFlex"));
 
-  // ── STATUS ───────────────────────────────────────────────
+  if($("dataPropostaTop")) $("dataPropostaTop").textContent = propStr;
+  if($("dataSimulacaoField")) $("dataSimulacaoField").value = propStr;
+  if($("descontoComercial")) $("descontoComercial").value = E3 && G3 ? `${(B20*100).toFixed(1).replace('.',',')}%` : "";
+
+  $("eVal").value = G3 ? brR(E4) : "";
+  if($("sPctAuto")) $("sPctAuto").value = G3 ? pct(C6) : "";
+  if($("cPctAuto")) $("cPctAuto").value = G3 ? pct(C7) : "";
+  $("eFlexVal").value = G3 ? brR(E5) : "";
+  $("sVal").value = ok26 ? brR(E6) : "";
+  $("compMes").value = ok26 ? compStr : "";
+  $("cPct").value = ok26 ? pct(C7) : (G3 && G4 ? E6 : "");
+  $("cVal").value = ok26 ? brR(E7) : "";
+
+  ['tv-06','f26-06','f27-06','ef26-06','ef27-06','ecF06'].forEach(id=>{
+    const val = $(id);
+    const label = val?.previousElementSibling;
+    if(label) label.textContent = F6lbl;
+  });
+  ['tv-42','f26-42','f27-42','ef26-42','ef27-42','ecF42'].forEach(id=>{
+    const val = $(id);
+    const label = val?.previousElementSibling;
+    if(label) label.textContent = F7lbl;
+  });
+  document.querySelectorAll('.th-06').forEach(el=>el.textContent=F6lbl);
+  document.querySelectorAll('.th-42').forEach(el=>el.textContent=F7lbl);
+
   const msgs={
-    "Meses Flex":    `Meses Flex deve ser entre ${B15} e ${B14}`,
-    "Check Banco":   `Parcela ou entrada fora dos parâmetros (mín ${brR(B13)})`,
-    "Check Sinal":   "Sinal mínimo é 15%",
-    "Reduzir Sinal": "Sinal não pode superar o complemento"
+    "Prazo MultiFlex": `O prazo MultiFlex deve ser entre ${B15} e ${B14}`,
+    "Revisar Banco": `Parâmetros abaixo do banco (PMT mín. ${brR(B13)})`,
+    "Entrada do Banco": "Entrada banco mínima é 20%",
+    "Reduzir Sinal": "Sinal não pode superar a entrada final",
+    "Não Elegível": "MultiFlex 2027 não elegível pelo desconto comercial"
   };
   const bar=$("sBar"),txt=$("sTxt"),ico=$("sIco");
-  if(!F3||!F4){bar.className="status";  txt.textContent="Preencha valor e parcela"; ico.textContent="—";}
-  else if(ok) {bar.className="status ok"; txt.textContent="✓ ELEGÍVEL — Flex disponível"; ico.textContent="✅";}
-  else        {bar.className="status bad";
-               txt.textContent="⚠ Refaça a Simulação — "+(msgs[D6]||(typeof D6==="string"?D6:""));
-               ico.textContent="⚠️";}
+  if(!G3||!G4){bar.className="status"; txt.textContent="Preencha valor e parcela"; ico.textContent="—";}
+  else if(ok26){bar.className="status ok"; txt.textContent= ok27 ? "✓ ELEGÍVEL — MultiFlex disponível" : "✓ MultiFlex 2026 disponível — 2027 não elegível"; ico.textContent="✓";}
+  else {bar.className="status bad"; txt.textContent="Refaça a simulação — "+(msgs[E6]||E6); ico.textContent="!";}
 
-  const p = F3 && F4;
+  const p = G3 && G4;
+  $("tv-av").textContent = p ? brR(E4) : "—";
+  $("tv-dz").textContent = "";
+  $("tv-06").textContent = p ? brR(G4) : "—";
+  $("tv-42").textContent = p ? brR(G4) : "—";
 
-  // ── VAREJO ───────────────────────────────────────────────
-  // À Vista=D4, dez=vazio, +Mx=F4, +(48-M)x=F4
-  $("tv-av").textContent  = p ? brR(D4) : "—";
-  $("tv-dz").textContent  = "";
-  $("tv-06").textContent  = p ? brR(F4) : "—";
-  $("tv-42").textContent  = p ? brR(F4) : "—";
+  sc("f26-av", p ? E6 : "—");
+  sc("f26-dz", p ? (ok26?E7:"—") : "—");
+  sc("f26-06", p ? (ok26?G6:"—") : "—");
+  sc("f26-42", p ? (ok26?G7:"—") : "—");
 
-  // ── FLEX 2026 ────────────────────────────────────────────
-  // Sinal=D6, Entr.dez=D7, +Mx=F6, +(48-M)x=F7
-  sc("f26-av", p ? D6 : "—");
-  sc("f26-dz", p ? (ok?D7:"—") : "—");
-  sc("f26-06", p ? (ok?F6:"—") : "—");
-  sc("f26-42", p ? (ok?F7:"—") : "—");
-
-  // ── FLEX 2027 ────────────────────────────────────────────
-  // Sinal=D6, Entr.dez=D7, +Mx=F6, +(48-M)x=F8
-  sc("f27-av", p ? D6 : "—");
-  sc("f27-dz", p ? (ok?D7:"—") : "—");
-  sc("f27-06", p ? (ok?F6:"—") : "—");
-  sc("f27-42", p ? (ok?F8:"—") : "—");
+  sc("f27-av", p ? E6 : "—");
+  sc("f27-dz", p ? (ok27?E7:"—") : "—");
+  sc("f27-06", p ? (ok27?G6:"—") : "—");
+  sc("f27-42", p ? G8 : "—");
 
   if(!p){
     ["f26-av","f26-dz","f26-06","f26-42","f27-av","f27-dz","f27-06","f27-42"]
       .forEach(id=>{const el=$(id);if(el)el.textContent="—";});
   }
 
-  // ── EXPORT ───────────────────────────────────────────────
-  $("expSum").textContent = F3
-    ? `${$("modelo").value} | ${brR(F3)} | Banco ${Math.round(C4*100)}% | Flex ${Math.round(D5*100)}% | Sinal ${Math.round(C6*100)}% | ${mesesAtual}m`
+  if($("expSum")) $("expSum").textContent = G3
+    ? `${$("modelo").value} | Tabela ${brR(E3)} | Preço ${brR(G3)} | Banco ${Math.round(C4*100)}% | Sinal ${pct(C6)} | Entrada final ${pct(C7)} | ${G5}m`
     : "—";
-  $("etv-av").textContent=p?brR(D4):"—"; $("etv-dz").textContent="";
-  $("etv-06").textContent=p?brR(F4):"—"; $("etv-42").textContent=p?brR(F4):"—";
-  sc("ef26-av",p?D6:"—"); sc("ef26-dz",p?(ok?D7:"—"):"—");
-  sc("ef26-06",p?(ok?F6:"—"):"—"); sc("ef26-42",p?(ok?F7:"—"):"—");
-  sc("ef27-av",p?D6:"—"); sc("ef27-dz",p?(ok?D7:"—"):"—");
-  sc("ef27-06",p?(ok?F6:"—"):"—"); sc("ef27-42",p?(ok?F8:"—"):"—");
-  if(!p){
-    ["ef26-av","ef26-dz","ef26-06","ef26-42","ef27-av","ef27-dz","ef27-06","ef27-42"]
-      .forEach(id=>{const el=$(id);if(el)el.textContent="—";});
-  }
+  if($("etv-av")) $("etv-av").textContent=p?brR(E4):"—";
+  if($("etv-dz")) $("etv-dz").textContent="";
+  if($("etv-06")) $("etv-06").textContent=p?brR(G4):"—";
+  if($("etv-42")) $("etv-42").textContent=p?brR(G4):"—";
+  sc("ef26-av",p?E6:"—"); sc("ef26-dz",p?(ok26?E7:"—"):"—");
+  sc("ef26-06",p?(ok26?G6:"—"):"—"); sc("ef26-42",p?(ok26?G7:"—"):"—");
+  sc("ef27-av",p?E6:"—"); sc("ef27-dz",p?(ok27?E7:"—"):"—");
+  sc("ef27-06",p?(ok27?G6:"—"):"—"); sc("ef27-42",p?G8:"—");
+  sc("ecSinal",p?E6:"—"); sc("ecComp",p?(ok26?E7:"—"):"—");
+  sc("ecF06",p?(ok26?G6:"—"):"—"); sc("ecF42",p?G8:"—");
 }
 
 
@@ -873,20 +760,18 @@ async function download(){
     a.download=`sm-flex-${fileSafe($("modelo").value)}.png`;
     document.body.appendChild(a);a.click();document.body.removeChild(a);
   }catch(e){alert("Erro ao gerar imagem.");console.error(e);}
-  finally{btn.disabled=false;btn.textContent="⬇ Baixar imagem";}
+  finally{btn.disabled=false;btn.textContent="Baixar imagem";}
 }
 
 
 
-$("ePct").addEventListener("input",calc);
-$("eFlexPct").addEventListener("input",calc);
-$("mesesFlex").addEventListener("input",calc);
-$("sPct").addEventListener("input",calc);
-$("preco").addEventListener("input",calc);
-$("parc").addEventListener("input",calc);
-$("modelo").addEventListener("change",calc);
-$("dlBtn").addEventListener("click",download);
+["ePct","mesesFlex","precoTabela","preco","parc"].forEach(id=>$(id)?.addEventListener("input",calc));
+$("modelo")?.addEventListener("change",calc);
+$("dlBtn")?.addEventListener("click",download);
 calc();
 </script>
 </body>
 </html>
+
+
+
