@@ -75,9 +75,9 @@ input,select,button{font:inherit}
 /* CAMPOS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
-.vehicle-grid{display:grid;grid-template-columns:minmax(0,1fr) 92px 92px;gap:8px;}
+.vehicle-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:8px;}
 .crediline-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.year-field input{text-align:center;font-weight:900;}
+.year-field input{text-align:center;font-weight:900;font-size:11px;padding:0 6px;}
 .g2.finance-summary{grid-template-columns:1fr 1fr;}
 .dates-grid{grid-template-columns:1fr;}
 .dates-grid .field{min-width:0;}
@@ -257,8 +257,9 @@ input[type="range"]::-webkit-slider-thumb{
   .right{overflow-y:visible;justify-content:flex-start;}
   /* sinal: 3 campos em 2 colunas */
   .g3{grid-template-columns:1fr 1fr;}
-  .vehicle-grid{grid-template-columns:1fr 72px 72px;gap:6px;}
+  .vehicle-grid{grid-template-columns:minmax(0,1fr) 116px;gap:6px;}
   .crediline-grid{grid-template-columns:1fr 1fr;gap:6px;}
+  .year-field input{font-size:9px;padding:0 3px;}
   .g3 .field:last-child{grid-column:1 / -1;}
   .g2.finance-summary{grid-template-columns:1fr 1fr;}
   .dates-grid{grid-template-columns:1fr;}
@@ -420,12 +421,8 @@ input[type="range"]::-webkit-slider-thumb{
           </datalist>
         </div>
         <div class="field green-frame year-field">
-          <label>Ano Fab.</label>
-          <input id="anoFab" type="text" inputmode="numeric" value="2026" maxlength="4">
-        </div>
-        <div class="field green-frame year-field">
-          <label>Modelo</label>
-          <input id="anoModelo" type="text" inputmode="numeric" value="2026" maxlength="4">
+          <label>Fab. / Modelo</label>
+          <input id="anoInfo" type="text" value="Fab. 2026 / Mod. 2026" readonly>
         </div>
       </div>
       <!-- FINANCIAMENTO CREDILINE -->
@@ -600,8 +597,7 @@ function syncVehicleYears(){
   const name = String($("modelo")?.value || "").trim().toLowerCase();
   const data = vehicleYearData[name];
   if(!data) return;
-  if($("anoFab")) $("anoFab").value = data.fab;
-  if($("anoModelo")) $("anoModelo").value = data.modelo;
+  if($("anoInfo")) $("anoInfo").value = `Fab. ${data.fab} / Mod. ${data.modelo}`;
 }
 function calc(){
   // Entradas equivalentes da planilha Julho/2026:
@@ -723,7 +719,6 @@ $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
 $("eVal")?.addEventListener("input",e=>{e.currentTarget.dataset.manual="1";formatMoneyTyping("eVal");calc();});
 $("modelo")?.addEventListener("input",()=>{syncVehicleYears();calc();});
 $("modelo")?.addEventListener("change",()=>{syncVehicleYears();calc();});
-["anoFab","anoModelo"].forEach(id=>$(id)?.addEventListener("input",calc));
 syncVehicleYears();
 calc();
 const splash = $("rotateBanner");
