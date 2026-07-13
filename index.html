@@ -94,7 +94,7 @@ input,select,button{font:inherit}
 .installment-split .count{border-right:1px solid rgba(255,200,0,.25);font-size:15px;}
 .installment-split .amount{font-size:15px;}
 .benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
-.benefit-item{border:1px solid rgba(37,215,243,.18);border-radius:7px;background:rgba(37,215,243,.035);padding:7px 8px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.45px;color:#c8d8e8;text-align:center;line-height:1.25;}
+.benefit-item{border:1px solid rgba(37,215,243,.22);border-radius:7px;background:rgba(37,215,243,.04);padding:8px 9px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.45px;color:#d7e5f2;text-align:center;line-height:1.25;}
 .phase-title{margin-top:10px;margin-bottom:6px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;color:#ffd700;text-align:center;}
 .finance-help{margin-top:7px;border:1px solid rgba(37,215,243,.18);border-radius:8px;background:rgba(37,215,243,.04);padding:8px 9px;color:#9db7cf;font-size:9px;line-height:1.35;font-weight:800;}
 .prazo-flex-row{display:grid;grid-template-columns:minmax(0, 58%) minmax(190px, 220px);gap:10px;align-items:end;margin-top:8px;}
@@ -102,10 +102,14 @@ input,select,button{font:inherit}
 .prazo-month input{height:38px;font-size:11px!important;}
 .phase2-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;align-items:end;}
 .phase2-grid .field label{font-size:7px;line-height:1.15;letter-spacing:.35px;}
-.phase2-grid input,.phase2-grid .ro-box{font-size:10px!important;}
-.ro-box{height:34px;width:100%;border:1px solid rgba(255,200,0,.35);border-radius:7px;background:rgba(255,200,0,.08);color:#ffd700;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px;font-variant-numeric:tabular-nums;}
+.phase2-grid input,.phase2-grid .ro-box{font-size:12px!important;}
+.ro-box{height:36px;width:100%;border:1px solid rgba(255,200,0,.35);border-radius:7px;background:rgba(255,200,0,.08);color:#ffd700;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px;font-variant-numeric:tabular-nums;}
 .field{display:flex;flex-direction:column;gap:3px;min-width:0;}
 .field label{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#7a9ab8;}
+.green-frame input,.green-frame select{border-color:rgba(34,212,126,.68)!important;box-shadow:0 0 0 1px rgba(34,212,126,.1);}
+.crediline-grid input{border-color:rgba(255,150,35,.82)!important;box-shadow:0 0 0 1px rgba(255,150,35,.14);}
+.crediline-grid input:focus{border-color:rgba(255,178,54,.95)!important;box-shadow:0 0 0 2px rgba(255,150,35,.18);}
+.entry-error{border-color:rgba(240,82,82,.95)!important;box-shadow:0 0 0 2px rgba(240,82,82,.18)!important;}
 input[type="text"],input[type="number"],select{
   height:34px;width:100%;border:1px solid rgba(255,255,255,.15);border-radius:7px;
   background:rgba(2,8,18,.9);color:#f0f4ff;padding:0 8px;font-size:12px;font-weight:700;
@@ -178,7 +182,7 @@ input[type="range"]::-webkit-slider-thumb{
 .card.gr .c-val{color:#22d47e;}
 .c-txt{font-size:9px;color:#7a9ab8;margin-top:2px;line-height:1.3;}
 
-/* BENEFÍCIOS */
+/* BENEFICIOS */
 .benef-cards{
   border:1px solid rgba(255,200,0,.35);border-radius:14px;
   background:linear-gradient(135deg,rgba(255,200,0,.09),rgba(255,200,0,.03));
@@ -194,7 +198,7 @@ input[type="range"]::-webkit-slider-thumb{
   font-size:16px;font-weight:700;color:#f0d060;letter-spacing:.4px;line-height:1.8;
 }
 
-/* animação de entrada */
+/* animacao de entrada */
 .cmp-row{transition:opacity .3s, transform .3s;}
 
 .cmp-row.showing{animation:fadeIn .3s ease;}
@@ -237,7 +241,7 @@ input[type="range"]::-webkit-slider-thumb{
   .body{grid-template-columns:1fr;overflow:visible;}
   .left{border-right:0;border-bottom:1px solid rgba(255,255,255,.08);overflow-y:visible;}
   .right{overflow-y:visible;justify-content:flex-start;}
-  /* sinal: 3 campos em 2 colunas (Valor Sinal + % após 6m em cima, Valor após 6m embaixo) */
+  /* sinal: 3 campos em 2 colunas */
   .g3{grid-template-columns:1fr 1fr;}
   .g3 .field:last-child{grid-column:1 / -1;}
   .g2.finance-summary{grid-template-columns:1fr 1fr;}
@@ -255,7 +259,7 @@ input[type="range"]::-webkit-slider-thumb{
   .prazo-control .rng-lbl,.prazo-control .rng-val{font-size:8px;}
   .prazo-control .marks{font-size:7px;}
   .phase2-grid{grid-template-columns:1fr 1fr;}
-  /* linhas de comparação: empilha em coluna */
+  /* linhas de comparacao: empilha em coluna */
   .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
   .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
   .fc{padding:12px 12px;}
@@ -280,28 +284,8 @@ input[type="range"]::-webkit-slider-thumb{
   .final-left .field label{font-size:7px;}
 }
 
-/* LAYOUT DE LINHAS — comparação vertical */
-/* cabeçalho de colunas */
-
-/* linha de plano */
-.cmp-row{
-  display:grid;
-  grid-template-columns:140px 1fr 1fr 1fr 1fr;
-  gap:6px;
-  margin-bottom:6px;
-}
-
-.cmp-row-title{
-  display:flex;align-items:center;
-  border:1px solid rgba(255,255,255,.09);border-radius:10px;
-  padding:14px 12px;background:rgba(8,22,42,.8);
-  font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.7px;
-  line-height:1.4;
-}
-.cmp-row.row-v  .cmp-row-title{border-color:rgba(37,215,243,.28);color:#25d7f3;background:rgba(37,215,243,.022);}
-.cmp-row.row-26 .cmp-row-title{border-color:rgba(255,200,0,.32);color:#ffd700;background:rgba(255,200,0,.03);}
-.cmp-row.row-27 .cmp-row-title{border-color:rgba(125,211,252,.22);color:#7dd3fc;background:rgba(125,211,252,.018);}
-/* célula de valor */
+/* LAYOUT DE LINHAS - comparacao vertical */
+/* celula de valor */
 .fc{border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:16px 16px;background:rgba(4,12,26,.6);}
 .cmp-row.row-v  .fc{border-color:rgba(37,215,243,.12);}
 .cmp-row.row-26 .fc{border-color:rgba(255,200,0,.12);}
@@ -355,13 +339,13 @@ input[type="range"]::-webkit-slider-thumb{
     <div class="splash-percent"><span id="splashPct">0</span>%</div>
     <div class="splash-scale"><span>0</span><span>100</span></div>
   </div>
-  <p>Preparando o simulador. Para melhor visualização, use o celular na horizontal.</p>
+  <p>Preparando o simulador. Para melhor visualiza&ccedil;&atilde;o, use o celular na horizontal.</p>
 </div>
 
 <!-- TOPBAR -->
 <div class="topbar">
   <img src="logo_sm_flex.png" alt="San Marino Flex">
-  <div class="topbar-date">Data da simulação<span id="dataPropostaTop">—</span></div>
+  <div class="topbar-date">Data da simula&ccedil;&atilde;o<span id="dataPropostaTop">--</span></div>
 </div>
 
 <!-- CORPO -->
@@ -370,63 +354,62 @@ input[type="range"]::-webkit-slider-thumb{
   <!-- ESQUERDO -->
   <div class="left">
 
-    <!-- BLOCO 1: VEÍCULO & SIMULAÇÃO -->
+    <!-- BLOCO 1: SIMULACAO PLANO FLEX -->
     <div class="blk">
-      <div class="blk-title">Veículo &amp; Simulação</div>
-      <div class="g2" style="margin-bottom:8px;">
-        <div class="field">
-          <label>Veículo</label>
+      <div class="blk-title">Simula&ccedil;&atilde;o Plano Flex</div>
+      <div class="g2 vehicle-grid" style="margin-bottom:8px;">
+        <div class="field green-frame">
+          <label>Modelo e Vers&atilde;o</label>
           <select id="modelo">
-            <option value="Fiat Fastback">Fiat Fastback</option>
-            <option value="Fiat Pulse" selected>Fiat Pulse</option>
-            <option value="Fiat Toro">Fiat Toro</option>
-            <option value="Fiat Strada">Fiat Strada</option>
+            <optgroup label="Mobi"><option value="Fiat Mobi Like">Fiat Mobi Like</option><option value="Fiat Mobi Trekking">Fiat Mobi Trekking</option></optgroup>
+            <optgroup label="Argo"><option value="Fiat Argo Drive">Fiat Argo Drive</option><option value="Fiat Argo Trekking">Fiat Argo Trekking</option></optgroup>
+            <optgroup label="Cronos"><option value="Fiat Cronos Drive">Fiat Cronos Drive</option><option value="Fiat Cronos Precision">Fiat Cronos Precision</option></optgroup>
+            <optgroup label="Pulse"><option value="Fiat Pulse Drive" selected>Fiat Pulse Drive</option><option value="Fiat Pulse Audace">Fiat Pulse Audace</option><option value="Fiat Pulse Impetus">Fiat Pulse Impetus</option><option value="Fiat Pulse Abarth">Fiat Pulse Abarth</option></optgroup>
+            <optgroup label="Fastback"><option value="Fiat Fastback Audace">Fiat Fastback Audace</option><option value="Fiat Fastback Impetus">Fiat Fastback Impetus</option><option value="Fiat Fastback Limited">Fiat Fastback Limited</option><option value="Fiat Fastback Abarth">Fiat Fastback Abarth</option></optgroup>
+            <optgroup label="Strada"><option value="Fiat Strada Endurance">Fiat Strada Endurance</option><option value="Fiat Strada Freedom">Fiat Strada Freedom</option><option value="Fiat Strada Volcano">Fiat Strada Volcano</option><option value="Fiat Strada Ranch">Fiat Strada Ranch</option><option value="Fiat Strada Ultra">Fiat Strada Ultra</option></optgroup>
+            <optgroup label="Toro"><option value="Fiat Toro Endurance">Fiat Toro Endurance</option><option value="Fiat Toro Freedom">Fiat Toro Freedom</option><option value="Fiat Toro Volcano">Fiat Toro Volcano</option><option value="Fiat Toro Ranch">Fiat Toro Ranch</option><option value="Fiat Toro Ultra">Fiat Toro Ultra</option></optgroup>
+            <optgroup label="Utilit&aacute;rios"><option value="Fiat Fiorino Endurance">Fiat Fiorino Endurance</option><option value="Fiat Titano Endurance">Fiat Titano Endurance</option><option value="Fiat Titano Volcano">Fiat Titano Volcano</option><option value="Fiat Titano Ranch">Fiat Titano Ranch</option></optgroup>
           </select>
         </div>
-        <div class="field">
-          <label>Preço Tabela (R$)</label>
-          <input id="precoTabela" type="text" inputmode="numeric" placeholder="Ex: 100000">
-        </div>
-      </div>
-      <div class="g2" style="margin-bottom:8px;">
-        <div class="field">
-          <label>Preço do Veículo (R$)</label>
-          <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 99000">
+        <div class="field green-frame">
+          <label>Pre&ccedil;o do Ve&iacute;culo (R$)</label>
+          <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 100000">
         </div>
       </div>
       <!-- FINANCIAMENTO CREDILINE -->
-      <div class="g3" style="margin-top:8px;">
+      <div class="g3 crediline-grid" style="margin-top:8px;">
         <div class="field">
           <label>% Entrada</label>
           <input id="ePct" type="text" inputmode="numeric" placeholder="Ex: 60%">
         </div>
         <div class="field">
           <label>Valor da Entrada</label>
-          <input id="eVal" type="text" inputmode="numeric" placeholder="Crediline Itaú">
+          <input id="eVal" type="text" inputmode="numeric" placeholder="Crediline">
         </div>
         <div class="field">
           <label>+ 48 X</label>
-          <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Crediline Itaú">
+          <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Crediline">
         </div>
-      </div>      <div class="finance-help">Preencha o valor do veículo, % Entrada, Valor da Entrada e as Parcelas fixas de 48 vezes utilizando os dados exatos obtidos na simulação do Crediline Itaú.</div>
+      </div>
+      <div class="finance-help">Crediline: informe valor, entrada e 48x.</div>
     </div>
+
     <!-- BLOCO 2: PLANO MULTIFLEX -->
     <div class="blk flex-blk">
       <div class="blk-title" style="text-align:center;font-size:13px;color:#ffd700;">Plano MultiFlex</div>
 
-      <div class="phase-title">Período Flex</div>
+      <div class="phase-title">Per&iacute;odo Flex</div>
       <div class="g2" style="margin-bottom:8px;">
         <div class="field">
-          <label>Percentual Sinal à Vista</label>
-          <input id="sPctAuto" type="text" readonly class="ro" placeholder="—">
+          <label>Percentual Sinal &agrave; Vista</label>
+          <input id="sPctAuto" type="text" readonly class="ro" placeholder="--">
         </div>
         <div class="field">
-          <label>Sinal à Vista</label>
-          <input id="sVal" type="text" readonly class="ro" placeholder="—">
+          <label>Sinal &agrave; Vista</label>
+          <input id="sVal" type="text" readonly class="ro" placeholder="--">
         </div>
       </div>
 
-      <!-- Prazo MultiFlex -->
       <div class="prazo-flex-row">
         <div class="prazo-control">
           <div class="rng-row">
@@ -437,8 +420,8 @@ input[type="range"]::-webkit-slider-thumb{
           <div class="marks" id="mesesMarks"><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
         </div>
         <div class="field prazo-month">
-          <label>Mês da Entrada a Prazo</label>
-          <input id="compMes" type="text" readonly class="ro" placeholder="—">
+          <label>M&ecirc;s da Entrada a Prazo</label>
+          <input id="compMes" type="text" readonly class="ro" placeholder="--">
         </div>
       </div>
 
@@ -446,36 +429,36 @@ input[type="range"]::-webkit-slider-thumb{
         <div class="installment-card span-2">
           <strong>Parcelas Flex</strong>
           <div class="installment-split">
-            <div class="count" id="flexParcelasQtd">—</div>
-            <div class="amount" id="flexParcelasValor">—</div>
+            <div class="count" id="flexParcelasQtd">--</div>
+            <div class="amount" id="flexParcelasValor">--</div>
           </div>
         </div>
       </div>
 
-      <div class="benefits-list" aria-label="Benefícios San Marino MultiFlex">
+      <div class="benefits-list" aria-label="Benef&iacute;cios San Marino MultiFlex">
         <div class="benefit-item">IPVA 2026 Incluso</div>
         <div class="benefit-item">Emplacamento</div>
         <div class="benefit-item">Seguro Flex</div>
-        <div class="benefit-item">Manutenção Flex + IPVA 2027 Pro Rata</div>
+        <div class="benefit-item">Manuten&ccedil;&atilde;o Flex + IPVA 2027 Pro Rata</div>
       </div>
 
       <div class="phase-title">Entrada + Financiamento</div>
       <div class="phase2-grid">
         <div class="field">
           <label>Percentual de Entrada</label>
-          <input id="cPctAuto" type="text" readonly class="ro" placeholder="—">
+          <input id="cPctAuto" type="text" readonly class="ro" placeholder="--">
         </div>
         <div class="field">
           <label>Valor da Entrada</label>
-          <input id="cVal" type="text" readonly class="ro" placeholder="—">
+          <input id="cVal" type="text" readonly class="ro" placeholder="--">
         </div>
         <div class="field">
           <label>Parcelas Financiamento</label>
-          <div class="ro-box" id="finParcelasQtd">—</div>
+          <div class="ro-box" id="finParcelasQtd">--</div>
         </div>
         <div class="field">
           <label>Valor da Parcela</label>
-          <div class="ro-box" id="finParcelasValor">—</div>
+          <div class="ro-box" id="finParcelasValor">--</div>
         </div>
       </div>
     </div>
@@ -484,14 +467,14 @@ input[type="range"]::-webkit-slider-thumb{
 
 <script>
 const $=id=>document.getElementById(id);
-const NE="Não Elegível";
+const NE="N\u00e3o Eleg\u00edvel";
 
-// CONSTANTES — Excel: Cópia de SM MultiFlex Simulador Julho 2026 APP.xlsx
-const B12 = 0.0175;         // CET mínima simulação efetiva
-const B14 = 12;             // Máximo meses MultiFlex
-const B15 = 4;              // Mínimo meses MultiFlex
-const B18 = 0.20;           // Entrada banco mínima
-const B19 = 0.10;           // GAP máximo entrada banco x MultiFlex
+// CONSTANTES - Excel: copia de SM MultiFlex Simulador Julho 2026 APP.xlsx
+const B12 = 0.0175;         // CET minima simulacao efetiva
+const B14 = 12;             // Maximo meses MultiFlex
+const B15 = 4;              // Minimo meses MultiFlex
+const B18 = 0.20;           // Entrada banco minima
+const B19 = 0.10;           // GAP maximo entrada banco x MultiFlex
 
 function pmt(rate,nper,pv){
   if(!rate) return pv/nper;
@@ -532,16 +515,17 @@ function fileSafe(s){
     .replace(/[^a-z0-9]+/gi,"-").toLowerCase();
 }
 function uiText(v){
-  const map={"Financiamento":"Financiamento fora do padrão","Revisar Banco":"Revisar banco","Check Banco":"Check banco","Crediline":"Preencha dados Crediline","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N?o Eleg?vel":"N?o eleg?vel"};
+  if(v === "Entrada Incompat\u00edvel") return "Valor da entrada n\u00e3o confere";
+  const map={"Financiamento":"Financiamento fora do padr\u00e3o","Revisar Banco":"Revisar banco","Check Banco":"Check banco","Crediline":"Preencha dados Crediline","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N\u00e3o Eleg\u00edvel":"N\u00e3o eleg\u00edvel"};
   return map[v] || v;
 }
 function sc(id,v){
   const el=$(id); if(!el) return;
   if(typeof v==="string") v=uiText(v);
-  if(typeof v==="string"&&v!=="—")
+  if(typeof v==="string"&&v!=="\u2014")
     el.innerHTML=`<span style="color:#f05252;font-size:10px;font-weight:900">${v}</span>`;
   else if(typeof v==="number") el.textContent=brR(v);
-  else el.textContent="—";
+  else el.textContent="\u2014";
 }
 function fmtData(d){
   return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"});
@@ -555,27 +539,30 @@ function addMonths(d,m){
 }
 function calc(){
   // Entradas equivalentes da planilha Julho/2026:
-  // E3 preço tabela, G3 preço, C4 % entrada banco, G4 parcela 48x Crediline, G5 meses MultiFlex.
+  // G3 preco do veiculo, C4 percentual de entrada, E4 valor entrada, G4 parcela 48x Crediline, G5 meses MultiFlex.
   const G2 = new Date();
-  const E3 = numVal("precoTabela") || numVal("preco");
   const G3 = numVal("preco");
+  const E3 = G3;
   const E4Input = numVal("eVal");
   const pctRaw = Number(String($("ePct")?.value || "").replace(/[^\d,.-]/g, "").replace(",", "."));
-  const C4 = Number.isFinite(pctRaw) && pctRaw > 0 ? pctRaw/100 : (G3 ? E4Input/G3 : 0);
+  const hasPct = Number.isFinite(pctRaw) && pctRaw > 0;
+  const C4 = hasPct ? pctRaw/100 : (G3 ? E4Input/G3 : 0);
   const G4 = numVal("parc");
   const G5 = +$("mesesFlex").value || B14;
+  const entradaEsperada = G3*C4;
+  const entradaManual = !!$("eVal")?.dataset.manual;
+  const entradaIncompativel = !!(G3 && hasPct && E4Input && Math.abs(E4Input - entradaEsperada) > 1);
 
-  const E4 = E4Input || G3*C4;
   const B13 = pmt(B12,48,G3*(1-C4));
   const B20 = E3 ? (E3-G3)/E3 : 0;
   const C6 = C4 < 0.26 ? 0.10 : C4 - 0.15;
   const C7 = Math.max(0, C4 - C6 + 0.10);
   const D5 = C6 + C7;
-  const E5 = D5*G3;
   const B7 = addMonths(G2,G5);
 
   let E6;
   if(!G2) E6 = "DATA";
+  else if(entradaIncompativel) E6 = "Entrada Incompat\u00edvel";
   else if(G4 && G4 < B13) E6 = "Financiamento";
   else if(G5 < B15 || G5 > B14) E6 = "Prazo MultiFlex";
   else if(D5 < (C4-B19)) E6 = "Revisar Banco";
@@ -600,12 +587,15 @@ function calc(){
 
   if($("ePct") && !$("ePct").dataset.touched) $("ePct").value = C4 ? pct(C4) : "";
   $("mesesLbl").textContent = G5;
-  if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = `(4 a 12)`;
+  if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = "(4 a 12)";
   rf($("mesesFlex"));
 
   if($("dataPropostaTop")) $("dataPropostaTop").textContent = propStr;
 
-  if($("eVal") && !$("eVal").dataset.touched) $("eVal").value = G3 ? brR(E4) : "";
+  if($("eVal")){
+    $("eVal").classList.toggle("entry-error", entradaIncompativel);
+    if(!entradaManual) $("eVal").value = G3 && C4 ? brR(entradaEsperada) : "";
+  }
   if($("sPctAuto")) $("sPctAuto").value = G3 ? pct(C6) : "";
   if($("cPctAuto")) $("cPctAuto").value = G3 ? pct(C7) : "";
   const alerta = typeof E6 === "string" ? uiText(E6) : "";
@@ -614,10 +604,9 @@ function calc(){
   $("cVal").value = ok26 ? brR(E7) : "";
   const p = !!(G3 && G4);
   if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = F6lbl;
-  if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "—";
+  if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "\u2014";
   if($("finParcelasQtd")) $("finParcelasQtd").textContent = F7lbl;
-  if($("finParcelasValor")) $("finParcelasValor").textContent = p && ok26 ? brR(G7) : "—";
-
+  if($("finParcelasValor")) $("finParcelasValor").textContent = p && ok26 ? brR(G7) : "\u2014";
 }
 function formatMoneyInput(id){
   const el = $(id);
@@ -631,11 +620,12 @@ function formatPctInput(id){
   const raw = Number(String(el.value || "").replace(/[^\d,.-]/g, "").replace(",", "."));
   el.value = Number.isFinite(raw) && raw > 0 ? `${Math.round(raw)}%` : "";
 }
-["mesesFlex","precoTabela","preco"].forEach(id=>$(id)?.addEventListener("input",calc));
-["precoTabela","preco","eVal","parc"].forEach(id=>$(id)?.addEventListener("blur",()=>{formatMoneyInput(id);calc();}));
+["mesesFlex","preco"].forEach(id=>$(id)?.addEventListener("input",calc));
+["preco","eVal","parc"].forEach(id=>$(id)?.addEventListener("blur",()=>{formatMoneyInput(id);calc();}));
 $("parc")?.addEventListener("input",calc);
+$("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();});
 $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
-["ePct","eVal"].forEach(id=>$(id)?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();}));
+$("eVal")?.addEventListener("input",e=>{e.currentTarget.dataset.manual="1";calc();});
 $("modelo")?.addEventListener("change",calc);
 calc();
 const splash = $("rotateBanner");
