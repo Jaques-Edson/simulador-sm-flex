@@ -128,13 +128,14 @@ select{
 .flex-blk .ro{height:52px!important;font-size:18px!important;font-weight:950!important;letter-spacing:-.15px;}
 .flex-blk .field label{font-size:10px;letter-spacing:.75px;}
 .flex-blk .prazo-month input{height:52px!important;font-size:16px!important;}
-.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box{height:50px!important;font-size:18px!important;font-weight:950!important;}
+.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box{height:50px!important;font-size:20px!important;font-weight:950!important;letter-spacing:-.15px;}
 .flex-blk .ro-box{border-color:rgba(255,200,0,.48);background:rgba(255,200,0,.09);color:#ffd700;}
 .flex-blk .installment-card{padding:12px 13px;}
 .flex-blk .installment-card strong{font-size:10px;margin-bottom:8px;}
 .flex-blk .installment-split{min-height:48px;}
-.flex-blk .installment-split .count,.flex-blk .installment-split .amount{min-height:46px;font-size:20px;font-weight:950;}
+.flex-blk .installment-split .count,.flex-blk .installment-split .amount{min-height:46px;font-size:22px;font-weight:950;letter-spacing:-.2px;}
 .flex-blk .installment-split .amount{color:#ffd700;}
+.flex-blk #finParcelasQtd{color:#25d7f3;}
 
 /* RANGE */
 .rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
@@ -370,67 +371,48 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="g2 vehicle-grid" style="margin-bottom:8px;">
         <div class="field green-frame">
           <label>Modelo e Vers&atilde;o</label>
-          <select id="modelo">
-            <optgroup label="Mobi">
-              <option value="Mobi Like 1.0 2027">Mobi Like 1.0 2027</option>
-              <option value="Mobi Trekking 1.0 2027">Mobi Trekking 1.0 2027</option>
-            </optgroup>
-            <optgroup label="Argo">
-              <option value="Argo Drive 1.0 Flex 4P 2026">Argo Drive 1.0 Flex 4P 2026</option>
-              <option value="Argo Drive 1.3 AT Flex 4P 2026">Argo Drive 1.3 AT Flex 4P 2026</option>
-              <option value="Argo Trekking 1.3 Flex 4P 2026">Argo Trekking 1.3 Flex 4P 2026</option>
-              <option value="Argo Trekking 1.3 AT Flex 4P 2026">Argo Trekking 1.3 AT Flex 4P 2026</option>
-            </optgroup>
-            <optgroup label="Cronos">
-              <option value="Cronos Drive 1.0 Flex 4P 2027">Cronos Drive 1.0 Flex 4P 2027</option>
-              <option value="Cronos Drive 1.3 Flex 4P 2027">Cronos Drive 1.3 Flex 4P 2027</option>
-              <option value="Cronos Drive 1.3 AT Flex 4P 2027">Cronos Drive 1.3 AT Flex 4P 2027</option>
-              <option value="Cronos Precision 1.3 AT Flex 4P 2027">Cronos Precision 1.3 AT Flex 4P 2027</option>
-            </optgroup>
-            <optgroup label="Pulse">
-              <option value="Pulse Drive 1.3 MT Flex 4P 2026" selected>Pulse Drive 1.3 MT Flex 4P 2026</option>
-              <option value="Pulse Drive 1.3 AT Flex 4P 2026">Pulse Drive 1.3 AT Flex 4P 2026</option>
-              <option value="Pulse Turbo 200 AT Flex 4P 2026">Pulse Turbo 200 AT Flex 4P 2026</option>
-              <option value="Pulse Audace Turbo 200 Hybrid Flex AT 4P 2026">Pulse Audace Turbo 200 Hybrid Flex AT 4P 2026</option>
-              <option value="Pulse Impetus Turbo 200 Hybrid Flex AT 4P 2026">Pulse Impetus Turbo 200 Hybrid Flex AT 4P 2026</option>
-              <option value="Pulse Abarth Turbo 270 Flex AT 4P 2026">Pulse Abarth Turbo 270 Flex AT 4P 2026</option>
-            </optgroup>
-            <optgroup label="Fastback">
-              <option value="Fastback Turbo 200 Flex AT 2026">Fastback Turbo 200 Flex AT 2026</option>
-              <option value="Fastback Audace Turbo 200 Hybrid Flex AT 2026">Fastback Audace Turbo 200 Hybrid Flex AT 2026</option>
-              <option value="Fastback Impetus Turbo 200 Hybrid Flex AT 2026">Fastback Impetus Turbo 200 Hybrid Flex AT 2026</option>
-              <option value="Fastback Limited Edition Turbo 270 Flex AT 2026">Fastback Limited Edition Turbo 270 Flex AT 2026</option>
-              <option value="Fastback Abarth Turbo 270 Flex AT 2026">Fastback Abarth Turbo 270 Flex AT 2026</option>
-            </optgroup>
-            <optgroup label="500e">
-              <option value="500e Icon 2024">500e Icon 2024</option>
-            </optgroup>
-            <optgroup label="Strada">
-              <option value="Strada Endurance Cabine Plus 1.3 Flex 2027">Strada Endurance Cabine Plus 1.3 Flex 2027</option>
-              <option value="Strada Freedom Cabine Plus 1.3 Flex 2027">Strada Freedom Cabine Plus 1.3 Flex 2027</option>
-              <option value="Strada Freedom Cabine Dupla 1.3 Flex 2027">Strada Freedom Cabine Dupla 1.3 Flex 2027</option>
-              <option value="Strada Volcano Cabine Dupla 1.3 Flex 2027">Strada Volcano Cabine Dupla 1.3 Flex 2027</option>
-              <option value="Strada Volcano Cabine Dupla 1.3 AT Flex 2027">Strada Volcano Cabine Dupla 1.3 AT Flex 2027</option>
-              <option value="Strada Ultra Cabine Dupla Turbo 200 AT Flex 2027">Strada Ultra Cabine Dupla Turbo 200 AT Flex 2027</option>
-              <option value="Strada Ranch Cabine Dupla Turbo 200 AT Flex 2027">Strada Ranch Cabine Dupla Turbo 200 AT Flex 2027</option>
-            </optgroup>
-            <optgroup label="Toro">
-              <option value="Toro Endurance Turbo 270 Flex AT6 2027">Toro Endurance Turbo 270 Flex AT6 2027</option>
-              <option value="Toro Freedom Turbo 270 Flex AT6 2027">Toro Freedom Turbo 270 Flex AT6 2027</option>
-              <option value="Toro Volcano MHEV Flex T270 AT6 2027">Toro Volcano MHEV Flex T270 AT6 2027</option>
-              <option value="Toro Ultra MHEV Flex T270 AT6 2027">Toro Ultra MHEV Flex T270 AT6 2027</option>
-              <option value="Toro Volcano Turbodiesel 4x4 AT9 2027">Toro Volcano Turbodiesel 4x4 AT9 2027</option>
-              <option value="Toro Ranch Turbodiesel 4x4 AT9 2027">Toro Ranch Turbodiesel 4x4 AT9 2027</option>
-            </optgroup>
-            <optgroup label="Titano">
-              <option value="Titano Endurance Multijet Turbodiesel MT 4x4 2026">Titano Endurance Multijet Turbodiesel MT 4x4 2026</option>
-              <option value="Titano Volcano Multijet Turbodiesel AT 4x4 2026">Titano Volcano Multijet Turbodiesel AT 4x4 2026</option>
-              <option value="Titano Ranch Multijet Turbodiesel AT 4x4 2026">Titano Ranch Multijet Turbodiesel AT 4x4 2026</option>
-            </optgroup>
-            <optgroup label="Fiorino">
-              <option value="Fiorino Endurance 1.3 Flex 2027">Fiorino Endurance 1.3 Flex 2027</option>
-            </optgroup>
-          </select>
+          <input id="modelo" list="modelosList" type="text" value="Pulse Drive 1.3 MT Flex 4P 2026" placeholder="Digite para filtrar o ve&iacute;culo">
+          <datalist id="modelosList">
+            <option value="Mobi Like 1.0 2027">Mobi Like 1.0 2027</option>
+            <option value="Mobi Trekking 1.0 2027">Mobi Trekking 1.0 2027</option>
+            <option value="Argo Drive 1.0 Flex 4P 2026">Argo Drive 1.0 Flex 4P 2026</option>
+            <option value="Argo Drive 1.3 AT Flex 4P 2026">Argo Drive 1.3 AT Flex 4P 2026</option>
+            <option value="Argo Trekking 1.3 Flex 4P 2026">Argo Trekking 1.3 Flex 4P 2026</option>
+            <option value="Argo Trekking 1.3 AT Flex 4P 2026">Argo Trekking 1.3 AT Flex 4P 2026</option>
+            <option value="Cronos Drive 1.0 Flex 4P 2027">Cronos Drive 1.0 Flex 4P 2027</option>
+            <option value="Cronos Drive 1.3 Flex 4P 2027">Cronos Drive 1.3 Flex 4P 2027</option>
+            <option value="Cronos Drive 1.3 AT Flex 4P 2027">Cronos Drive 1.3 AT Flex 4P 2027</option>
+            <option value="Cronos Precision 1.3 AT Flex 4P 2027">Cronos Precision 1.3 AT Flex 4P 2027</option>
+            <option value="Pulse Drive 1.3 MT Flex 4P 2026">Pulse Drive 1.3 MT Flex 4P 2026</option>
+            <option value="Pulse Drive 1.3 AT Flex 4P 2026">Pulse Drive 1.3 AT Flex 4P 2026</option>
+            <option value="Pulse Turbo 200 AT Flex 4P 2026">Pulse Turbo 200 AT Flex 4P 2026</option>
+            <option value="Pulse Audace Turbo 200 Hybrid Flex AT 4P 2026">Pulse Audace Turbo 200 Hybrid Flex AT 4P 2026</option>
+            <option value="Pulse Impetus Turbo 200 Hybrid Flex AT 4P 2026">Pulse Impetus Turbo 200 Hybrid Flex AT 4P 2026</option>
+            <option value="Pulse Abarth Turbo 270 Flex AT 4P 2026">Pulse Abarth Turbo 270 Flex AT 4P 2026</option>
+            <option value="Fastback Turbo 200 Flex AT 2026">Fastback Turbo 200 Flex AT 2026</option>
+            <option value="Fastback Audace Turbo 200 Hybrid Flex AT 2026">Fastback Audace Turbo 200 Hybrid Flex AT 2026</option>
+            <option value="Fastback Impetus Turbo 200 Hybrid Flex AT 2026">Fastback Impetus Turbo 200 Hybrid Flex AT 2026</option>
+            <option value="Fastback Limited Edition Turbo 270 Flex AT 2026">Fastback Limited Edition Turbo 270 Flex AT 2026</option>
+            <option value="Fastback Abarth Turbo 270 Flex AT 2026">Fastback Abarth Turbo 270 Flex AT 2026</option>
+            <option value="500e Icon 2024">500e Icon 2024</option>
+            <option value="Strada Endurance Cabine Plus 1.3 Flex 2027">Strada Endurance Cabine Plus 1.3 Flex 2027</option>
+            <option value="Strada Freedom Cabine Plus 1.3 Flex 2027">Strada Freedom Cabine Plus 1.3 Flex 2027</option>
+            <option value="Strada Freedom Cabine Dupla 1.3 Flex 2027">Strada Freedom Cabine Dupla 1.3 Flex 2027</option>
+            <option value="Strada Volcano Cabine Dupla 1.3 Flex 2027">Strada Volcano Cabine Dupla 1.3 Flex 2027</option>
+            <option value="Strada Volcano Cabine Dupla 1.3 AT Flex 2027">Strada Volcano Cabine Dupla 1.3 AT Flex 2027</option>
+            <option value="Strada Ultra Cabine Dupla Turbo 200 AT Flex 2027">Strada Ultra Cabine Dupla Turbo 200 AT Flex 2027</option>
+            <option value="Strada Ranch Cabine Dupla Turbo 200 AT Flex 2027">Strada Ranch Cabine Dupla Turbo 200 AT Flex 2027</option>
+            <option value="Toro Endurance Turbo 270 Flex AT6 2027">Toro Endurance Turbo 270 Flex AT6 2027</option>
+            <option value="Toro Freedom Turbo 270 Flex AT6 2027">Toro Freedom Turbo 270 Flex AT6 2027</option>
+            <option value="Toro Volcano MHEV Flex T270 AT6 2027">Toro Volcano MHEV Flex T270 AT6 2027</option>
+            <option value="Toro Ultra MHEV Flex T270 AT6 2027">Toro Ultra MHEV Flex T270 AT6 2027</option>
+            <option value="Toro Volcano Turbodiesel 4x4 AT9 2027">Toro Volcano Turbodiesel 4x4 AT9 2027</option>
+            <option value="Toro Ranch Turbodiesel 4x4 AT9 2027">Toro Ranch Turbodiesel 4x4 AT9 2027</option>
+            <option value="Titano Endurance Multijet Turbodiesel MT 4x4 2026">Titano Endurance Multijet Turbodiesel MT 4x4 2026</option>
+            <option value="Titano Volcano Multijet Turbodiesel AT 4x4 2026">Titano Volcano Multijet Turbodiesel AT 4x4 2026</option>
+            <option value="Titano Ranch Multijet Turbodiesel AT 4x4 2026">Titano Ranch Multijet Turbodiesel AT 4x4 2026</option>
+            <option value="Fiorino Endurance 1.3 Flex 2027">Fiorino Endurance 1.3 Flex 2027</option>
+          </datalist>
         </div>
         <div class="field green-frame">
           <label>Pre&ccedil;o do Ve&iacute;culo (R$)</label>
@@ -718,6 +700,7 @@ function formatPctInput(id){
 $("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();});
 $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
 $("eVal")?.addEventListener("input",e=>{e.currentTarget.dataset.manual="1";formatMoneyTyping("eVal");calc();});
+$("modelo")?.addEventListener("input",calc);
 $("modelo")?.addEventListener("change",calc);
 calc();
 const splash = $("rotateBanner");
