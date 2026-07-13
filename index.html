@@ -86,9 +86,9 @@ input,select,button{font:inherit}
 .model-option{padding:9px 10px;border-radius:6px;color:#f0f4ff;font-size:12px;font-weight:850;cursor:pointer;line-height:1.25;}
 .model-option:hover,.model-option.is-active{background:rgba(37,215,243,.16);color:#fff;}
 .model-empty{padding:10px;color:#7a9ab8;font-size:11px;font-weight:800;text-align:center;}
-.year-inline{height:34px;border:1px solid rgba(34,212,126,.68);border-radius:7px;background:rgba(2,8,18,.9);display:grid;grid-template-columns:1fr 62px;align-items:center;}
+.year-inline{height:34px;border:1px solid rgba(34,212,126,.68);border-radius:7px;background:rgba(2,8,18,.9);display:grid;grid-template-columns:1fr 72px;align-items:center;}
 .year-inline span{font-size:12px;font-weight:950;text-align:center;color:#f0f4ff;}
-.year-inline select{height:100%;border:0!important;border-left:1px solid rgba(34,212,126,.35)!important;border-radius:0 7px 7px 0!important;background-color:#061728!important;box-shadow:none!important;color:#f0f4ff!important;font-weight:950;cursor:pointer;}
+.year-inline select{height:100%;border:0!important;border-left:1px solid rgba(34,212,126,.35)!important;border-radius:0 7px 7px 0!important;background-color:#061728!important;box-shadow:none!important;color:#f0f4ff!important;font-weight:950;cursor:pointer;padding:0 24px 0 7px!important;text-align:center;}
 .year-inline select option{background:#061728;color:#f0f4ff;}
 .g2.finance-summary{grid-template-columns:1fr 1fr;}
 .dates-grid{grid-template-columns:1fr;}
@@ -274,7 +274,7 @@ input[type="range"]::-webkit-slider-thumb{
   .year-field input,.year-field select{font-size:9px;padding:0 3px;}
   .model-option{font-size:11px;padding:8px 9px;}
   .model-menu{max-height:220px;}
-  .year-inline{grid-template-columns:1fr 52px;}
+  .year-inline{grid-template-columns:1fr 64px;}
   .year-inline span{font-size:10px;}
   .g3 .field:last-child{grid-column:1 / -1;}
   .g2.finance-summary{grid-template-columns:1fr 1fr;}
@@ -402,7 +402,7 @@ input[type="range"]::-webkit-slider-thumb{
           </div>
         </div>
         <div class="field green-frame year-field">
-          <label>Ano Fabrica&ccedil;&atilde;o / Modelo</label>
+          <label>Ano / Modelo</label>
           <div class="year-inline"><span>2026</span><select id="anoModelo"><option value="2026">2026</option><option value="2027">2027</option></select></div>
         </div>
       </div>
@@ -414,7 +414,7 @@ input[type="range"]::-webkit-slider-thumb{
         </div>
         <div class="field">
           <label>% Entrada</label>
-          <input id="ePct" type="text" inputmode="numeric" placeholder="Ex: 60%">
+          <input id="ePct" type="text" inputmode="numeric" placeholder="Ex: 65%">
         </div>
         <div class="field">
           <label>Valor da Entrada</label>
@@ -725,7 +725,7 @@ function formatPctTyping(id){
   const digits = String(el.value || "").replace(/\D/g, "");
   if(!digits){ el.value = ""; return; }
   const value = Number(digits);
-  if(digits.length > 2 || value > 60){
+  if(digits.length > 2 || value > 65){
     el.value = el.dataset.lastValid || "";
     return;
   }
@@ -736,7 +736,7 @@ function formatPctInput(id){
   const el = $(id);
   if(!el) return;
   const raw = Number(String(el.value || "").replace(/[^\d,.-]/g, "").replace(",", "."));
-  el.value = Number.isFinite(raw) && raw > 0 ? `${Math.min(60, Math.round(raw))}%` : "";
+  el.value = Number.isFinite(raw) && raw > 0 ? `${Math.min(65, Math.round(raw))}%` : "";
 }
 ["mesesFlex"].forEach(id=>$(id)?.addEventListener("input",calc));
 ["preco","parc"].forEach(id=>$(id)?.addEventListener("input",()=>{formatMoneyTyping(id);calc();}));
