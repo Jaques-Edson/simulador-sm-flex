@@ -516,6 +516,9 @@ function fileSafe(s){
 }
 function uiText(v){
   if(v === "Entrada Incompat\u00edvel") return "Valor da entrada n\u00e3o confere";
+  if(v === "Preco Fora") return "Pre\u00e7o do ve\u00edculo fora do padr\u00e3o";
+  if(v === "Entrada Fora") return "Entrada fora do padr\u00e3o";
+  if(v === "Parcela Fora") return "Parcela fora do padr\u00e3o";
   const map={"Financiamento":"Financiamento fora do padr\u00e3o","Revisar Banco":"Revisar banco","Check Banco":"Check banco","Crediline":"Preencha dados Crediline","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N\u00e3o Eleg\u00edvel":"N\u00e3o eleg\u00edvel"};
   return map[v] || v;
 }
@@ -552,6 +555,9 @@ function calc(){
   const entradaEsperada = G3*C4;
   const entradaManual = !!$("eVal")?.dataset.manual;
   const entradaIncompativel = !!(G3 && hasPct && E4Input && Math.abs(E4Input - entradaEsperada) > 1);
+  const precoForaFaixa = !!(G3 && (G3 < 30000 || G3 >= 1000000));
+  const entradaForaFaixa = !!(E4Input && (E4Input < 1000 || E4Input >= 1000000 || (G3 && E4Input > G3)));
+  const parcelaForaFaixa = !!(G4 && (G4 < 100 || G4 >= 50000));
 
   const B13 = pmt(B12,48,G3*(1-C4));
   const B20 = E3 ? (E3-G3)/E3 : 0;
@@ -562,6 +568,9 @@ function calc(){
 
   let E6;
   if(!G2) E6 = "DATA";
+  else if(precoForaFaixa) E6 = "Preco Fora";
+  else if(entradaForaFaixa) E6 = "Entrada Fora";
+  else if(parcelaForaFaixa) E6 = "Parcela Fora";
   else if(entradaIncompativel) E6 = "Entrada Incompat\u00edvel";
   else if(G4 && G4 < B13) E6 = "Financiamento";
   else if(G5 < B15 || G5 > B14) E6 = "Prazo MultiFlex";
@@ -592,8 +601,10 @@ function calc(){
 
   if($("dataPropostaTop")) $("dataPropostaTop").textContent = propStr;
 
+  if($("preco")) $("preco").classList.toggle("entry-error", precoForaFaixa);
+  if($("parc")) $("parc").classList.toggle("entry-error", parcelaForaFaixa);
   if($("eVal")){
-    $("eVal").classList.toggle("entry-error", entradaIncompativel);
+    $("eVal").classList.toggle("entry-error", entradaIncompativel || entradaForaFaixa);
     if(!entradaManual) $("eVal").value = G3 && C4 ? brR(entradaEsperada) : "";
   }
   if($("sPctAuto")) $("sPctAuto").value = G3 ? pct(C6) : "";
@@ -614,18 +625,27 @@ function formatMoneyInput(id){
   const value = parseMoney(el.value);
   el.value = value ? brR(value) : "";
 }
+function formatMoneyTyping(id){
+  const el = $(id);
+  if(!el) return;
+  const raw = String(el.value || "");
+  let value = raw.includes(",") || raw.includes("R$") ? parseMoney(raw) : Number(raw.replace(/\D/g, ""));
+  if(!Number.isFinite(value) || value <= 0){ el.value = ""; return; }
+  el.value = Math.round(value).toLocaleString("pt-BR");
+  try{ el.setSelectionRange(el.value.length, el.value.length); }catch(e){}
+}
 function formatPctInput(id){
   const el = $(id);
   if(!el) return;
   const raw = Number(String(el.value || "").replace(/[^\d,.-]/g, "").replace(",", "."));
   el.value = Number.isFinite(raw) && raw > 0 ? `${Math.round(raw)}%` : "";
 }
-["mesesFlex","preco"].forEach(id=>$(id)?.addEventListener("input",calc));
+["mesesFlex"].forEach(id=>$(id)?.addEventListener("input",calc));
+["preco","parc"].forEach(id=>$(id)?.addEventListener("input",()=>{formatMoneyTyping(id);calc();}));
 ["preco","eVal","parc"].forEach(id=>$(id)?.addEventListener("blur",()=>{formatMoneyInput(id);calc();}));
-$("parc")?.addEventListener("input",calc);
 $("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();});
 $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
-$("eVal")?.addEventListener("input",e=>{e.currentTarget.dataset.manual="1";calc();});
+$("eVal")?.addEventListener("input",e=>{e.currentTarget.dataset.manual="1";formatMoneyTyping("eVal");calc();});
 $("modelo")?.addEventListener("change",calc);
 calc();
 const splash = $("rotateBanner");
