@@ -100,7 +100,7 @@ input,select,button{font:inherit}
 .prazo-flex-row{display:grid;grid-template-columns:minmax(0, 58%) minmax(190px, 220px);gap:10px;align-items:end;margin-top:8px;}
 .prazo-control{min-width:0;}
 .prazo-month input{height:38px;font-size:11px!important;}
-.phase2-grid{display:grid;grid-template-columns:.8fr 1fr .95fr 1fr;gap:5px;margin-top:6px;align-items:end;}
+.phase2-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;align-items:end;}
 .phase2-grid .field label{font-size:7px;line-height:1.15;letter-spacing:.35px;}
 .phase2-grid input,.phase2-grid .ro-box{font-size:10px!important;}
 .ro-box{height:34px;width:100%;border:1px solid rgba(255,200,0,.35);border-radius:7px;background:rgba(255,200,0,.08);color:#ffd700;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px;font-variant-numeric:tabular-nums;}
@@ -256,7 +256,6 @@ input[type="range"]::-webkit-slider-thumb{
   .prazo-control .rng-lbl,.prazo-control .rng-val{font-size:8px;}
   .prazo-control .marks{font-size:7px;}
   .phase2-grid{grid-template-columns:1fr 1fr;}
-  .phase2-grid .field:last-child{grid-column:1 / -1;}
   /* linhas de comparação: empilha em coluna */
   .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
   .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
@@ -416,7 +415,7 @@ input[type="range"]::-webkit-slider-thumb{
     <div class="blk flex-blk">
       <div class="blk-title" style="text-align:center;font-size:13px;color:#ffd700;">Plano MultiFlex</div>
 
-      <div class="phase-title">Fase 1 · Período Flex</div>
+      <div class="phase-title">Período Flex</div>
       <div class="g2" style="margin-bottom:8px;">
         <div class="field">
           <label>Percentual Sinal à Vista</label>
@@ -461,7 +460,7 @@ input[type="range"]::-webkit-slider-thumb{
         <div class="benefit-item">Manutenção Flex + IPVA 2027 Pro Rata</div>
       </div>
 
-      <div class="phase-title">Fase 2 · Entrada a Prazo</div>
+      <div class="phase-title">Entrada + Financiamento</div>
       <div class="phase2-grid">
         <div class="field">
           <label>Percentual de Entrada</label>
@@ -472,7 +471,7 @@ input[type="range"]::-webkit-slider-thumb{
           <input id="cVal" type="text" readonly class="ro" placeholder="—">
         </div>
         <div class="field">
-          <label>Parcelas Restantes</label>
+          <label>Parcelas Financiamento</label>
           <div class="ro-box" id="finParcelasQtd">—</div>
         </div>
         <div class="field">
@@ -534,7 +533,7 @@ function fileSafe(s){
     .replace(/[^a-z0-9]+/gi,"-").toLowerCase();
 }
 function uiText(v){
-  const map={"Financiamento":"Financiamento fora do padrão","Revisar Banco":"Revisar banco","Check Banco":"Check banco","Entrada do Banco":"Entrada do banco","Entrada Banco":"Entrada do banco","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N?o Eleg?vel":"N?o eleg?vel"};
+  const map={"Financiamento":"Financiamento fora do padrão","Revisar Banco":"Revisar banco","Check Banco":"Check banco","Crediline":"Preencha dados Crediline","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N?o Eleg?vel":"N?o eleg?vel"};
   return map[v] || v;
 }
 function sc(id,v){
@@ -581,7 +580,7 @@ function calc(){
   else if(G4 && G4 < B13) E6 = "Financiamento";
   else if(G5 < B15 || G5 > B14) E6 = "Prazo MultiFlex";
   else if(D5 < (C4-B19)) E6 = "Revisar Banco";
-  else if(C4 < B18) E6 = "Entrada do Banco";
+  else if(C4 < B18) E6 = "Crediline";
   else E6 = G3*C6;
 
   let G6 = 0;
@@ -612,7 +611,7 @@ function calc(){
   if($("cPctAuto")) $("cPctAuto").value = G3 ? pct(C7) : "";
   const alerta = typeof E6 === "string" ? uiText(E6) : "";
   $("sVal").value = ok26 ? brR(E6) : alerta;
-  $("compMes").value = ok26 ? compStr : alerta;
+  $("compMes").value = compStr;
   $("cVal").value = ok26 ? brR(E7) : "";
   const p = !!(G3 && G4);
   if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = F6lbl;
