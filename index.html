@@ -96,6 +96,8 @@ input,select,button{font:inherit}
 .benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
 .benefit-item{border:1px solid rgba(37,215,243,.18);border-radius:7px;background:rgba(37,215,243,.035);padding:7px 8px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.45px;color:#c8d8e8;text-align:center;line-height:1.25;}
 .phase-title{margin-top:10px;margin-bottom:6px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;color:#ffd700;text-align:center;}
+.crediline-alert{display:none;margin-top:7px;border:1px solid rgba(240,82,82,.55);border-radius:8px;background:rgba(80,10,10,.45);padding:8px 9px;color:#ffd5d5;font-size:9px;line-height:1.35;font-weight:800;}
+.crediline-alert strong{display:block;color:#ffd700;text-transform:uppercase;letter-spacing:.45px;margin-bottom:3px;}
 .field{display:flex;flex-direction:column;gap:3px;min-width:0;}
 .field label{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#7a9ab8;}
 input[type="text"],input[type="number"],select{
@@ -408,6 +410,10 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="marks">
         <span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span><span>60%</span>
       </div>
+      <div class="crediline-alert" id="credilineAlert">
+        <strong>Nova simulação Crediline obrigatória</strong>
+        Ao alterar a entrada, rode uma nova simulação no Crediline do Itaú para obter a taxa correta desta faixa. Mantenha o Crediline aberto ao lado ou tenha 2 a 3 opções pré-calculadas para agilizar a negociação.
+      </div>
 
       <!-- RESUMO FINANCIAMENTO PADRÃO -->
       <div class="g2 finance-summary" style="margin-top:8px;">
@@ -417,7 +423,7 @@ input[type="range"]::-webkit-slider-thumb{
         </div>
         <div class="field">
           <label>48 Parcelas</label>
-          <input id="parc" type="text" readonly class="ro" placeholder="—">
+          <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Crediline Itaú">
         </div>
       </div>
     </div>
@@ -429,7 +435,7 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="g2" style="margin-bottom:8px;">
         <div class="field">
           <label>Percentual Sinal à Vista</label>
-          <input id="sPctAuto" type="text" inputmode="numeric" class="ro" placeholder="Ex: 30%">
+          <input id="sPctAuto" type="text" readonly class="ro" placeholder="—">
         </div>
         <div class="field">
           <label>Sinal à Vista</label>
@@ -485,7 +491,7 @@ input[type="range"]::-webkit-slider-thumb{
     </div>
     <!-- STATUS -->
     <div class="status" id="sBar">
-      <div class="status-txt" id="sTxt">Preencha o valor do veículo</div>
+      <div class="status-txt" id="sTxt">Preencha preço e parcela 48x do Crediline</div>
       <span id="sIco">—</span>
     </div>
 
@@ -631,24 +637,18 @@ function adicionalUp(desconto){
 
 function calc(){
   // Entradas equivalentes da planilha Julho/2026:
-  // E3 preço tabela, G3 preço, C4 % entrada banco, G4 parcela fixa 48x calculada, G5 meses MultiFlex.
+  // E3 preço tabela, G3 preço, C4 % entrada banco, G4 parcela 48x Crediline, G5 meses MultiFlex.
   const G2 = new Date();
   const E3 = numVal("precoTabela") || numVal("preco");
   const G3 = numVal("preco");
   const C4 = (+$("ePct").value||0)/100;
-  const G4 = G3 ? pmt(B12,48,G3*(1-C4)) : 0;
+  const G4 = numVal("parc");
   const G5 = +$("mesesFlex").value || B14;
 
   const E4 = G3*C4;
-  const B13 = pmt(B12,48,G3);
+  const B13 = pmt(B12,48,G3*(1-C4));
   const B20 = E3 ? (E3-G3)/E3 : 0;
-  const defaultC6 = C4 < 0.26 ? 0.10 : C4 - 0.15;
-  const readPct = (id, fallback) => {
-    const raw = String($(id)?.value || "").replace(",", ".").replace("%", "").trim();
-    const val = Number(raw);
-    return Number.isFinite(val) && val > 0 ? val / 100 : fallback;
-  };
-  const C6 = readPct("sPctAuto", defaultC6);
+  const C6 = C4 < 0.26 ? 0.10 : C4 - 0.15;
   const C7 = Math.max(0, C4 - C6 + 0.10);
   const D5 = C6 + C7;
   const E5 = D5*G3;
@@ -664,7 +664,7 @@ function calc(){
 
   let G6 = 0;
   if(typeof E6 === "number"){
-    G6 = (G4/(1-C4)) < B13 ? "Revisar Banco" : (G4/(1-C4))*(1-C6);
+    G6 = G4 < B13 ? "Revisar Banco" : (G4/(1-C4))*(1-C6);
     if(typeof G6 === "string") E6 = G6;
   }
 
@@ -689,8 +689,7 @@ function calc(){
   if($("descontoComercial")) $("descontoComercial").value = E3 && G3 ? `${(B20*100).toFixed(1).replace('.',',')}%` : "";
 
   $("eVal").value = G3 ? brR(E4) : "";
-  $("parc").value = G3 ? brR(G4) : "";
-  if($("sPctAuto") && !$("sPctAuto").dataset.touched) $("sPctAuto").value = G3 ? pct(C6) : "";
+  if($("sPctAuto")) $("sPctAuto").value = G3 ? pct(C6) : "";
   if($("cPctAuto")) $("cPctAuto").value = G3 ? pct(C7) : "";
   $("sVal").value = ok26 ? brR(E6) : "";
   $("compMes").value = ok26 ? compStr : "";
@@ -711,16 +710,21 @@ function calc(){
 
   const msgs={
     "Prazo MultiFlex": `O prazo MultiFlex deve ser entre ${B15} e ${B14}`,
-    "Revisar Banco": `Parâmetros abaixo do banco (PMT mín. ${brR(B13)})`,
+    "Revisar Banco": `Financiamento fora do padrão Crediline (parcela mínima ${brR(B13)})`,
     "Entrada do Banco": "Entrada banco mínima é 20%",
+    "Incompatibilidade": "Preenchimento quebra a lógica matemática do plano",
     "Não Elegível": "MultiFlex 2027 não elegível pelo desconto comercial"
   };
+  const alertEl = $("credilineAlert");
+  const entradaAlterada = $("ePct")?.dataset.changed === "1";
+  if(alertEl) alertEl.style.display = entradaAlterada ? "block" : "none";
   const bar=$("sBar"),txt=$("sTxt"),ico=$("sIco");
-  if(!G3){bar.className="status"; txt.textContent="Preencha o valor do veículo"; ico.textContent="—";}
-  else if(ok26){bar.className="status ok"; txt.textContent= ok27 ? "✓ ELEGÍVEL — MultiFlex disponível" : "✓ MultiFlex 2026 disponível — 2027 não elegível"; ico.textContent="✓";}
+  if(!G3||!G4){bar.className="status"; txt.textContent="Preencha preço e parcela 48x do Crediline"; ico.textContent="—";}
+  else if(!Number.isFinite(G6) && typeof E6 === "number"){bar.className="status bad"; txt.textContent="Refaça a simulação — "+msgs.Incompatibilidade; ico.textContent="!";}
+  else if(ok26){bar.className=entradaAlterada?"status bad":"status ok"; txt.textContent=entradaAlterada ? "Atenção: recalcule no Crediline Itaú e confira a parcela 48x antes de seguir" : (ok27 ? "✓ ELEGÍVEL — MultiFlex disponível" : "✓ MultiFlex 2026 disponível — 2027 não elegível"); ico.textContent=entradaAlterada?"!":"✓";}
   else {bar.className="status bad"; txt.textContent="Refaça a simulação — "+(msgs[E6]||E6); ico.textContent="!";}
 
-  const p = !!G3;
+  const p = !!(G3 && G4);
   if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = `${G5} vezes`;
   if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "—";
   if($("finParcelasQtd")) $("finParcelasQtd").textContent = `${48-G5} parcelas`;
@@ -779,8 +783,9 @@ async function download(){
 
 
 
-["ePct","mesesFlex","precoTabela","preco"].forEach(id=>$(id)?.addEventListener("input",calc));
-$("sPctAuto")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();});
+["mesesFlex","precoTabela","preco"].forEach(id=>$(id)?.addEventListener("input",calc));
+$("parc")?.addEventListener("input",()=>{if($("ePct")?.dataset.changed==="1" && numVal("parc")) $("ePct").dataset.changed="0"; calc();});
+$("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.changed="1";calc();});
 $("modelo")?.addEventListener("change",calc);
 $("dlBtn")?.addEventListener("click",download);
 calc();
