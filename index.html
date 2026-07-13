@@ -125,6 +125,16 @@ select{
   background-size:5px 5px;background-repeat:no-repeat;padding-right:28px;
 }
 .ro{background:rgba(255,200,0,.08)!important;border-color:rgba(255,200,0,.35)!important;color:#ffd700!important;font-weight:900!important;cursor:default;font-size:13px!important;height:38px!important;padding:0 6px!important;text-align:center;letter-spacing:-.25px;}
+.flex-blk .ro{height:52px!important;font-size:18px!important;font-weight:950!important;letter-spacing:-.15px;}
+.flex-blk .field label{font-size:10px;letter-spacing:.75px;}
+.flex-blk .prazo-month input{height:52px!important;font-size:16px!important;}
+.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box{height:50px!important;font-size:18px!important;font-weight:950!important;}
+.flex-blk .ro-box{border-color:rgba(255,200,0,.48);background:rgba(255,200,0,.09);color:#ffd700;}
+.flex-blk .installment-card{padding:12px 13px;}
+.flex-blk .installment-card strong{font-size:10px;margin-bottom:8px;}
+.flex-blk .installment-split{min-height:48px;}
+.flex-blk .installment-split .count,.flex-blk .installment-split .amount{min-height:46px;font-size:20px;font-weight:950;}
+.flex-blk .installment-split .amount{color:#ffd700;}
 
 /* RANGE */
 .rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
@@ -608,7 +618,7 @@ function calc(){
   const entradaIncompativel = !!(G3 && hasPct && E4Input && Math.abs(E4Input - entradaEsperada) > 1);
   const precoForaFaixa = !!(G3 && (G3 < 30000 || G3 >= 1000000));
   const entradaForaFaixa = !!(E4Input && (E4Input < 1000 || E4Input >= 1000000 || (G3 && E4Input > G3)));
-  const parcelaForaFaixa = !!(G4 && (G4 < 100 || G4 >= 50000));
+  const parcelaForaFaixa = !!(G4 && (G4 < 10 || G4 >= 100000));
 
   const B13 = pmt(B12,48,G3*(1-C4));
   const B20 = E3 ? (E3-G3)/E3 : 0;
@@ -680,7 +690,19 @@ function formatMoneyTyping(id){
   const el = $(id);
   if(!el) return;
   const raw = String(el.value || "");
-  let value = raw.includes(",") || raw.includes("R$") ? parseMoney(raw) : Number(raw.replace(/\D/g, ""));
+  let digits = raw.replace(/\D/g, "");
+  const limits = {
+    preco: {max: 999999},
+    eVal: {max: 999999},
+    parc: {max: 99999}
+  };
+  const limit = limits[id];
+  if(!digits){ el.value = ""; return; }
+  let value = Number(digits);
+  if(limit?.max && value > limit.max){
+    digits = String(limit.max);
+    value = limit.max;
+  }
   if(!Number.isFinite(value) || value <= 0){ el.value = ""; return; }
   el.value = Math.round(value).toLocaleString("pt-BR");
   try{ el.setSelectionRange(el.value.length, el.value.length); }catch(e){}
