@@ -424,6 +424,7 @@ input[type="range"]::-webkit-slider-thumb{
       </div>
       <input id="mesesFlex" type="range" min="4" max="12" step="1" value="12">
       <div class="marks" id="mesesMarks"><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+      <div id="prazoAlert" class="crediline-alert" role="alert"><strong>Atenção ao prazo</strong>Prazo diferente de 12 meses altera a quantidade de parcelas e o mês da entrada a prazo, mas não recalcula taxa, IOF ou TAC do banco. Se o cliente quiser mudar as condições, rode uma nova simulação no Crediline Itaú.</div>
 
       <div class="installments-grid" style="margin-top:6px;">
         <div class="installment-card span-2">
@@ -588,6 +589,7 @@ function calc(){
   if($("ePct") && !$("ePct").dataset.touched) $("ePct").value = C4 ? pct(C4) : "";
   $("mesesLbl").textContent = G5;
   if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = `(4 a 12)`;
+  if($("prazoAlert")) $("prazoAlert").style.display = G5 === B14 ? "none" : "block";
   rf($("mesesFlex"));
 
   if($("dataPropostaTop")) $("dataPropostaTop").textContent = propStr;
@@ -598,7 +600,8 @@ function calc(){
   const alerta = typeof E6 === "string" ? uiText(E6) : "";
   $("sVal").value = ok26 ? brR(E6) : alerta;
   $("compMes").value = ok26 ? compStr : alerta;
-  $("cVal").value = ok26 ? brR(E7) : "";  const p = !!(G3 && G4);
+  $("cVal").value = ok26 ? brR(E7) : "";
+  const p = !!(G3 && G4);
   if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = F6lbl;
   if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "—";
   if($("finParcelasQtd")) $("finParcelasQtd").textContent = F7lbl;
