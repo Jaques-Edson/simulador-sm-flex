@@ -395,10 +395,6 @@ input[type="range"]::-webkit-slider-thumb{
           <label>Preço do Veículo (R$)</label>
           <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 99000">
         </div>
-        <div class="field">
-          <label>Desconto Comercial</label>
-          <input id="descontoComercial" type="text" readonly class="ro" placeholder="—">
-        </div>
       </div>
 
       <!-- ENTRADA FINANCIAMENTO -->
@@ -479,7 +475,7 @@ input[type="range"]::-webkit-slider-thumb{
       </div>
       <div class="g2" style="margin-top:6px;align-items:end;">
         <div class="field">
-          <label>Entrada a Prazo</label>
+          <label>Valor Entrada a Prazo</label>
           <input id="cVal" type="text" readonly class="ro" placeholder="—">
         </div>
         <div class="installment-card">
@@ -653,7 +649,7 @@ function calc(){
   const D5 = C6 + C7;
   const E5 = D5*G3;
   const B17 = adicionalUp(B20);
-  const B7 = addMonths(G2,Math.max(G5-1,0));
+  const B7 = addMonths(G2,G5);
 
   let E6;
   if(!G2) E6 = "DATA";
@@ -686,7 +682,6 @@ function calc(){
   rf($("ePct")); rf($("mesesFlex"));
 
   if($("dataPropostaTop")) $("dataPropostaTop").textContent = propStr;
-  if($("descontoComercial")) $("descontoComercial").value = E3 && G3 ? `${(B20*100).toFixed(1).replace('.',',')}%` : "";
 
   $("eVal").value = G3 ? brR(E4) : "";
   if($("sPctAuto")) $("sPctAuto").value = G3 ? pct(C6) : "";
@@ -713,7 +708,7 @@ function calc(){
     "Revisar Banco": `Financiamento fora do padrão Crediline (parcela mínima ${brR(B13)})`,
     "Entrada do Banco": "Entrada banco mínima é 20%",
     "Incompatibilidade": "Preenchimento quebra a lógica matemática do plano",
-    "Não Elegível": "MultiFlex 2027 não elegível pelo desconto comercial"
+    "Não Elegível": "MultiFlex 2027 não elegível pela condição comercial"
   };
   const alertEl = $("credilineAlert");
   const entradaAlterada = $("ePct")?.dataset.changed === "1";
