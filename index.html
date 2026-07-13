@@ -209,9 +209,9 @@ input[type="range"]::-webkit-slider-thumb{
   border:1px solid rgba(37,215,243,.5);color:#25d7f3;
   display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;}
 
-/* SPLASH VERTICAL */
+/* SPLASH DE ABERTURA */
 .rotate-banner{
-  display:none;position:fixed;inset:0;z-index:9999;
+  display:flex;position:fixed;inset:0;z-index:9999;
   background:radial-gradient(circle at center,rgba(8,38,72,.98),rgba(2,6,14,.99) 68%);
   flex-direction:column;align-items:center;justify-content:center;
   gap:16px;padding:32px;text-align:center;transition:opacity .55s ease,visibility .55s ease;
@@ -231,7 +231,6 @@ input[type="range"]::-webkit-slider-thumb{
 @keyframes splashPulse{0%,100%{transform:scale(.985);opacity:.92}50%{transform:scale(1.025);opacity:1}}
 @keyframes splashGlow{from{opacity:.55;transform:scale(.96)}to{opacity:1;transform:scale(1.04)}}
 @keyframes speedNeedle{from{transform:rotate(-180deg)}to{transform:rotate(0deg)}}
-@media (max-width:960px) and (orientation:portrait){.rotate-banner{display:flex;}}
 
 @media (max-width:960px){
   body{overflow-y:auto;height:auto;min-height:100vh;}
