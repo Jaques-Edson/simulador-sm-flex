@@ -96,10 +96,11 @@ input,select,button{font:inherit}
 .benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
 .benefit-item{border:1px solid rgba(37,215,243,.18);border-radius:7px;background:rgba(37,215,243,.035);padding:7px 8px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.45px;color:#c8d8e8;text-align:center;line-height:1.25;}
 .phase-title{margin-top:10px;margin-bottom:6px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;color:#ffd700;text-align:center;}
-.crediline-alert{display:none;margin-top:7px;border:1px solid rgba(240,82,82,.55);border-radius:8px;background:rgba(80,10,10,.45);padding:8px 9px;color:#ffd5d5;font-size:9px;line-height:1.35;font-weight:800;}
-.crediline-alert strong{display:block;color:#ffd700;text-transform:uppercase;letter-spacing:.45px;margin-bottom:3px;}
 .finance-help{margin-top:7px;border:1px solid rgba(37,215,243,.18);border-radius:8px;background:rgba(37,215,243,.04);padding:8px 9px;color:#9db7cf;font-size:9px;line-height:1.35;font-weight:800;}
-.phase2-grid{display:grid;grid-template-columns:1.15fr .8fr 1fr .95fr 1fr;gap:5px;margin-top:6px;align-items:end;}
+.prazo-flex-row{display:grid;grid-template-columns:minmax(0, 58%) minmax(190px, 220px);gap:10px;align-items:end;margin-top:8px;}
+.prazo-control{min-width:0;}
+.prazo-month input{height:38px;font-size:11px!important;}
+.phase2-grid{display:grid;grid-template-columns:.8fr 1fr .95fr 1fr;gap:5px;margin-top:6px;align-items:end;}
 .phase2-grid .field label{font-size:7px;line-height:1.15;letter-spacing:.35px;}
 .phase2-grid input,.phase2-grid .ro-box{font-size:10px!important;}
 .ro-box{height:34px;width:100%;border:1px solid rgba(255,200,0,.35);border-radius:7px;background:rgba(255,200,0,.08);color:#ffd700;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px;font-variant-numeric:tabular-nums;}
@@ -244,6 +245,7 @@ input[type="range"]::-webkit-slider-thumb{
   .final-left .field label{font-size:7.5px;}
   .installments-grid{grid-template-columns:1fr 1fr;}
   .benefits-list{grid-template-columns:1fr 1fr;}
+  .prazo-flex-row{grid-template-columns:1fr;}
   .phase2-grid{grid-template-columns:1fr 1fr;}
   .phase2-grid .field:last-child{grid-column:1 / -1;}
   /* linhas de comparação: empilha em coluna */
@@ -414,13 +416,20 @@ input[type="range"]::-webkit-slider-thumb{
       </div>
 
       <!-- Prazo MultiFlex -->
-      <div class="rng-row" style="margin-top:8px;">
-        <span class="rng-lbl">Prazo MultiFlex <span id="mesesMaxInfo" style="color:#f05252;font-size:9px;"></span></span>
-        <span class="rng-val"><span id="mesesLbl">12</span> meses</span>
+      <div class="prazo-flex-row">
+        <div class="prazo-control">
+          <div class="rng-row">
+            <span class="rng-lbl">Prazo MultiFlex <span id="mesesMaxInfo" style="color:#f05252;font-size:9px;"></span></span>
+            <span class="rng-val"><span id="mesesLbl">12</span> meses</span>
+          </div>
+          <input id="mesesFlex" type="range" min="4" max="12" step="1" value="12">
+          <div class="marks" id="mesesMarks"><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+        </div>
+        <div class="field prazo-month">
+          <label>Mês da Entrada a Prazo</label>
+          <input id="compMes" type="text" readonly class="ro" placeholder="—">
+        </div>
       </div>
-      <input id="mesesFlex" type="range" min="4" max="12" step="1" value="12">
-      <div class="marks" id="mesesMarks"><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
-      <div id="prazoAlert" class="crediline-alert" role="alert"><strong>Atenção ao prazo</strong>Prazo diferente de 12 meses altera a quantidade de parcelas e o mês da entrada a prazo, mas não recalcula taxa, IOF ou TAC do banco. Se o cliente quiser mudar as condições, rode uma nova simulação no Crediline Itaú.</div>
 
       <div class="installments-grid" style="margin-top:6px;">
         <div class="installment-card span-2">
@@ -441,10 +450,6 @@ input[type="range"]::-webkit-slider-thumb{
 
       <div class="phase-title">Fase 2 · Entrada a Prazo</div>
       <div class="phase2-grid">
-        <div class="field">
-          <label>Mês da Entrada a Prazo</label>
-          <input id="compMes" type="text" readonly class="ro" placeholder="—">
-        </div>
         <div class="field">
           <label>Percentual de Entrada</label>
           <input id="cPctAuto" type="text" readonly class="ro" placeholder="—">
@@ -585,7 +590,6 @@ function calc(){
   if($("ePct") && !$("ePct").dataset.touched) $("ePct").value = C4 ? pct(C4) : "";
   $("mesesLbl").textContent = G5;
   if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = `(4 a 12)`;
-  if($("prazoAlert")) $("prazoAlert").style.display = G5 === B14 ? "none" : "block";
   rf($("mesesFlex"));
 
   if($("dataPropostaTop")) $("dataPropostaTop").textContent = propStr;
