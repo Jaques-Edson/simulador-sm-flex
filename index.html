@@ -484,10 +484,29 @@ function pmt(rate,nper,pv){
   if(!rate) return pv/nper;
   return pv*rate/(1-Math.pow(1+rate,-nper));
 }
-function numVal(id){return Number(String($(id)?.value||"").replace(/\D/g,""))||0;}
+function parseMoney(raw){
+  let s = String(raw || "").trim();
+  if(!s) return 0;
+  s = s.replace(/R\$|\s/g, "").replace(/[^\d.,-]/g, "");
+  const lastComma = s.lastIndexOf(",");
+  const lastDot = s.lastIndexOf(".");
+  if(lastComma >= 0 && lastDot >= 0){
+    const decimalSep = lastComma > lastDot ? "," : ".";
+    const thousandSep = decimalSep === "," ? "." : ",";
+    s = s.split(thousandSep).join("").replace(decimalSep, ".");
+  }else if(lastComma >= 0){
+    s = s.replace(/\./g, "").replace(",", ".");
+  }else if(lastDot >= 0){
+    const parts = s.split(".");
+    s = parts.length > 2 || parts.at(-1).length === 3 ? parts.join("") : s;
+  }
+  const n = Number(s);
+  return Number.isFinite(n) ? n : 0;
+}
+function numVal(id){return parseMoney($(id)?.value);}
 function brR(v){
   return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",
-    minimumFractionDigits:0,maximumFractionDigits:0}).format(Math.round(v));
+    minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(v)||0);
 }
 function pct(v){return `${Math.round(v*100)}%`;}
 function rf(el){
@@ -500,7 +519,7 @@ function fileSafe(s){
     .replace(/[^a-z0-9]+/gi,"-").toLowerCase();
 }
 function uiText(v){
-  const map={"Revisar Banco":"Revisar banco","Entrada do Banco":"Entrada do banco","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N?o Eleg?vel":"N?o eleg?vel"};
+  const map={"Financiamento":"Financiamento fora do padrão","Revisar Banco":"Revisar banco","Check Banco":"Check banco","Entrada do Banco":"Entrada do banco","Entrada Banco":"Entrada do banco","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N?o Eleg?vel":"N?o eleg?vel"};
   return map[v] || v;
 }
 function sc(id,v){
@@ -528,7 +547,7 @@ function calc(){
   const E3 = numVal("precoTabela") || numVal("preco");
   const G3 = numVal("preco");
   const E4Input = numVal("eVal");
-  const pctRaw = Number(String($("ePct")?.value || "").replace(",", ".").replace("%", ""));
+  const pctRaw = Number(String($("ePct")?.value || "").replace(/[^\d,.-]/g, "").replace(",", "."));
   const C4 = Number.isFinite(pctRaw) && pctRaw > 0 ? pctRaw/100 : (G3 ? E4Input/G3 : 0);
   const G4 = numVal("parc");
   const G5 = +$("mesesFlex").value || B14;
@@ -544,6 +563,7 @@ function calc(){
 
   let E6;
   if(!G2) E6 = "DATA";
+  else if(G4 && G4 < B13) E6 = "Financiamento";
   else if(G5 < B15 || G5 > B14) E6 = "Prazo MultiFlex";
   else if(D5 < (C4-B19)) E6 = "Revisar Banco";
   else if(C4 < B18) E6 = "Entrada do Banco";
@@ -551,7 +571,8 @@ function calc(){
 
   let G6 = 0;
   if(typeof E6 === "number"){
-    G6 = G4 < B13 ? "Revisar Banco" : (G4/(1-C4))*(1-C6);
+    const parcelaBase = C4 < 1 ? G4/(1-C4) : 0;
+    G6 = parcelaBase < B13 ? "Revisar Banco" : parcelaBase*(1-C6);
     if(typeof G6 === "string") E6 = G6;
   }
 
@@ -574,18 +595,32 @@ function calc(){
   if($("eVal") && !$("eVal").dataset.touched) $("eVal").value = G3 ? brR(E4) : "";
   if($("sPctAuto")) $("sPctAuto").value = G3 ? pct(C6) : "";
   if($("cPctAuto")) $("cPctAuto").value = G3 ? pct(C7) : "";
-  $("sVal").value = ok26 ? brR(E6) : "";
-  $("compMes").value = ok26 ? compStr : "";
-  $("cVal").value = ok26 ? brR(E7) : "";
-  const p = !!(G3 && G4);
+  const alerta = typeof E6 === "string" ? uiText(E6) : "";
+  $("sVal").value = ok26 ? brR(E6) : alerta;
+  $("compMes").value = ok26 ? compStr : alerta;
+  $("cVal").value = ok26 ? brR(E7) : "";  const p = !!(G3 && G4);
   if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = F6lbl;
   if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "—";
   if($("finParcelasQtd")) $("finParcelasQtd").textContent = F7lbl;
   if($("finParcelasValor")) $("finParcelasValor").textContent = p && ok26 ? brR(G7) : "—";
 
 }
+function formatMoneyInput(id){
+  const el = $(id);
+  if(!el) return;
+  const value = parseMoney(el.value);
+  el.value = value ? brR(value) : "";
+}
+function formatPctInput(id){
+  const el = $(id);
+  if(!el) return;
+  const raw = Number(String(el.value || "").replace(/[^\d,.-]/g, "").replace(",", "."));
+  el.value = Number.isFinite(raw) && raw > 0 ? `${Math.round(raw)}%` : "";
+}
 ["mesesFlex","precoTabela","preco"].forEach(id=>$(id)?.addEventListener("input",calc));
+["precoTabela","preco","eVal","parc"].forEach(id=>$(id)?.addEventListener("blur",()=>{formatMoneyInput(id);calc();}));
 $("parc")?.addEventListener("input",calc);
+$("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
 ["ePct","eVal"].forEach(id=>$(id)?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();}));
 $("modelo")?.addEventListener("change",calc);
 calc();
