@@ -245,7 +245,11 @@ input[type="range"]::-webkit-slider-thumb{
   .final-left .field label{font-size:7.5px;}
   .installments-grid{grid-template-columns:1fr 1fr;}
   .benefits-list{grid-template-columns:1fr 1fr;}
-  .prazo-flex-row{grid-template-columns:1fr;}
+  .prazo-flex-row{grid-template-columns:minmax(0, 58%) minmax(118px, 42%);gap:6px;align-items:end;}
+  .prazo-month input{height:34px;font-size:9px!important;padding:0 5px;}
+  .prazo-month label{font-size:6.8px;letter-spacing:.25px;}
+  .prazo-control .rng-lbl,.prazo-control .rng-val{font-size:8px;}
+  .prazo-control .marks{font-size:7px;}
   .phase2-grid{grid-template-columns:1fr 1fr;}
   .phase2-grid .field:last-child{grid-column:1 / -1;}
   /* linhas de comparação: empilha em coluna */
