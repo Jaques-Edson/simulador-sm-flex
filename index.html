@@ -214,18 +214,23 @@ input[type="range"]::-webkit-slider-thumb{
   display:none;position:fixed;inset:0;z-index:9999;
   background:radial-gradient(circle at center,rgba(8,38,72,.98),rgba(2,6,14,.99) 68%);
   flex-direction:column;align-items:center;justify-content:center;
-  gap:18px;padding:32px;text-align:center;transition:opacity .55s ease,visibility .55s ease;
+  gap:16px;padding:32px;text-align:center;transition:opacity .55s ease,visibility .55s ease;
 }
 .rotate-banner.is-done{opacity:0;visibility:hidden;pointer-events:none;}
 .splash-logo-wrap{position:relative;width:min(76vw,320px);display:flex;align-items:center;justify-content:center;}
 .splash-logo-wrap::before{content:"";position:absolute;inset:-18px;border-radius:999px;background:rgba(37,215,243,.12);filter:blur(18px);animation:splashGlow 1.8s ease-in-out infinite alternate;}
 .splash-logo{position:relative;width:100%;max-height:130px;object-fit:contain;animation:splashPulse 1.8s ease-in-out infinite;}
-.splash-loader{width:min(58vw,240px);height:4px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden;border:1px solid rgba(37,215,243,.18);}
-.splash-loader span{display:block;height:100%;width:0;background:linear-gradient(90deg,#25d7f3,#ffd700);border-radius:inherit;animation:splashLoad 8s linear forwards;}
+.splash-gauge{position:relative;width:min(58vw,230px);height:118px;margin-top:-2px;}
+.splash-gauge::before{content:"";position:absolute;left:0;right:0;bottom:0;height:100%;border-radius:140px 140px 0 0;background:conic-gradient(from 270deg at 50% 100%,#25d7f3 0deg,#ffd700 92deg,rgba(255,255,255,.16) 180deg,transparent 181deg);clip-path:inset(0 0 0 0);}
+.splash-gauge::after{content:"";position:absolute;left:18px;right:18px;bottom:0;height:calc(100% - 18px);border-radius:120px 120px 0 0;background:rgba(2,6,14,.96);}
+.splash-needle{position:absolute;left:50%;bottom:8px;width:46%;height:3px;background:#ffd700;border-radius:999px;transform-origin:left center;transform:rotate(-180deg);animation:speedNeedle 6s ease-in-out forwards;z-index:2;box-shadow:0 0 12px rgba(255,215,0,.55);}
+.splash-needle::after{content:"";position:absolute;left:-6px;top:-5px;width:13px;height:13px;border-radius:50%;background:#25d7f3;box-shadow:0 0 12px rgba(37,215,243,.65);}
+.splash-percent{position:absolute;left:0;right:0;bottom:18px;z-index:3;color:#ffd700;font-size:24px;font-weight:950;font-variant-numeric:tabular-nums;}
+.splash-scale{position:absolute;left:8px;right:8px;bottom:2px;z-index:3;display:flex;justify-content:space-between;color:#7a9ab8;font-size:9px;font-weight:900;}
 .rotate-banner p{color:#9db7cf;font-size:12px;line-height:1.45;max-width:280px;font-weight:800;}
 @keyframes splashPulse{0%,100%{transform:scale(.985);opacity:.92}50%{transform:scale(1.025);opacity:1}}
 @keyframes splashGlow{from{opacity:.55;transform:scale(.96)}to{opacity:1;transform:scale(1.04)}}
-@keyframes splashLoad{from{width:0}to{width:100%}}
+@keyframes speedNeedle{from{transform:rotate(-180deg)}to{transform:rotate(0deg)}}
 @media (max-width:960px) and (orientation:portrait){.rotate-banner{display:flex;}}
 
 @media (max-width:960px){
@@ -347,7 +352,11 @@ input[type="range"]::-webkit-slider-thumb{
 
 <div class="rotate-banner" id="rotateBanner">
   <div class="splash-logo-wrap"><img class="splash-logo" src="logo_sm_flex.png" alt="San Marino Flex"></div>
-  <div class="splash-loader" aria-hidden="true"><span></span></div>
+  <div class="splash-gauge" aria-label="Carregando de 0 a 100 por cento">
+    <div class="splash-needle"></div>
+    <div class="splash-percent"><span id="splashPct">0</span>%</div>
+    <div class="splash-scale"><span>0</span><span>100</span></div>
+  </div>
   <p>Preparando o simulador. Para melhor visualização, use o celular na horizontal.</p>
 </div>
 
@@ -632,7 +641,17 @@ $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
 $("modelo")?.addEventListener("change",calc);
 calc();
 const splash = $("rotateBanner");
-if(splash) window.setTimeout(()=>splash.classList.add("is-done"),8000);
+if(splash){
+  const pctEl = $("splashPct");
+  const startedAt = Date.now();
+  const duration = 6000;
+  const tick = window.setInterval(()=>{
+    const pctValue = Math.min(100, Math.round((Date.now() - startedAt) / duration * 100));
+    if(pctEl) pctEl.textContent = pctValue;
+    if(pctValue >= 100) window.clearInterval(tick);
+  },80);
+  window.setTimeout(()=>splash.classList.add("is-done"),duration);
+}
 </script>
 </body>
 </html>
