@@ -102,6 +102,11 @@ input,select,button{font:inherit}
 .phase-title{margin-top:10px;margin-bottom:6px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;color:#ffd700;text-align:center;}
 .crediline-alert{display:none;margin-top:7px;border:1px solid rgba(240,82,82,.55);border-radius:8px;background:rgba(80,10,10,.45);padding:8px 9px;color:#ffd5d5;font-size:9px;line-height:1.35;font-weight:800;}
 .crediline-alert strong{display:block;color:#ffd700;text-transform:uppercase;letter-spacing:.45px;margin-bottom:3px;}
+.finance-help{margin-top:7px;border:1px solid rgba(37,215,243,.18);border-radius:8px;background:rgba(37,215,243,.04);padding:8px 9px;color:#9db7cf;font-size:9px;line-height:1.35;font-weight:800;}
+.phase2-grid{display:grid;grid-template-columns:1.15fr .8fr 1fr .95fr 1fr;gap:5px;margin-top:6px;align-items:end;}
+.phase2-grid .field label{font-size:7px;line-height:1.15;letter-spacing:.35px;}
+.phase2-grid input,.phase2-grid .ro-box{font-size:10px!important;}
+.ro-box{height:34px;width:100%;border:1px solid rgba(255,200,0,.35);border-radius:7px;background:rgba(255,200,0,.08);color:#ffd700;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px;font-variant-numeric:tabular-nums;}
 .field{display:flex;flex-direction:column;gap:3px;min-width:0;}
 .field label{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;color:#7a9ab8;}
 input[type="text"],input[type="number"],select{
@@ -259,6 +264,8 @@ input[type="range"]::-webkit-slider-thumb{
   .final-left .field label{font-size:7.5px;}
   .installments-grid{grid-template-columns:1fr 1fr;}
   .benefits-list{grid-template-columns:1fr 1fr;}
+  .phase2-grid{grid-template-columns:1fr 1fr;}
+  .phase2-grid .field:last-child{grid-column:1 / -1;}
   /* linhas de comparação: empilha em coluna */
   .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
   .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
@@ -422,10 +429,11 @@ input[type="range"]::-webkit-slider-thumb{
           <input id="eVal" type="text" readonly class="ro" placeholder="—">
         </div>
         <div class="field">
-          <label>48 Parcelas</label>
+          <label>+ 48 X</label>
           <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Crediline Itaú">
         </div>
       </div>
+      <div class="finance-help">Preencha o valor do veículo + % Entrada + Valor da Entrada + Parcelas fixas de 48 vezes conforme a Simulação realizada no Crediline Itaú.</div>
     </div>
     <!-- BLOCO 2: PLANO MULTIFLEX -->
     <div class="blk flex-blk">
@@ -469,25 +477,26 @@ input[type="range"]::-webkit-slider-thumb{
       </div>
 
       <div class="phase-title">Fase 2 · Entrada a Prazo</div>
-      <div class="g2" style="margin-top:6px;align-items:end;">
+      <div class="phase2-grid">
         <div class="field">
-          <label>Mês Entrada a Prazo</label>
+          <label>Mês da Entrada a Prazo</label>
           <input id="compMes" type="text" readonly class="ro" placeholder="—">
         </div>
         <div class="field">
-          <label>Percentual Entrada a Prazo</label>
+          <label>Percentual de Entrada</label>
           <input id="cPctAuto" type="text" readonly class="ro" placeholder="—">
         </div>
-      </div>
-      <div class="g2" style="margin-top:6px;align-items:end;">
         <div class="field">
-          <label>Valor Entrada a Prazo</label>
+          <label>Valor da Entrada</label>
           <input id="cVal" type="text" readonly class="ro" placeholder="—">
         </div>
-        <div class="installment-card">
-          <strong>Parcelas Financiadas</strong>
-          <div class="count" id="finParcelasQtd">—</div>
-          <div class="amount" id="finParcelasValor">—</div>
+        <div class="field">
+          <label>Parcelas Restantes</label>
+          <div class="ro-box" id="finParcelasQtd">—</div>
+        </div>
+        <div class="field">
+          <label>Valor da Parcela</label>
+          <div class="ro-box" id="finParcelasValor">—</div>
         </div>
       </div>
     </div>
@@ -624,7 +633,7 @@ function fmtData(d){
 }
 function fmtMesAnoCampo(d){
   const mes = d.toLocaleDateString("pt-BR",{month:"long"});
-  return `${mes.charAt(0).toUpperCase()}${mes.slice(1)} de ${d.getFullYear()}`;
+  return `${mes}, ${d.getFullYear()}`;
 }
 function addMonths(d,m){
   return new Date(d.getFullYear(), d.getMonth()+m, d.getDate());
@@ -677,8 +686,8 @@ function calc(){
   const G8 = ok26 && typeof adicionalParcela === "number" ? G7 + adicionalParcela : "Não Elegível";
   const ok27 = ok26 && typeof G8 === "number";
 
-  const F6lbl = `${G5} parcelas`;
-  const F7lbl = `${48-G5} parcelas`;
+  const F6lbl = `+ ${G5} Parcelas`;
+  const F7lbl = `+ ${48-G5} Parcelas`;
   const compStr = fmtMesAnoCampo(B7);
   const propStr = fmtData(G2);
 
@@ -726,9 +735,9 @@ function calc(){
   else {bar.className="status bad"; txt.textContent="Refaça a simulação — "+(msgs[E6]||E6); ico.textContent="!";}
 
   const p = !!(G3 && G4);
-  if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = `${G5}x`;
+  if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = F6lbl;
   if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "—";
-  if($("finParcelasQtd")) $("finParcelasQtd").textContent = `${48-G5} parcelas`;
+  if($("finParcelasQtd")) $("finParcelasQtd").textContent = F7lbl;
   if($("finParcelasValor")) $("finParcelasValor").textContent = p && ok26 ? brR(G7) : "—";
   $("tv-av").textContent = p ? brR(E4) : "—";
   $("tv-dz").textContent = "";
