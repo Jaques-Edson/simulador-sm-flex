@@ -276,6 +276,7 @@ input[type="range"]::-webkit-slider-thumb{
   .prazo-control .rng-lbl,.prazo-control .rng-val{font-size:8px;}
   .prazo-control .marks{font-size:7px;}
   .phase2-grid{grid-template-columns:1fr 1fr;}
+  .finance-help{font-size:8px;line-height:1.25;padding:7px 8px;}
   /* linhas de comparacao: empilha em coluna */
   .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
   .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
@@ -292,6 +293,7 @@ input[type="range"]::-webkit-slider-thumb{
   .g2{gap:6px;}
   .g3{gap:4px;}
   .field label{font-size:8px;line-height:1.15;}
+  .finance-help{font-size:7px;line-height:1.2;padding:6px 7px;}
   .ro{font-size:11px!important;padding:0 4px!important;}
   .dates-grid{grid-template-columns:1fr;}
   .dates-grid .field:last-child{grid-column:auto;}
@@ -466,7 +468,7 @@ input[type="range"]::-webkit-slider-thumb{
       <div class="prazo-flex-row">
         <div class="prazo-control">
           <div class="rng-row">
-            <span class="rng-lbl">Prazo MultiFlex <span id="mesesMaxInfo" style="color:#ffd700;font-size:9px;"></span></span>
+            <span class="rng-lbl">Prazo MultiFlex <span id="mesesMaxInfo" style="color:#ffd700;font-size:11px;"></span></span>
             <span class="rng-val"><span id="mesesLbl">12</span> meses</span>
           </div>
           <input id="mesesFlex" type="range" min="4" max="12" step="1" value="12">
@@ -655,7 +657,7 @@ function calc(){
 
   if($("ePct") && !$("ePct").dataset.touched) $("ePct").value = C4 ? pct(C4) : "";
   $("mesesLbl").textContent = G5;
-  if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = "(4 a 12)";
+  if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = "(4 a 12 meses)";
   rf($("mesesFlex"));
 
   if($("dataPropostaTop")) $("dataPropostaTop").textContent = propStr;
