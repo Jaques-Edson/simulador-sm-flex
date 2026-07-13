@@ -439,14 +439,14 @@ input[type="range"]::-webkit-slider-thumb{
         </div>
         <div class="field">
           <label>Valor da Entrada</label>
-          <input id="eVal" type="text" inputmode="numeric" placeholder="Crediline">
+          <input id="eVal" type="text" inputmode="numeric" placeholder="Credline">
         </div>
         <div class="field">
           <label>Valor 48x</label>
-          <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Crediline">
+          <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Credline">
         </div>
       </div>
-      <div class="finance-help">Crediline: informe aqui os mesmos dados da simula&ccedil;&atilde;o: valor, entrada e 48x.</div>
+      <div class="finance-help">Credline: informe aqui os mesmos dados da simula&ccedil;&atilde;o: valor, entrada e 48x.</div>
     </div>
 
     <!-- BLOCO 2: PLANO MULTIFLEX -->
@@ -570,10 +570,10 @@ function fileSafe(s){
 }
 function uiText(v){
   if(v === "Entrada Incompat\u00edvel") return "Valor da entrada n\u00e3o confere";
-  if(v === "Preco Fora") return "Pre\u00e7o do ve\u00edculo fora do padr\u00e3o";
+  if(v === "Preco Fora") return "Check valor do ve\u00edculo";
   if(v === "Entrada Fora") return "Entrada fora do padr\u00e3o";
   if(v === "Parcela Fora") return "Parcela fora do padr\u00e3o";
-  const map={"Financiamento":"Financiamento fora do padr\u00e3o","Revisar Banco":"Revisar banco","Check Banco":"Check banco","Crediline":"Preencha dados Crediline","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N\u00e3o Eleg\u00edvel":"N\u00e3o eleg\u00edvel"};
+  const map={"Financiamento":"Check financiamento","Revisar Banco":"Check financiamento","Check Banco":"Check financiamento","Credline":"Check Credline","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N\u00e3o Eleg\u00edvel":"N\u00e3o eleg\u00edvel"};
   return map[v] || v;
 }
 function sc(id,v){
@@ -603,7 +603,7 @@ function syncVehicleYears(){
 }
 function calc(){
   // Entradas equivalentes da planilha Julho/2026:
-  // G3 preco do veiculo, C4 percentual de entrada, E4 valor entrada, G4 parcela 48x Crediline, G5 meses MultiFlex.
+  // G3 preco do veiculo, C4 percentual de entrada, E4 valor entrada, G4 parcela 48x Credline, G5 meses MultiFlex.
   const G2 = new Date();
   const G3 = numVal("preco");
   const E3 = G3;
@@ -636,7 +636,7 @@ function calc(){
   else if(G4 && G4 < B13) E6 = "Financiamento";
   else if(G5 < B15 || G5 > B14) E6 = "Prazo MultiFlex";
   else if(D5 < (C4-B19)) E6 = "Revisar Banco";
-  else if(C4 < B18) E6 = "Crediline";
+  else if(C4 < B18) E6 = "Credline";
   else E6 = G3*C6;
 
   let G6 = 0;
@@ -692,7 +692,7 @@ function formatMoneyTyping(id){
   const raw = String(el.value || "");
   let digits = raw.replace(/\D/g, "");
   const limits = {
-    preco: {max: 999999},
+    preco: {max: 999999, block:true},
     eVal: {max: 999999},
     parc: {max: 99999}
   };
@@ -700,11 +700,16 @@ function formatMoneyTyping(id){
   if(!digits){ el.value = ""; return; }
   let value = Number(digits);
   if(limit?.max && value > limit.max){
+    if(limit.block){
+      el.value = el.dataset.lastValid || "";
+      return;
+    }
     digits = String(limit.max);
     value = limit.max;
   }
   if(!Number.isFinite(value) || value <= 0){ el.value = ""; return; }
   el.value = Math.round(value).toLocaleString("pt-BR");
+  el.dataset.lastValid = el.value;
   try{ el.setSelectionRange(el.value.length, el.value.length); }catch(e){}
 }
 function formatPctInput(id){
