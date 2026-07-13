@@ -77,7 +77,10 @@ input,select,button{font:inherit}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
 .vehicle-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:8px;}
 .crediline-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.year-field input{text-align:center;font-weight:900;font-size:11px;padding:0 6px;}
+.year-field input,.year-field select{text-align:center;font-weight:900;font-size:11px;padding:0 6px;}
+.year-inline{height:34px;border:1px solid rgba(34,212,126,.68);border-radius:7px;background:rgba(2,8,18,.9);display:grid;grid-template-columns:1fr 62px;align-items:center;overflow:hidden;}
+.year-inline span{font-size:11px;font-weight:900;text-align:center;color:#f0f4ff;}
+.year-inline select{height:100%;border:0!important;border-left:1px solid rgba(34,212,126,.35)!important;border-radius:0!important;background-color:transparent!important;box-shadow:none!important;color:#f0f4ff;}
 .g2.finance-summary{grid-template-columns:1fr 1fr;}
 .dates-grid{grid-template-columns:1fr;}
 .dates-grid .field{min-width:0;}
@@ -259,7 +262,9 @@ input[type="range"]::-webkit-slider-thumb{
   .g3{grid-template-columns:1fr 1fr;}
   .vehicle-grid{grid-template-columns:minmax(0,1fr) 116px;gap:6px;}
   .crediline-grid{grid-template-columns:1fr 1fr;gap:6px;}
-  .year-field input{font-size:9px;padding:0 3px;}
+  .year-field input,.year-field select{font-size:9px;padding:0 3px;}
+  .year-inline{grid-template-columns:1fr 52px;}
+  .year-inline span{font-size:9px;}
   .g3 .field:last-child{grid-column:1 / -1;}
   .g2.finance-summary{grid-template-columns:1fr 1fr;}
   .dates-grid{grid-template-columns:1fr;}
@@ -424,7 +429,7 @@ input[type="range"]::-webkit-slider-thumb{
         </div>
         <div class="field green-frame year-field">
           <label>Fab. / Modelo</label>
-          <input id="anoInfo" type="text" value="Fab. 2026 / Mod. 2026" readonly>
+          <div class="year-inline"><span>Fab. 2026</span><select id="anoModelo"><option value="2026">2026</option><option value="2027">2027</option></select></div>
         </div>
       </div>
       <!-- FINANCIAMENTO CREDILINE -->
@@ -599,7 +604,7 @@ function syncVehicleYears(){
   const name = String($("modelo")?.value || "").trim().toLowerCase();
   const data = vehicleYearData[name];
   if(!data) return;
-  if($("anoInfo")) $("anoInfo").value = `Fab. ${data.fab} / Mod. ${data.modelo}`;
+  if($("anoModelo")) $("anoModelo").value = data.modelo === "2027" ? "2027" : "2026";
 }
 function calc(){
   // Entradas equivalentes da planilha Julho/2026:
@@ -618,7 +623,7 @@ function calc(){
   const entradaIncompativel = !!(G3 && hasPct && E4Input && Math.abs(E4Input - entradaEsperada) > 1);
   const precoForaFaixa = !!(G3 && (G3 < 30000 || G3 >= 1000000));
   const entradaForaFaixa = !!(E4Input && (E4Input < 1000 || E4Input >= 1000000 || (G3 && E4Input > G3)));
-  const parcelaForaFaixa = !!(G4 && (G4 < 10 || G4 >= 100000));
+  const parcelaForaFaixa = !!(G4 && (G4 < 10 || G4 >= 10000));
 
   const B13 = pmt(B12,48,G3*(1-C4));
   const B20 = E3 ? (E3-G3)/E3 : 0;
@@ -694,7 +699,7 @@ function formatMoneyTyping(id){
   const limits = {
     preco: {max: 999999, block:true},
     eVal: {max: 999999},
-    parc: {max: 99999}
+    parc: {max: 9999, block:true}
   };
   const limit = limits[id];
   if(!digits){ el.value = ""; return; }
@@ -712,20 +717,34 @@ function formatMoneyTyping(id){
   el.dataset.lastValid = el.value;
   try{ el.setSelectionRange(el.value.length, el.value.length); }catch(e){}
 }
+function formatPctTyping(id){
+  const el = $(id);
+  if(!el) return;
+  const digits = String(el.value || "").replace(/\D/g, "");
+  if(!digits){ el.value = ""; return; }
+  const value = Number(digits);
+  if(digits.length > 2 || value > 60){
+    el.value = el.dataset.lastValid || "";
+    return;
+  }
+  el.value = String(value);
+  el.dataset.lastValid = el.value;
+}
 function formatPctInput(id){
   const el = $(id);
   if(!el) return;
   const raw = Number(String(el.value || "").replace(/[^\d,.-]/g, "").replace(",", "."));
-  el.value = Number.isFinite(raw) && raw > 0 ? `${Math.round(raw)}%` : "";
+  el.value = Number.isFinite(raw) && raw > 0 ? `${Math.min(60, Math.round(raw))}%` : "";
 }
 ["mesesFlex"].forEach(id=>$(id)?.addEventListener("input",calc));
 ["preco","parc"].forEach(id=>$(id)?.addEventListener("input",()=>{formatMoneyTyping(id);calc();}));
 ["preco","eVal","parc"].forEach(id=>$(id)?.addEventListener("blur",()=>{formatMoneyInput(id);calc();}));
-$("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();});
+$("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";formatPctTyping("ePct");calc();});
 $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
 $("eVal")?.addEventListener("input",e=>{e.currentTarget.dataset.manual="1";formatMoneyTyping("eVal");calc();});
 $("modelo")?.addEventListener("input",()=>{syncVehicleYears();calc();});
 $("modelo")?.addEventListener("change",()=>{syncVehicleYears();calc();});
+$("anoModelo")?.addEventListener("change",calc);
 syncVehicleYears();
 calc();
 const splash = $("rotateBanner");
