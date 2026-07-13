@@ -78,9 +78,10 @@ input,select,button{font:inherit}
 .vehicle-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:8px;}
 .crediline-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .year-field input,.year-field select{text-align:center;font-weight:900;font-size:11px;padding:0 6px;}
-.year-inline{height:34px;border:1px solid rgba(34,212,126,.68);border-radius:7px;background:rgba(2,8,18,.9);display:grid;grid-template-columns:1fr 62px;align-items:center;overflow:hidden;}
-.year-inline span{font-size:11px;font-weight:900;text-align:center;color:#f0f4ff;}
-.year-inline select{height:100%;border:0!important;border-left:1px solid rgba(34,212,126,.35)!important;border-radius:0!important;background-color:transparent!important;box-shadow:none!important;color:#f0f4ff;}
+.year-inline{height:34px;border:1px solid rgba(34,212,126,.68);border-radius:7px;background:rgba(2,8,18,.9);display:grid;grid-template-columns:1fr 62px;align-items:center;}
+.year-inline span{font-size:12px;font-weight:950;text-align:center;color:#f0f4ff;}
+.year-inline select{height:100%;border:0!important;border-left:1px solid rgba(34,212,126,.35)!important;border-radius:0 7px 7px 0!important;background-color:#061728!important;box-shadow:none!important;color:#f0f4ff!important;font-weight:950;cursor:pointer;}
+.year-inline select option{background:#061728;color:#f0f4ff;}
 .g2.finance-summary{grid-template-columns:1fr 1fr;}
 .dates-grid{grid-template-columns:1fr;}
 .dates-grid .field{min-width:0;}
@@ -264,7 +265,7 @@ input[type="range"]::-webkit-slider-thumb{
   .crediline-grid{grid-template-columns:1fr 1fr;gap:6px;}
   .year-field input,.year-field select{font-size:9px;padding:0 3px;}
   .year-inline{grid-template-columns:1fr 52px;}
-  .year-inline span{font-size:9px;}
+  .year-inline span{font-size:10px;}
   .g3 .field:last-child{grid-column:1 / -1;}
   .g2.finance-summary{grid-template-columns:1fr 1fr;}
   .dates-grid{grid-template-columns:1fr;}
@@ -428,8 +429,8 @@ input[type="range"]::-webkit-slider-thumb{
           </datalist>
         </div>
         <div class="field green-frame year-field">
-          <label>Fab. / Modelo</label>
-          <div class="year-inline"><span>Fab. 2026</span><select id="anoModelo"><option value="2026">2026</option><option value="2027">2027</option></select></div>
+          <label>Ano Fabrica&ccedil;&atilde;o / Modelo</label>
+          <div class="year-inline"><span>2026</span><select id="anoModelo"><option value="2026">2026</option><option value="2027">2027</option></select></div>
         </div>
       </div>
       <!-- FINANCIAMENTO CREDILINE -->
