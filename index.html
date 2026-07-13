@@ -208,17 +208,23 @@ input[type="range"]::-webkit-slider-thumb{
   border:1px solid rgba(37,215,243,.5);color:#25d7f3;
   display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;}
 
-/* BANNER GIRAR */
+/* SPLASH VERTICAL */
 .rotate-banner{
   display:none;position:fixed;inset:0;z-index:9999;
-  background:rgba(4,16,30,.97);flex-direction:column;
-  align-items:center;justify-content:center;gap:14px;padding:28px;text-align:center;
+  background:radial-gradient(circle at center,rgba(8,38,72,.98),rgba(2,6,14,.99) 68%);
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;padding:32px;text-align:center;transition:opacity .55s ease,visibility .55s ease;
 }
-.ri{font-size:48px;animation:giro 2s ease-in-out infinite;}
-@keyframes giro{0%{transform:rotate(0)}50%{transform:rotate(90deg)}100%{transform:rotate(90deg)}}
-.rotate-banner h3{color:#ffd700;font-size:20px;font-weight:900;}
-.rotate-banner p{color:#7a9ab8;font-size:13px;line-height:1.5;max-width:250px;}
-.skip{padding:9px 24px;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#c8d8e8;font-size:13px;font-weight:700;cursor:pointer;}
+.rotate-banner.is-done{opacity:0;visibility:hidden;pointer-events:none;}
+.splash-logo-wrap{position:relative;width:min(76vw,320px);display:flex;align-items:center;justify-content:center;}
+.splash-logo-wrap::before{content:"";position:absolute;inset:-18px;border-radius:999px;background:rgba(37,215,243,.12);filter:blur(18px);animation:splashGlow 1.8s ease-in-out infinite alternate;}
+.splash-logo{position:relative;width:100%;max-height:130px;object-fit:contain;animation:splashPulse 1.8s ease-in-out infinite;}
+.splash-loader{width:min(58vw,240px);height:4px;border-radius:999px;background:rgba(255,255,255,.14);overflow:hidden;border:1px solid rgba(37,215,243,.18);}
+.splash-loader span{display:block;height:100%;width:0;background:linear-gradient(90deg,#25d7f3,#ffd700);border-radius:inherit;animation:splashLoad 8s linear forwards;}
+.rotate-banner p{color:#9db7cf;font-size:12px;line-height:1.45;max-width:280px;font-weight:800;}
+@keyframes splashPulse{0%,100%{transform:scale(.985);opacity:.92}50%{transform:scale(1.025);opacity:1}}
+@keyframes splashGlow{from{opacity:.55;transform:scale(.96)}to{opacity:1;transform:scale(1.04)}}
+@keyframes splashLoad{from{width:0}to{width:100%}}
 @media (max-width:960px) and (orientation:portrait){.rotate-banner{display:flex;}}
 
 @media (max-width:960px){
@@ -334,10 +340,9 @@ input[type="range"]::-webkit-slider-thumb{
 <body>
 
 <div class="rotate-banner" id="rotateBanner">
-  <div class="ri">↻</div>
-  <h3>Gire o celular</h3>
-  <p>Para melhor experiência, use o smartphone na <strong style="color:#ffd700">posição horizontal</strong>.</p>
-  <button class="skip" onclick="document.getElementById('rotateBanner').style.display='none'">Continuar mesmo assim</button>
+  <div class="splash-logo-wrap"><img class="splash-logo" src="logo_sm_flex.jpeg" alt="San Marino Flex"></div>
+  <div class="splash-loader" aria-hidden="true"><span></span></div>
+  <p>Preparando o simulador. Para melhor visualização, use o celular na horizontal.</p>
 </div>
 
 <!-- TOPBAR -->
@@ -618,6 +623,8 @@ $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
 ["ePct","eVal"].forEach(id=>$(id)?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();}));
 $("modelo")?.addEventListener("change",calc);
 calc();
+const splash = $("rotateBanner");
+if(splash) window.setTimeout(()=>splash.classList.add("is-done"),8000);
 </script>
 </body>
 </html>
