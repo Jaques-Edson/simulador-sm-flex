@@ -75,6 +75,9 @@ input,select,button{font:inherit}
 /* CAMPOS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
+.vehicle-grid{display:grid;grid-template-columns:minmax(0,1fr) 92px 92px;gap:8px;}
+.crediline-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.year-field input{text-align:center;font-weight:900;}
 .g2.finance-summary{grid-template-columns:1fr 1fr;}
 .dates-grid{grid-template-columns:1fr;}
 .dates-grid .field{min-width:0;}
@@ -254,6 +257,8 @@ input[type="range"]::-webkit-slider-thumb{
   .right{overflow-y:visible;justify-content:flex-start;}
   /* sinal: 3 campos em 2 colunas */
   .g3{grid-template-columns:1fr 1fr;}
+  .vehicle-grid{grid-template-columns:1fr 72px 72px;gap:6px;}
+  .crediline-grid{grid-template-columns:1fr 1fr;gap:6px;}
   .g3 .field:last-child{grid-column:1 / -1;}
   .g2.finance-summary{grid-template-columns:1fr 1fr;}
   .dates-grid{grid-template-columns:1fr;}
@@ -368,59 +373,67 @@ input[type="range"]::-webkit-slider-thumb{
     <!-- BLOCO 1: SIMULACAO PLANO FLEX -->
     <div class="blk">
       <div class="blk-title">Simula&ccedil;&atilde;o Plano Flex</div>
-      <div class="g2 vehicle-grid" style="margin-bottom:8px;">
+      <div class="vehicle-grid" style="margin-bottom:8px;">
         <div class="field green-frame">
           <label>Modelo e Vers&atilde;o</label>
-          <input id="modelo" list="modelosList" type="text" value="Pulse Drive 1.3 MT Flex 4P 2026" placeholder="Digite para filtrar o ve&iacute;culo">
+          <input id="modelo" list="modelosList" type="text" value="Pulse Drive 1.3 MT Flex 4P" placeholder="Digite para filtrar o ve&iacute;culo">
           <datalist id="modelosList">
-            <option value="Mobi Like 1.0 2027">Mobi Like 1.0 2027</option>
-            <option value="Mobi Trekking 1.0 2027">Mobi Trekking 1.0 2027</option>
-            <option value="Argo Drive 1.0 Flex 4P 2026">Argo Drive 1.0 Flex 4P 2026</option>
-            <option value="Argo Drive 1.3 AT Flex 4P 2026">Argo Drive 1.3 AT Flex 4P 2026</option>
-            <option value="Argo Trekking 1.3 Flex 4P 2026">Argo Trekking 1.3 Flex 4P 2026</option>
-            <option value="Argo Trekking 1.3 AT Flex 4P 2026">Argo Trekking 1.3 AT Flex 4P 2026</option>
-            <option value="Cronos Drive 1.0 Flex 4P 2027">Cronos Drive 1.0 Flex 4P 2027</option>
-            <option value="Cronos Drive 1.3 Flex 4P 2027">Cronos Drive 1.3 Flex 4P 2027</option>
-            <option value="Cronos Drive 1.3 AT Flex 4P 2027">Cronos Drive 1.3 AT Flex 4P 2027</option>
-            <option value="Cronos Precision 1.3 AT Flex 4P 2027">Cronos Precision 1.3 AT Flex 4P 2027</option>
-            <option value="Pulse Drive 1.3 MT Flex 4P 2026">Pulse Drive 1.3 MT Flex 4P 2026</option>
-            <option value="Pulse Drive 1.3 AT Flex 4P 2026">Pulse Drive 1.3 AT Flex 4P 2026</option>
-            <option value="Pulse Turbo 200 AT Flex 4P 2026">Pulse Turbo 200 AT Flex 4P 2026</option>
-            <option value="Pulse Audace Turbo 200 Hybrid Flex AT 4P 2026">Pulse Audace Turbo 200 Hybrid Flex AT 4P 2026</option>
-            <option value="Pulse Impetus Turbo 200 Hybrid Flex AT 4P 2026">Pulse Impetus Turbo 200 Hybrid Flex AT 4P 2026</option>
-            <option value="Pulse Abarth Turbo 270 Flex AT 4P 2026">Pulse Abarth Turbo 270 Flex AT 4P 2026</option>
-            <option value="Fastback Turbo 200 Flex AT 2026">Fastback Turbo 200 Flex AT 2026</option>
-            <option value="Fastback Audace Turbo 200 Hybrid Flex AT 2026">Fastback Audace Turbo 200 Hybrid Flex AT 2026</option>
-            <option value="Fastback Impetus Turbo 200 Hybrid Flex AT 2026">Fastback Impetus Turbo 200 Hybrid Flex AT 2026</option>
-            <option value="Fastback Limited Edition Turbo 270 Flex AT 2026">Fastback Limited Edition Turbo 270 Flex AT 2026</option>
-            <option value="Fastback Abarth Turbo 270 Flex AT 2026">Fastback Abarth Turbo 270 Flex AT 2026</option>
-            <option value="500e Icon 2024">500e Icon 2024</option>
-            <option value="Strada Endurance Cabine Plus 1.3 Flex 2027">Strada Endurance Cabine Plus 1.3 Flex 2027</option>
-            <option value="Strada Freedom Cabine Plus 1.3 Flex 2027">Strada Freedom Cabine Plus 1.3 Flex 2027</option>
-            <option value="Strada Freedom Cabine Dupla 1.3 Flex 2027">Strada Freedom Cabine Dupla 1.3 Flex 2027</option>
-            <option value="Strada Volcano Cabine Dupla 1.3 Flex 2027">Strada Volcano Cabine Dupla 1.3 Flex 2027</option>
-            <option value="Strada Volcano Cabine Dupla 1.3 AT Flex 2027">Strada Volcano Cabine Dupla 1.3 AT Flex 2027</option>
-            <option value="Strada Ultra Cabine Dupla Turbo 200 AT Flex 2027">Strada Ultra Cabine Dupla Turbo 200 AT Flex 2027</option>
-            <option value="Strada Ranch Cabine Dupla Turbo 200 AT Flex 2027">Strada Ranch Cabine Dupla Turbo 200 AT Flex 2027</option>
-            <option value="Toro Endurance Turbo 270 Flex AT6 2027">Toro Endurance Turbo 270 Flex AT6 2027</option>
-            <option value="Toro Freedom Turbo 270 Flex AT6 2027">Toro Freedom Turbo 270 Flex AT6 2027</option>
-            <option value="Toro Volcano MHEV Flex T270 AT6 2027">Toro Volcano MHEV Flex T270 AT6 2027</option>
-            <option value="Toro Ultra MHEV Flex T270 AT6 2027">Toro Ultra MHEV Flex T270 AT6 2027</option>
-            <option value="Toro Volcano Turbodiesel 4x4 AT9 2027">Toro Volcano Turbodiesel 4x4 AT9 2027</option>
-            <option value="Toro Ranch Turbodiesel 4x4 AT9 2027">Toro Ranch Turbodiesel 4x4 AT9 2027</option>
-            <option value="Titano Endurance Multijet Turbodiesel MT 4x4 2026">Titano Endurance Multijet Turbodiesel MT 4x4 2026</option>
-            <option value="Titano Volcano Multijet Turbodiesel AT 4x4 2026">Titano Volcano Multijet Turbodiesel AT 4x4 2026</option>
-            <option value="Titano Ranch Multijet Turbodiesel AT 4x4 2026">Titano Ranch Multijet Turbodiesel AT 4x4 2026</option>
-            <option value="Fiorino Endurance 1.3 Flex 2027">Fiorino Endurance 1.3 Flex 2027</option>
+            <option value="Mobi Like 1.0">Mobi Like 1.0</option>
+            <option value="Mobi Trekking 1.0">Mobi Trekking 1.0</option>
+            <option value="Argo Drive 1.0 Flex 4P">Argo Drive 1.0 Flex 4P</option>
+            <option value="Argo Drive 1.3 AT Flex 4P">Argo Drive 1.3 AT Flex 4P</option>
+            <option value="Argo Trekking 1.3 Flex 4P">Argo Trekking 1.3 Flex 4P</option>
+            <option value="Argo Trekking 1.3 AT Flex 4P">Argo Trekking 1.3 AT Flex 4P</option>
+            <option value="Cronos Drive 1.0 Flex 4P">Cronos Drive 1.0 Flex 4P</option>
+            <option value="Cronos Drive 1.3 Flex 4P">Cronos Drive 1.3 Flex 4P</option>
+            <option value="Cronos Drive 1.3 AT Flex 4P">Cronos Drive 1.3 AT Flex 4P</option>
+            <option value="Cronos Precision 1.3 AT Flex 4P">Cronos Precision 1.3 AT Flex 4P</option>
+            <option value="Pulse Drive 1.3 MT Flex 4P">Pulse Drive 1.3 MT Flex 4P</option>
+            <option value="Pulse Drive 1.3 AT Flex 4P">Pulse Drive 1.3 AT Flex 4P</option>
+            <option value="Pulse Turbo 200 AT Flex 4P">Pulse Turbo 200 AT Flex 4P</option>
+            <option value="Pulse Audace Turbo 200 Hybrid Flex AT 4P">Pulse Audace Turbo 200 Hybrid Flex AT 4P</option>
+            <option value="Pulse Impetus Turbo 200 Hybrid Flex AT 4P">Pulse Impetus Turbo 200 Hybrid Flex AT 4P</option>
+            <option value="Pulse Abarth Turbo 270 Flex AT 4P">Pulse Abarth Turbo 270 Flex AT 4P</option>
+            <option value="Fastback Turbo 200 Flex AT">Fastback Turbo 200 Flex AT</option>
+            <option value="Fastback Audace Turbo 200 Hybrid Flex AT">Fastback Audace Turbo 200 Hybrid Flex AT</option>
+            <option value="Fastback Impetus Turbo 200 Hybrid Flex AT">Fastback Impetus Turbo 200 Hybrid Flex AT</option>
+            <option value="Fastback Limited Edition Turbo 270 Flex AT">Fastback Limited Edition Turbo 270 Flex AT</option>
+            <option value="Fastback Abarth Turbo 270 Flex AT">Fastback Abarth Turbo 270 Flex AT</option>
+            <option value="500e Icon">500e Icon</option>
+            <option value="Strada Endurance Cabine Plus 1.3 Flex">Strada Endurance Cabine Plus 1.3 Flex</option>
+            <option value="Strada Freedom Cabine Plus 1.3 Flex">Strada Freedom Cabine Plus 1.3 Flex</option>
+            <option value="Strada Freedom Cabine Dupla 1.3 Flex">Strada Freedom Cabine Dupla 1.3 Flex</option>
+            <option value="Strada Volcano Cabine Dupla 1.3 Flex">Strada Volcano Cabine Dupla 1.3 Flex</option>
+            <option value="Strada Volcano Cabine Dupla 1.3 AT Flex">Strada Volcano Cabine Dupla 1.3 AT Flex</option>
+            <option value="Strada Ultra Cabine Dupla Turbo 200 AT Flex">Strada Ultra Cabine Dupla Turbo 200 AT Flex</option>
+            <option value="Strada Ranch Cabine Dupla Turbo 200 AT Flex">Strada Ranch Cabine Dupla Turbo 200 AT Flex</option>
+            <option value="Toro Endurance Turbo 270 Flex AT6">Toro Endurance Turbo 270 Flex AT6</option>
+            <option value="Toro Freedom Turbo 270 Flex AT6">Toro Freedom Turbo 270 Flex AT6</option>
+            <option value="Toro Volcano MHEV Flex T270 AT6">Toro Volcano MHEV Flex T270 AT6</option>
+            <option value="Toro Ultra MHEV Flex T270 AT6">Toro Ultra MHEV Flex T270 AT6</option>
+            <option value="Toro Volcano Turbodiesel 4x4 AT9">Toro Volcano Turbodiesel 4x4 AT9</option>
+            <option value="Toro Ranch Turbodiesel 4x4 AT9">Toro Ranch Turbodiesel 4x4 AT9</option>
+            <option value="Titano Endurance Multijet Turbodiesel MT 4x4">Titano Endurance Multijet Turbodiesel MT 4x4</option>
+            <option value="Titano Volcano Multijet Turbodiesel AT 4x4">Titano Volcano Multijet Turbodiesel AT 4x4</option>
+            <option value="Titano Ranch Multijet Turbodiesel AT 4x4">Titano Ranch Multijet Turbodiesel AT 4x4</option>
+            <option value="Fiorino Endurance 1.3 Flex">Fiorino Endurance 1.3 Flex</option>
           </datalist>
         </div>
-        <div class="field green-frame">
-          <label>Pre&ccedil;o do Ve&iacute;culo (R$)</label>
-          <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 100000">
+        <div class="field green-frame year-field">
+          <label>Ano Fab.</label>
+          <input id="anoFab" type="text" inputmode="numeric" value="2026" maxlength="4">
+        </div>
+        <div class="field green-frame year-field">
+          <label>Modelo</label>
+          <input id="anoModelo" type="text" inputmode="numeric" value="2026" maxlength="4">
         </div>
       </div>
       <!-- FINANCIAMENTO CREDILINE -->
-      <div class="g3 crediline-grid" style="margin-top:8px;">
+      <div class="crediline-grid" style="margin-top:8px;">
+        <div class="field">
+          <label>Pre&ccedil;o do Ve&iacute;culo (R$)</label>
+          <input id="preco" type="text" inputmode="numeric" placeholder="Ex: 100000">
+        </div>
         <div class="field">
           <label>% Entrada</label>
           <input id="ePct" type="text" inputmode="numeric" placeholder="Ex: 60%">
@@ -430,7 +443,7 @@ input[type="range"]::-webkit-slider-thumb{
           <input id="eVal" type="text" inputmode="numeric" placeholder="Crediline">
         </div>
         <div class="field">
-          <label>+ 48 X</label>
+          <label>Valor 48x</label>
           <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Crediline">
         </div>
       </div>
@@ -582,6 +595,14 @@ function fmtMesAnoCampo(d){
 function addMonths(d,m){
   return new Date(d.getFullYear(), d.getMonth()+m, d.getDate());
 }
+const vehicleYearData = {"mobi like 1.0":{"fab":"2026","modelo":"2027"},"mobi trekking 1.0":{"fab":"2026","modelo":"2027"},"argo drive 1.0 flex 4p":{"fab":"2026","modelo":"2026"},"argo drive 1.3 at flex 4p":{"fab":"2026","modelo":"2026"},"argo trekking 1.3 flex 4p":{"fab":"2026","modelo":"2026"},"argo trekking 1.3 at flex 4p":{"fab":"2026","modelo":"2026"},"cronos drive 1.0 flex 4p":{"fab":"2026","modelo":"2027"},"cronos drive 1.3 flex 4p":{"fab":"2026","modelo":"2027"},"cronos drive 1.3 at flex 4p":{"fab":"2026","modelo":"2027"},"cronos precision 1.3 at flex 4p":{"fab":"2026","modelo":"2027"},"pulse drive 1.3 mt flex 4p":{"fab":"2026","modelo":"2026"},"pulse drive 1.3 at flex 4p":{"fab":"2026","modelo":"2026"},"pulse turbo 200 at flex 4p":{"fab":"2026","modelo":"2026"},"pulse audace turbo 200 hybrid flex at 4p":{"fab":"2026","modelo":"2026"},"pulse impetus turbo 200 hybrid flex at 4p":{"fab":"2026","modelo":"2026"},"pulse abarth turbo 270 flex at 4p":{"fab":"2026","modelo":"2026"},"fastback turbo 200 flex at":{"fab":"2026","modelo":"2026"},"fastback audace turbo 200 hybrid flex at":{"fab":"2026","modelo":"2026"},"fastback impetus turbo 200 hybrid flex at":{"fab":"2026","modelo":"2026"},"fastback limited edition turbo 270 flex at":{"fab":"2026","modelo":"2026"},"fastback abarth turbo 270 flex at":{"fab":"2026","modelo":"2026"},"500e icon":{"fab":"2024","modelo":"2024"},"strada endurance cabine plus 1.3 flex":{"fab":"2026","modelo":"2027"},"strada freedom cabine plus 1.3 flex":{"fab":"2026","modelo":"2027"},"strada freedom cabine dupla 1.3 flex":{"fab":"2026","modelo":"2027"},"strada volcano cabine dupla 1.3 flex":{"fab":"2026","modelo":"2027"},"strada volcano cabine dupla 1.3 at flex":{"fab":"2026","modelo":"2027"},"strada ultra cabine dupla turbo 200 at flex":{"fab":"2026","modelo":"2027"},"strada ranch cabine dupla turbo 200 at flex":{"fab":"2026","modelo":"2027"},"toro endurance turbo 270 flex at6":{"fab":"2026","modelo":"2027"},"toro freedom turbo 270 flex at6":{"fab":"2026","modelo":"2027"},"toro volcano mhev flex t270 at6":{"fab":"2026","modelo":"2027"},"toro ultra mhev flex t270 at6":{"fab":"2026","modelo":"2027"},"toro volcano turbodiesel 4x4 at9":{"fab":"2026","modelo":"2027"},"toro ranch turbodiesel 4x4 at9":{"fab":"2026","modelo":"2027"},"titano endurance multijet turbodiesel mt 4x4":{"fab":"2026","modelo":"2026"},"titano volcano multijet turbodiesel at 4x4":{"fab":"2026","modelo":"2026"},"titano ranch multijet turbodiesel at 4x4":{"fab":"2026","modelo":"2026"},"fiorino endurance 1.3 flex":{"fab":"2026","modelo":"2027"}};
+function syncVehicleYears(){
+  const name = String($("modelo")?.value || "").trim().toLowerCase();
+  const data = vehicleYearData[name];
+  if(!data) return;
+  if($("anoFab")) $("anoFab").value = data.fab;
+  if($("anoModelo")) $("anoModelo").value = data.modelo;
+}
 function calc(){
   // Entradas equivalentes da planilha Julho/2026:
   // G3 preco do veiculo, C4 percentual de entrada, E4 valor entrada, G4 parcela 48x Crediline, G5 meses MultiFlex.
@@ -700,8 +721,10 @@ function formatPctInput(id){
 $("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";calc();});
 $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
 $("eVal")?.addEventListener("input",e=>{e.currentTarget.dataset.manual="1";formatMoneyTyping("eVal");calc();});
-$("modelo")?.addEventListener("input",calc);
-$("modelo")?.addEventListener("change",calc);
+$("modelo")?.addEventListener("input",()=>{syncVehicleYears();calc();});
+$("modelo")?.addEventListener("change",()=>{syncVehicleYears();calc();});
+["anoFab","anoModelo"].forEach(id=>$(id)?.addEventListener("input",calc));
+syncVehicleYears();
 calc();
 const splash = $("rotateBanner");
 if(splash){
