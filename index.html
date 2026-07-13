@@ -648,11 +648,65 @@ $("ePct")?.addEventListener("blur",()=>{formatPctInput("ePct");calc();});
 $("eVal")?.addEventListener("input",e=>{e.currentTarget.dataset.manual="1";formatMoneyTyping("eVal");calc();});
 $("modelo")?.addEventListener("change",calc);
 calc();
+function startEngineSound(duration){
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if(!AudioCtx) return false;
+  if(window.__engineAudioStarted) return true;
+  window.__engineAudioStarted = true;
+  try{
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+    const end = now + duration/1000;
+    const master = ctx.createGain();
+    const rev = ctx.createOscillator();
+    const rumble = ctx.createOscillator();
+    const tremolo = ctx.createOscillator();
+    const tremoloGain = ctx.createGain();
+
+    rev.type = "sawtooth";
+    rumble.type = "triangle";
+    tremolo.type = "sine";
+    rev.frequency.setValueAtTime(55, now);
+    rev.frequency.exponentialRampToValueAtTime(185, end - .25);
+    rumble.frequency.setValueAtTime(28, now);
+    rumble.frequency.exponentialRampToValueAtTime(72, end - .25);
+    tremolo.frequency.setValueAtTime(18, now);
+    tremolo.frequency.exponentialRampToValueAtTime(42, end - .2);
+    tremoloGain.gain.setValueAtTime(.018, now);
+
+    master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(0.055, now + .35);
+    master.gain.linearRampToValueAtTime(0.075, end - .45);
+    master.gain.exponentialRampToValueAtTime(0.0001, end);
+
+    tremolo.connect(tremoloGain);
+    tremoloGain.connect(master.gain);
+    rev.connect(master);
+    rumble.connect(master);
+    master.connect(ctx.destination);
+    rev.start(now);
+    rumble.start(now);
+    tremolo.start(now);
+    rev.stop(end);
+    rumble.stop(end);
+    tremolo.stop(end);
+    window.setTimeout(()=>ctx.close?.(), duration + 450);
+    return true;
+  }catch(e){
+    window.__engineAudioStarted = false;
+    return false;
+  }
+}
 const splash = $("rotateBanner");
 if(splash){
   const pctEl = $("splashPct");
   const startedAt = Date.now();
   const duration = 6000;
+  const trySound = ()=>startEngineSound(duration);
+  if(!trySound()){
+    splash.addEventListener("pointerdown", trySound, {once:true});
+    splash.addEventListener("touchstart", trySound, {once:true});
+  }
   const tick = window.setInterval(()=>{
     const pctValue = Math.min(100, Math.round((Date.now() - startedAt) / duration * 100));
     if(pctEl) pctEl.textContent = pctValue;
