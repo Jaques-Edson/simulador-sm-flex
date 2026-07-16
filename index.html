@@ -503,12 +503,20 @@ input[type="range"]::-webkit-slider-thumb{
 const $=id=>document.getElementById(id);
 const NE="N\u00e3o Eleg\u00edvel";
 
-// CONSTANTES - Excel: copia de SM MultiFlex Simulador Julho 2026 APP.xlsx
-const B12 = 0.0175;         // CET minima simulacao efetiva
-const B14 = 12;             // Maximo meses MultiFlex
-const B15 = 4;              // Minimo meses MultiFlex
-const B18 = 0.20;           // Entrada banco minima
-const B19 = 0.10;           // GAP maximo entrada banco x MultiFlex
+// CONSTANTES - Excel: SM_MultiFlex_Simulador_15_Julho_2026_Block.xlsx, aba "Flex Simulator"
+// (nomes das variaveis mantidos do painel anterior; comentario indica a celula na planilha nova)
+const B12 = 0.0182;         // B10  CET minima Simulacao Efetiva (Nominal + 0,25%)  [antes 0,0175]
+const B14 = 12;             // B13  Maximo Meses Flex
+const B15 = 4;              // B14  Minimo Meses Flex
+const B18 = 0.20;           // B17  Sinal Minimo
+const B19 = 0.10;           // B18  GAP Max Entrada X Simulacao Banco
+
+// Flex % Down - agora derivado da planilha, nao mais fixo em 15%
+// F20=1 ; E20=1,25 ; D20 = 35%*2/4*F20/E20 = 0,14 ; B20 = D20*E20 = 0,175
+const F20 = 1;
+const E20 = 1.25;
+const D20 = 0.35 * 2 / 4 * F20 / E20;   // 0,14
+const B20 = D20 * E20;                  // 0,175  Flex % Down  [antes 0,15]
 
 function pmt(rate,nper,pv){
   if(!rate) return pv/nper;
@@ -627,9 +635,10 @@ function calc(){
   const entradaForaFaixa = !!(E4Input && (E4Input < 1000 || E4Input >= 1000000 || (G3 && E4Input > G3)));
   const parcelaForaFaixa = !!(G4 && (G4 < 10 || G4 >= 10000));
 
-  const B13 = pmt(B12,48,G3*(1-C4));
-  const B20 = E3 ? (E3-G3)/E3 : 0;
-  const C6 = C4 < 0.26 ? 0.10 : C4 - 0.15;
+  const B13 = pmt(B12,48,G3*(1-C4));               // B11  PMT Carnet Minima
+  const descontoComercial = E3 ? (E3-G3)/E3 : 0;   // B19  Desconto Comercial
+  // D5 = SE(D4<26%; 10%; D4 - Flex % Down)  -- Flex % Down agora e 17,5% (B20)
+  const C6 = C4 < 0.26 ? 0.10 : C4 - B20;
   const C7 = Math.max(0, C4 - C6 + 0.10);
   const D5 = C6 + C7;
   const B7 = addMonths(G2,G5);
