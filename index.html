@@ -77,13 +77,8 @@ input,select,button{font:inherit}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
 .vehicle-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:7px;margin-bottom:6px!important;}
 .crediline-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px!important;}
-.bank-installment-row{display:grid;grid-template-columns:minmax(0,48fr) minmax(0,52fr);gap:6px;}
-.flex-line-selector{height:44px;display:grid;grid-template-columns:repeat(3,1fr);overflow:hidden;border:1px solid rgba(255,150,35,.82);border-radius:7px;background:rgba(2,8,18,.9);box-shadow:0 0 0 1px rgba(255,150,35,.14);}
-.term-btn{min-width:0;border:0;border-right:1px solid rgba(255,150,35,.35);background:transparent;color:#9db7cf;font-size:13px;font-weight:950;cursor:pointer;padding:0;transition:background .15s,color .15s,box-shadow .15s;}
-.term-btn:last-of-type{border-right:0;}
-.term-btn:hover{background:rgba(255,200,0,.08);color:#f0f4ff;}
-.term-btn.is-active{background:rgba(255,200,0,.16);color:#ffd700;box-shadow:inset 0 0 0 1px rgba(255,215,0,.28);}
-.term-btn:focus-visible{outline:2px solid #25d7f3;outline-offset:-2px;}
+.bank-installment-row{display:grid;grid-template-columns:minmax(0,36fr) minmax(0,64fr);gap:6px;}
+.bank-installment-row select{border-color:rgba(255,150,35,.82)!important;box-shadow:0 0 0 1px rgba(255,150,35,.14);background-color:rgba(2,8,18,.9)!important;color:#f0f4ff;text-align:center;padding-left:8px!important;font-weight:950!important;}
 .year-field input,.year-field select{text-align:center;font-weight:900;font-size:11px;padding:0 6px;}
 .model-combo{position:relative;}
 .model-combo input{padding-right:30px;}
@@ -161,7 +156,7 @@ select{
 .flex-blk .phase-title{font-size:10px;}
 .flex-blk .phase2-grid .field label{font-size:12px;}
 .prazo-control #mesesLbl{font-size:11px;color:#ffd700;}
-.crediline-grid input{height:44px!important;font-size:22px!important;font-weight:950!important;letter-spacing:-.2px!important;}
+.crediline-grid input,.bank-installment-row select{height:44px!important;font-size:22px!important;font-weight:950!important;letter-spacing:-.2px!important;}
 
 /* RANGE */
 .rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
@@ -304,7 +299,7 @@ input[type="range"]::-webkit-slider-thumb{
   .prazo-control .marks{font-size:7px;}
   .phase2-grid{grid-template-columns:1fr 1fr;}
   .finance-help{font-size:8px;line-height:1.25;padding:7px 8px;}
-  .crediline-grid input{height:44px!important;font-size:22px!important;font-weight:950!important;}
+  .crediline-grid input,.bank-installment-row select{height:44px!important;font-size:22px!important;font-weight:950!important;}
   /* linhas de comparacao: empilha em coluna */
   .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
   .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
@@ -316,8 +311,7 @@ input[type="range"]::-webkit-slider-thumb{
   input[type="text"],input[type="number"],select{height:38px;font-size:13px;}
 }
 @media (max-width:500px){
-  .crediline-grid input,.flex-blk .ro,.flex-blk .prazo-month input,.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box,.flex-blk .installment-split .count,.flex-blk .installment-split .amount{font-size:20px!important;font-weight:950!important;}
-  .term-btn{font-size:11px;}
+  .crediline-grid input,.bank-installment-row select,.flex-blk .ro,.flex-blk .prazo-month input,.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box,.flex-blk .installment-split .count,.flex-blk .installment-split .amount{font-size:20px!important;font-weight:950!important;}
   .cmp-row{grid-template-columns:1fr 1fr;}
   .fc-val{font-size:14px!important;}
   .g2{gap:6px;}
@@ -437,12 +431,7 @@ input[type="range"]::-webkit-slider-thumb{
         <div class="field">
           <label>Parcelas</label>
           <div class="bank-installment-row">
-            <div class="flex-line-selector" role="group" aria-label="Prazo Flex Line">
-              <button type="button" class="term-btn" data-term="36" aria-pressed="false">36</button>
-              <button type="button" class="term-btn" data-term="42" aria-pressed="false">42</button>
-              <button type="button" class="term-btn is-active" data-term="48" aria-pressed="true">48</button>
-              <input id="flexLine" type="hidden" value="48">
-            </div>
+            <select id="flexLine" aria-label="Prazo Flex Line"><option value="36">36</option><option value="42">42</option><option value="48" selected>48</option></select>
             <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Credline" aria-label="Valor da parcela">
           </div>
         </div>
@@ -768,17 +757,7 @@ function formatPctInput(id){
   el.value = Number.isFinite(raw) && raw > 0 ? `${Math.min(65, Math.round(raw))}%` : "";
 }
 ["mesesFlex"].forEach(id=>$(id)?.addEventListener("input",calc));
-document.querySelector(".flex-line-selector")?.addEventListener("click",e=>{
-  const btn=e.target.closest(".term-btn");
-  if(!btn) return;
-  $("flexLine").value=btn.dataset.term;
-  document.querySelectorAll(".term-btn").forEach(item=>{
-    const active=item===btn;
-    item.classList.toggle("is-active",active);
-    item.setAttribute("aria-pressed",String(active));
-  });
-  calc();
-});
+$("flexLine")?.addEventListener("change",calc);
 ["preco","parc"].forEach(id=>$(id)?.addEventListener("input",()=>{formatMoneyTyping(id);calc();}));
 ["preco","eVal","parc"].forEach(id=>$(id)?.addEventListener("blur",()=>{formatMoneyInput(id);calc();}));
 $("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";formatPctTyping("ePct");calc();});
