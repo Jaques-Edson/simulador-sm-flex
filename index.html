@@ -77,6 +77,8 @@ input,select,button{font:inherit}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
 .vehicle-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:7px;margin-bottom:6px!important;}
 .crediline-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px!important;}
+.bank-installment-row{display:grid;grid-template-columns:minmax(0,36fr) minmax(0,64fr);gap:6px;}
+.bank-installment-row select{border-color:rgba(255,150,35,.82)!important;box-shadow:0 0 0 1px rgba(255,150,35,.14);background-color:rgba(2,8,18,.9)!important;color:#f0f4ff;text-align:center;padding-left:8px!important;font-weight:950!important;}
 .year-field input,.year-field select{text-align:center;font-weight:900;font-size:11px;padding:0 6px;}
 .model-combo{position:relative;}
 .model-combo input{padding-right:30px;}
@@ -154,7 +156,7 @@ select{
 .flex-blk .phase-title{font-size:10px;}
 .flex-blk .phase2-grid .field label{font-size:12px;}
 .prazo-control #mesesLbl{font-size:11px;color:#ffd700;}
-.crediline-grid input{height:44px!important;font-size:22px!important;font-weight:950!important;letter-spacing:-.2px!important;}
+.crediline-grid input,.bank-installment-row select{height:44px!important;font-size:22px!important;font-weight:950!important;letter-spacing:-.2px!important;}
 
 /* RANGE */
 .rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
@@ -297,7 +299,7 @@ input[type="range"]::-webkit-slider-thumb{
   .prazo-control .marks{font-size:7px;}
   .phase2-grid{grid-template-columns:1fr 1fr;}
   .finance-help{font-size:8px;line-height:1.25;padding:7px 8px;}
-  .crediline-grid input{height:44px!important;font-size:22px!important;font-weight:950!important;}
+  .crediline-grid input,.bank-installment-row select{height:44px!important;font-size:22px!important;font-weight:950!important;}
   /* linhas de comparacao: empilha em coluna */
   .cmp-row{grid-template-columns:1fr 1fr;gap:6px;}
   .cmp-row-title{grid-column:1 / -1;justify-content:center;text-align:center;padding:8px;}
@@ -309,7 +311,7 @@ input[type="range"]::-webkit-slider-thumb{
   input[type="text"],input[type="number"],select{height:38px;font-size:13px;}
 }
 @media (max-width:500px){
-  .crediline-grid input,.flex-blk .ro,.flex-blk .prazo-month input,.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box,.flex-blk .installment-split .count,.flex-blk .installment-split .amount{font-size:20px!important;font-weight:950!important;}
+  .crediline-grid input,.bank-installment-row select,.flex-blk .ro,.flex-blk .prazo-month input,.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box,.flex-blk .installment-split .count,.flex-blk .installment-split .amount{font-size:20px!important;font-weight:950!important;}
   .cmp-row{grid-template-columns:1fr 1fr;}
   .fc-val{font-size:14px!important;}
   .g2{gap:6px;}
@@ -427,8 +429,11 @@ input[type="range"]::-webkit-slider-thumb{
           <input id="eVal" type="text" inputmode="numeric" placeholder="Credline">
         </div>
         <div class="field">
-          <label>Valor 48x</label>
-          <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Credline">
+          <label>Parcelas</label>
+          <div class="bank-installment-row">
+            <select id="flexLine" aria-label="Prazo Flex Line"><option value="48">48</option><option value="36">36</option></select>
+            <input id="parc" type="text" inputmode="numeric" class="ro" placeholder="Credline" aria-label="Valor da parcela">
+          </div>
         </div>
       </div>
     </div>
@@ -622,9 +627,10 @@ function syncVehicleYears(){
   if($("anoModelo")) $("anoModelo").value = data.modelo === "2027" ? "2027" : "2026";
 }
 function calc(){
-  // Entradas equivalentes da planilha: E2 preco, C3 percentual, E3 valor da entrada,
-  // G3 parcela 48x Credline e G6 meses Flex.
-  const G2 = new Date();
+  // Entradas equivalentes da planilha: G1 data, E2 preco, G2 prazo Flex Line,
+  // C3 percentual, E3 valor da entrada, G3 valor da parcela e G6 meses Flex.
+  const G1 = new Date();
+  const G2 = +$("flexLine")?.value || 48;
   const G3 = numVal("preco");
   const E3 = G3;
   const E4Input = numVal("eVal");
@@ -640,14 +646,14 @@ function calc(){
   const entradaForaFaixa = !!(E4Input && (E4Input < 1000 || E4Input >= 1000000 || (G3 && E4Input > G3)));
   const parcelaForaFaixa = !!(G4 && (G4 < 10 || G4 >= 10000));
 
-  const B13 = pmt(B12,48,G3*(1-C4));               // B10 PMT Carnet Minima
+  const B13 = pmt(B12,G2,G3*(1-C4));              // B10 PMT Carnet Minima pelo prazo Flex Line
   const C6 = flexSignalPct(C4);                    // D4  Sinal a vista (faixa de entrada)
   const C7 = C6 === null ? 0 : C4 - C6 + 0.10;    // D5  Entrada a prazo
   const D5 = C6 === null ? 0 : C6 + C7;           // D6  Sinal + entrada
-  const B7 = addMonths(G2,G5);
+  const B7 = addMonths(G1,G5);
 
   let E6;
-  if(!G2) E6 = "DATA";
+  if(!G1) E6 = "DATA";
   else if(precoForaFaixa) E6 = "Preco Fora";
   else if(entradaForaFaixa) E6 = "Entrada Fora";
   else if(parcelaForaFaixa) E6 = "Parcela Fora";
@@ -670,9 +676,9 @@ function calc(){
   const G7 = ok26 ? G6/(1-C6)*(1-D5) : 0;
 
   const F6lbl = `+ ${G5} Parcelas`;
-  const F7lbl = `+ ${48-G5} Parcelas`;
+  const F7lbl = `+ ${G2-G5} Parcelas`;
   const compStr = fmtMesAnoCampo(B7);
-  const propStr = fmtData(G2);
+  const propStr = fmtData(G1);
 
   if($("ePct") && !$("ePct").dataset.touched) $("ePct").value = C4 ? pct(C4) : "";
   $("mesesLbl").textContent = `${G5} meses`;
@@ -751,6 +757,7 @@ function formatPctInput(id){
   el.value = Number.isFinite(raw) && raw > 0 ? `${Math.min(65, Math.round(raw))}%` : "";
 }
 ["mesesFlex"].forEach(id=>$(id)?.addEventListener("input",calc));
+$("flexLine")?.addEventListener("change",calc);
 ["preco","parc"].forEach(id=>$(id)?.addEventListener("input",()=>{formatMoneyTyping(id);calc();}));
 ["preco","eVal","parc"].forEach(id=>$(id)?.addEventListener("blur",()=>{formatMoneyInput(id);calc();}));
 $("ePct")?.addEventListener("input",e=>{e.currentTarget.dataset.touched="1";formatPctTyping("ePct");calc();});
