@@ -109,7 +109,7 @@ input,select,button{font:inherit}
 .installment-split .count{border-right:1px solid rgba(255,200,0,.25);font-size:15px;}
 .installment-split .amount{font-size:15px;}
 .benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
-.benefit-item{border:1px solid rgba(37,215,243,.22);border-radius:7px;background:rgba(37,215,243,.04);padding:9px 10px;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.5px;color:#d7e5f2;text-align:center;line-height:1.25;}
+.benefit-item{border:1px solid rgba(37,215,243,.22);border-radius:7px;background:rgba(37,215,243,.04);padding:9px 10px;font-size:13px;font-weight:950;text-transform:uppercase;letter-spacing:.5px;color:#d7e5f2;text-align:center;line-height:1.25;}
 .phase-title{margin-top:10px;margin-bottom:6px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;color:#ffd700;text-align:center;}
 .finance-help{margin-top:7px;border:1px solid rgba(37,215,243,.18);border-radius:8px;background:rgba(37,215,243,.04);padding:8px 9px;color:#9db7cf;font-size:9px;line-height:1.35;font-weight:800;}
 .prazo-flex-row{display:grid;grid-template-columns:minmax(0, 58%) minmax(190px, 220px);gap:10px;align-items:end;margin-top:8px;}
@@ -143,7 +143,7 @@ select{
 .flex-blk .ro{height:52px!important;font-size:18px!important;font-weight:950!important;letter-spacing:-.15px;}
 .flex-blk .field label{font-size:10px;letter-spacing:.75px;}
 .flex-blk .prazo-month input{height:52px!important;font-size:22px!important;font-weight:950!important;color:#f0f4ff!important;letter-spacing:-.2px;}
-.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box{height:50px!important;font-size:20px!important;font-weight:950!important;letter-spacing:-.15px;}
+.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box{height:50px!important;font-size:22px!important;font-weight:950!important;letter-spacing:-.15px;}
 .flex-blk .ro-box{border-color:rgba(255,200,0,.48);background:rgba(255,200,0,.09);color:#ffd700;}
 .flex-blk .installment-card{padding:12px 13px;}
 .flex-blk .installment-card strong{font-size:10px;margin-bottom:8px;}
@@ -151,6 +151,9 @@ select{
 .flex-blk .installment-split .count,.flex-blk .installment-split .amount{min-height:46px;font-size:22px;font-weight:950;letter-spacing:-.2px;}
 .flex-blk .installment-split .amount{color:#ffd700;}
 .flex-blk #finParcelasQtd{color:#25d7f3;}
+.flex-blk .phase-title{font-size:10px;}
+.flex-blk .phase2-grid .field label{font-size:12px;}
+.prazo-control #mesesLbl{font-size:11px;color:#ffd700;}
 
 /* RANGE */
 .rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
@@ -470,7 +473,7 @@ input[type="range"]::-webkit-slider-thumb{
       </div>
 
       <div class="benefits-list" aria-label="Benef&iacute;cios San Marino MultiFlex">
-        <div class="benefit-item">IPVA 2026 + Emplacamento</div>
+        <div class="benefit-item">IPVA 2026 + IMPLAC.</div>
         <div class="benefit-item">Seguro Flex</div>
         <div class="benefit-item">Manuten&ccedil;&atilde;o Flex</div>
         <div class="benefit-item">IPVA 2027 (Pro Rata)</div>
@@ -546,7 +549,7 @@ function brR(v){
   return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",
     minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(v)||0);
 }
-function pct(v){return `${Math.round(v*100)}%`;}
+function pct(v){return `${Number((v*100).toFixed(1))}%`;}
 function rf(el){
   if(!el) return;
   const mn=+el.min,mx=+el.max,v=+el.value;
