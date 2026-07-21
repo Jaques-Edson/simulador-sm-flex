@@ -1,11 +1,15 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
+
+const SUPER_ADMIN_EMAIL = "edson@sanmarinofiat.com.br";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-Deno.serve(async (request) => {
+export default {
+  async fetch(request: Request) {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
     const authHeader = request.headers.get("Authorization") || "";
@@ -17,14 +21,11 @@ Deno.serve(async (request) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       { auth: { autoRefreshToken: false, persistSession: false } },
     );
-    const { data: userData, error: userError } = await admin.auth.getUser(token);
-    if (userError || !userData.user) throw new Error("Sessão inválida.");
+    const { data: claimsData, error: claimsError } = await admin.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims?.sub) throw new Error("Sessão inválida.");
 
-    const { data: requester } = await admin.from("profiles")
-      .select("role,active")
-      .eq("id", userData.user.id)
-      .single();
-    if (!requester?.active || requester.role !== "super_admin") {
+    const requesterEmail = String(claimsData.claims.email || "").trim().toLowerCase();
+    if (requesterEmail !== SUPER_ADMIN_EMAIL) {
       return Response.json({ error: "Somente o administrador geral pode criar usuários." }, { status: 403, headers: corsHeaders });
     }
 
@@ -53,6 +54,8 @@ Deno.serve(async (request) => {
     }
     return Response.json({ id: created.user.id, email, role }, { headers: corsHeaders });
   } catch (error) {
+    console.error("manage-user error:", error);
     return Response.json({ error: error instanceof Error ? error.message : "Erro inesperado." }, { status: 400, headers: corsHeaders });
   }
-});
+  },
+};

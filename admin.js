@@ -13,6 +13,18 @@
   const safe = value => String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
   const isManager = () => ["manager","super_admin"].includes(profile?.role);
 
+  async function functionErrorMessage(error,data){
+    let detail=data?.error||error?.message||"Não foi possível concluir a operação.";
+    const response=error?.context;
+    if(response&&typeof response.clone==="function"){
+      try{
+        const body=await response.clone().json();
+        detail=body?.error||body?.message||detail;
+      }catch(_ignored){}
+    }
+    return detail;
+  }
+
   async function requireSession(){
     const {data:{session}} = await client.auth.getSession();
     if(!session){ location.href="index.html"; return null; }
@@ -118,7 +130,7 @@
     event.preventDefault();const message=$("userMessage");message.className="message";message.textContent="Criando usuário...";
     const payload={full_name:$("newUserName").value.trim(),email:$("newUserEmail").value.trim().toLowerCase(),role:$("newUserRole").value,password:$("newUserPassword").value};
     const {data,error}=await client.functions.invoke("manage-user",{body:{action:"create",...payload}});
-    if(error||data?.error){message.className="message error";message.textContent=data?.error||error.message;return;}
+    if(error||data?.error){message.className="message error";message.textContent=await functionErrorMessage(error,data);return;}
     message.className="message success";message.textContent="Usuário criado. Entregue a senha temporária de forma privada.";event.target.reset();await loadUsers();
   });
 
