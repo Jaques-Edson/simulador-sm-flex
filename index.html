@@ -112,8 +112,15 @@ input,select,button{font:inherit}
 .installment-split .count,.installment-split .amount{display:flex;align-items:center;justify-content:center;min-height:34px;margin:0;}
 .installment-split .count{border-right:1px solid rgba(255,200,0,.25);font-size:15px;}
 .installment-split .amount{font-size:15px;}
-.benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px;}
-.benefit-item{border:1px solid rgba(37,215,243,.22);border-radius:7px;background:rgba(37,215,243,.04);padding:6px 8px;font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.5px;color:#d7e5f2;text-align:center;line-height:1.2;}
+.benefits-area{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(210px,.75fr);gap:6px;margin-top:6px;align-items:stretch;}
+.benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:0;}
+.benefit-item{border:1px solid rgba(37,215,243,.22);border-radius:7px;background:rgba(37,215,243,.04);padding:6px 8px;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.4px;color:#d7e5f2;text-align:center;line-height:1.2;display:flex;align-items:center;justify-content:center;}
+.benefit-metrics{display:grid;grid-template-rows:1fr 1fr;gap:5px;}
+.benefit-metric{border:1px solid rgba(255,200,0,.38);border-radius:7px;background:rgba(255,200,0,.07);padding:5px 7px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;}
+.benefit-metric strong{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.55px;color:#9db7cf;margin-bottom:3px;}
+.benefit-metric span{font-size:15px;font-weight:950;color:#ffd700;white-space:nowrap;font-variant-numeric:tabular-nums;}
+.benefit-metric.advantage{border-color:rgba(34,212,126,.38);background:rgba(34,212,126,.065);}
+.benefit-metric.advantage span{color:#22d47e;}
 .phase-title{margin-top:7px;margin-bottom:4px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;color:#ffd700;text-align:center;}
 .finance-help{margin-top:7px;border:1px solid rgba(37,215,243,.18);border-radius:8px;background:rgba(37,215,243,.04);padding:8px 9px;color:#9db7cf;font-size:9px;line-height:1.35;font-weight:800;}
 .prazo-flex-row{display:grid;grid-template-columns:minmax(0, 58%) minmax(190px, 220px);gap:8px;align-items:end;margin-top:6px;}
@@ -159,6 +166,8 @@ select{
 .flex-blk .phase2-grid .field label{font-size:12px;}
 .prazo-control #mesesLbl{font-size:11px;color:#ffd700;}
 .crediline-grid input,.bank-installment-row select{height:44px!important;font-size:22px!important;font-weight:950!important;letter-spacing:-.2px!important;}
+.bank-installment-row #parc{color:#f0f4ff!important;}
+#compMes{color:#ffd700!important;}
 
 /* RANGE */
 .rng-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
@@ -293,7 +302,10 @@ input[type="range"]::-webkit-slider-thumb{
   .final-left{grid-template-columns:1.2fr .8fr;gap:5px;}
   .final-left .field label{font-size:7.5px;}
   .installments-grid{grid-template-columns:1fr 1fr;}
+  .benefits-area{grid-template-columns:minmax(0,1.15fr) minmax(180px,.85fr);}
   .benefits-list{grid-template-columns:1fr 1fr;}
+  .benefit-item{font-size:9px;padding:5px 6px;}
+  .benefit-metric span{font-size:13px;}
   .prazo-flex-row{grid-template-columns:minmax(0, 58%) minmax(118px, 42%);gap:6px;align-items:end;}
   .prazo-month input{height:34px;font-size:9px!important;padding:0 5px;}
   .prazo-month label{font-size:6.8px;letter-spacing:.25px;}
@@ -313,6 +325,8 @@ input[type="range"]::-webkit-slider-thumb{
   input[type="text"],input[type="number"],select{height:38px;font-size:13px;}
 }
 @media (max-width:500px){
+  .benefits-area{grid-template-columns:1fr;}
+  .benefit-metrics{grid-template-columns:1fr 1fr;grid-template-rows:1fr;}
   .crediline-grid input,.bank-installment-row select,.flex-blk .ro,.flex-blk .prazo-month input,.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box,.flex-blk .installment-split .count,.flex-blk .installment-split .amount{font-size:20px!important;font-weight:950!important;}
   .cmp-row{grid-template-columns:1fr 1fr;}
   .fc-val{font-size:14px!important;}
@@ -530,11 +544,17 @@ input[type="range"]::-webkit-slider-thumb{
         </div>
       </div>
 
-      <div class="benefits-list" aria-label="Benef&iacute;cios San Marino Flex">
-        <div class="benefit-item">IPVA 2026 + IMPLAC.</div>
-        <div class="benefit-item">Seguro Flex</div>
-        <div class="benefit-item">Manuten&ccedil;&atilde;o Flex</div>
-        <div class="benefit-item">IPVA 2027 (Pro Rata)</div>
+      <div class="benefits-area">
+        <div class="benefits-list" aria-label="Benef&iacute;cios San Marino Flex">
+          <div class="benefit-item">IPVA 2026 + IMPLAC.</div>
+          <div class="benefit-item">Seguro Flex</div>
+          <div class="benefit-item">Manuten&ccedil;&atilde;o Flex</div>
+          <div class="benefit-item">IPVA 2027 (Pro Rata)</div>
+        </div>
+        <div class="benefit-metrics" aria-label="M&eacute;tricas financeiras">
+          <div class="benefit-metric"><strong>Valor Benef&iacute;cios</strong><span id="benefitsValue">&mdash;</span></div>
+          <div class="benefit-metric advantage"><strong>Vantagem Financeira</strong><span id="financialAdvantage">&mdash;</span></div>
+        </div>
       </div>
 
       <div class="phase-title">Entrada + Financiamento</div>
@@ -739,6 +759,8 @@ function calc(){
   const ok26 = typeof E6 === "number" && typeof G6 === "number";
   const E7 = ok26 ? G3*(D5-C6) : 0;
   const G7 = ok26 ? G6/(1-C6)*(1-D5) : 0;
+  const benefitsValue = G3*0.088;
+  const financialAdvantage = ok26 ? benefitsValue-((G6-G7)*12) : 0;
 
   const F6lbl = `+ ${G5} Parcelas`;
   const F7lbl = `+ ${G2-G5} Parcelas`;
@@ -768,6 +790,8 @@ function calc(){
   if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "\u2014";
   if($("finParcelasQtd")) $("finParcelasQtd").textContent = F7lbl;
   if($("finParcelasValor")) $("finParcelasValor").textContent = p && ok26 ? brR(G7) : "\u2014";
+  if($("benefitsValue")) $("benefitsValue").textContent = G3 ? brR(benefitsValue) : "\u2014";
+  if($("financialAdvantage")) $("financialAdvantage").textContent = p && ok26 ? brR(financialAdvantage) : "\u2014";
 }
 function formatMoneyInput(id){
   const el = $(id);
