@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#04101e"/>
 <title>Simulador San Marino Flex</title>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;background:#04101e;-webkit-text-size-adjust:100%}
@@ -371,9 +373,53 @@ input[type="range"]::-webkit-slider-thumb{
 .exp-legal{padding:9px 12px;display:flex;gap:8px;
   border:1px solid rgba(255,255,255,.08);border-radius:10px;
   background:rgba(13,39,68,.4);color:#8fa8c0;font-size:11px;line-height:1.4;}
+
+
+
+/* AUTENTICACAO E DADOS DO CLIENTE */
+.auth-gate{position:fixed;inset:0;z-index:12000;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at top,#0a2846,#020914 70%);}
+.auth-gate[hidden]{display:none;}
+.auth-card{width:min(390px,100%);border:1px solid rgba(37,215,243,.28);border-radius:16px;padding:24px;background:rgba(5,17,32,.98);box-shadow:0 24px 70px rgba(0,0,0,.45);}
+.auth-card img{display:block;height:58px;max-width:250px;object-fit:contain;margin:0 auto 20px;}
+.auth-card h1{text-align:center;font-size:18px;color:#ffd700;margin-bottom:5px;}
+.auth-card p{text-align:center;font-size:11px;color:#8fa8c0;line-height:1.4;margin-bottom:16px;}
+.auth-card .field{margin-top:10px;}
+.auth-btn,.action-btn{height:38px;border:0;border-radius:8px;padding:0 15px;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;}
+.auth-btn{width:100%;margin-top:15px;background:#22d47e;color:#02130b;}
+.auth-error{min-height:18px;margin-top:10px!important;color:#f87171!important;font-weight:850;}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:7px;}
+.topbar-user{max-width:180px;text-align:right;color:#9db7cf;font-size:9px;font-weight:850;line-height:1.25;}
+.topbar-user strong{display:block;color:#f0f4ff;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-link{height:30px;border:1px solid rgba(37,215,243,.3);border-radius:7px;padding:0 10px;background:rgba(37,215,243,.06);color:#bcecf7;font-size:9px;font-weight:900;text-transform:uppercase;cursor:pointer;}
+.client-blk{border-color:rgba(34,212,126,.24);}
+.client-grid{display:grid;grid-template-columns:1.35fr 1fr .8fr;gap:7px;}
+.client-blk input,.client-blk textarea{font-size:11px;font-weight:750;}
+.notes-details{margin-top:7px;border:1px solid rgba(255,255,255,.09);border-radius:8px;background:rgba(2,8,18,.45);}
+.notes-details summary{padding:9px 10px;color:#7a9ab8;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.6px;cursor:pointer;}
+.notes-details textarea{display:block;width:calc(100% - 16px);min-height:72px;margin:0 8px 8px;resize:vertical;border:1px solid rgba(255,255,255,.15);border-radius:7px;background:rgba(2,8,18,.9);color:#f0f4ff;padding:9px;outline:none;}
+.client-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px;}
+.action-btn.primary{background:#22d47e;color:#02130b;}
+.action-btn.secondary{border:1px solid rgba(37,215,243,.35);background:rgba(37,215,243,.07);color:#c8f5ff;}
+.save-status{min-height:17px;margin-top:6px;text-align:center;font-size:9px;font-weight:850;color:#8fa8c0;}
+.save-status.ok{color:#22d47e}.save-status.error{color:#f87171}
+@media(max-width:600px){.topbar-user{display:none}.topbar-link{padding:0 7px;font-size:8px}.client-grid{grid-template-columns:1fr 1fr}.client-grid .field:first-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
+
+
+
+<div class="auth-gate" id="authGate">
+  <form class="auth-card" id="loginForm">
+    <img src="logo_sm_flex.png" alt="San Marino Flex">
+    <h1>Acesso ao Simulador</h1>
+    <p>Entre com o e-mail e a senha fornecidos pelo administrador.</p>
+    <div class="field"><label>E-mail</label><input id="loginEmail" type="email" autocomplete="username" required></div>
+    <div class="field"><label>Senha</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+    <button class="auth-btn" type="submit">Entrar</button>
+    <p class="auth-error" id="loginError"></p>
+  </form>
+</div>
 
 <div class="rotate-banner" id="rotateBanner">
   <div class="splash-logo-wrap"><img class="splash-logo" src="logo_sm_flex.png" alt="San Marino Flex"></div>
@@ -389,6 +435,12 @@ input[type="range"]::-webkit-slider-thumb{
 <div class="topbar">
   <img src="logo_sm_flex.png" alt="San Marino Flex">
   <div class="topbar-date">Data da simula&ccedil;&atilde;o<span id="dataPropostaTop">--</span></div>
+
+  <div class="topbar-actions">
+    <div class="topbar-user" id="topbarUser"><strong>--</strong></div>
+    <button class="topbar-link" id="historyBtn" type="button">Hist&oacute;rico</button>
+    <button class="topbar-link" id="logoutBtn" type="button">Sair</button>
+  </div>
 </div>
 
 <!-- CORPO -->
@@ -504,6 +556,24 @@ input[type="range"]::-webkit-slider-thumb{
           <div class="ro-box" id="finParcelasValor">--</div>
         </div>
       </div>
+    </div>
+
+    <div class="blk client-blk">
+      <div class="blk-title">Dados do cliente</div>
+      <div class="client-grid">
+        <div class="field"><label>Nome do cliente</label><input id="clientName" type="text" autocomplete="off" placeholder="Nome completo"></div>
+        <div class="field"><label>Telefone</label><input id="clientPhone" type="tel" inputmode="tel" autocomplete="off" placeholder="(00) 00000-0000"></div>
+        <div class="field"><label>Data</label><input id="simulationDate" type="date"></div>
+      </div>
+      <details class="notes-details">
+        <summary>Adicionar observa&ccedil;&otilde;es</summary>
+        <textarea id="clientNotes" maxlength="2000" placeholder="Informa&ccedil;&otilde;es complementares da negocia&ccedil;&atilde;o"></textarea>
+      </details>
+      <div class="client-actions">
+        <button class="action-btn primary" id="saveSimulationBtn" type="button">Salvar simula&ccedil;&atilde;o</button>
+        <button class="action-btn secondary" id="openHistoryBtn" type="button">Pesquisar hist&oacute;rico</button>
+      </div>
+      <div class="save-status" id="saveStatus"></div>
     </div>
   </div>
 </div>
@@ -775,6 +845,7 @@ if(splash){
   window.setTimeout(()=>splash.classList.add("is-done"),duration);
 }
 </script>
+<script src="app-auth.js"></script>
 </body>
 </html>
 
