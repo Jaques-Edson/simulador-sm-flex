@@ -115,7 +115,7 @@ input,select,button{font:inherit}
 .benefits-area{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(210px,.75fr);gap:6px;margin-top:6px;align-items:stretch;}
 .benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:0;}
 .benefit-item{border:1px solid rgba(37,215,243,.22);border-radius:7px;background:rgba(37,215,243,.04);padding:6px 8px;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.4px;color:#d7e5f2;text-align:center;line-height:1.2;display:flex;align-items:center;justify-content:center;}
-.benefit-metrics{display:grid;grid-template-rows:1fr 1fr;gap:5px;}
+.benefit-metrics{display:grid;grid-template-rows:repeat(3,1fr);gap:5px;}
 .benefit-metric{border:1px solid rgba(255,200,0,.38);border-radius:7px;background:rgba(255,200,0,.07);padding:5px 7px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;}
 .benefit-metric strong{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.55px;color:#9db7cf;margin-bottom:3px;}
 .benefit-metric span{font-size:15px;font-weight:950;color:#ffd700;white-space:nowrap;font-variant-numeric:tabular-nums;}
@@ -326,7 +326,8 @@ input[type="range"]::-webkit-slider-thumb{
 }
 @media (max-width:500px){
   .benefits-area{grid-template-columns:1fr;}
-  .benefit-metrics{grid-template-columns:1fr 1fr;grid-template-rows:1fr;}
+  .benefit-metrics{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;}
+  .benefit-metric:last-child{grid-column:1 / -1;}
   .crediline-grid input,.bank-installment-row select,.flex-blk .ro,.flex-blk .prazo-month input,.flex-blk .phase2-grid input,.flex-blk .phase2-grid .ro-box,.flex-blk .installment-split .count,.flex-blk .installment-split .amount{font-size:20px!important;font-weight:950!important;}
   .cmp-row{grid-template-columns:1fr 1fr;}
   .fc-val{font-size:14px!important;}
@@ -552,8 +553,9 @@ input[type="range"]::-webkit-slider-thumb{
           <div class="benefit-item">IPVA 2027 (Pro Rata)</div>
         </div>
         <div class="benefit-metrics" aria-label="M&eacute;tricas financeiras">
-          <div class="benefit-metric"><strong>Valor Benef&iacute;cios</strong><span id="benefitsValue">&mdash;</span></div>
-          <div class="benefit-metric advantage"><strong>Vantagem Financeira</strong><span id="financialAdvantage">&mdash;</span></div>
+          <div class="benefit-metric"><strong>Valor Benef&iacute;cios 12 meses</strong><span id="benefitsValue">&mdash;</span></div>
+          <div class="benefit-metric advantage"><strong>Vantagem SM Flex M12</strong><span id="financialAdvantage">&mdash;</span></div>
+          <div class="benefit-metric advantage"><strong>Economia Total Flex</strong><span id="totalFlexEconomy">&mdash;</span></div>
         </div>
       </div>
 
@@ -760,7 +762,10 @@ function calc(){
   const E7 = ok26 ? G3*(D5-C6) : 0;
   const G7 = ok26 ? G6/(1-C6)*(1-D5) : 0;
   const benefitsValue = G3*0.088;
-  const financialAdvantage = ok26 ? benefitsValue-((G6-G7)*12) : 0;
+  const financialAdvantage = ok26 ? benefitsValue-((G6-G4)*12) : 0;
+  const bankTotal = E4Input+(G2*G4);
+  const flexTotal = ok26 ? E6+E7+(G5*G6)+((G2-G5)*G7)-benefitsValue : 0;
+  const totalFlexEconomy = ok26 ? bankTotal-flexTotal : 0;
 
   const F6lbl = `+ ${G5} Parcelas`;
   const F7lbl = `+ ${G2-G5} Parcelas`;
@@ -792,6 +797,7 @@ function calc(){
   if($("finParcelasValor")) $("finParcelasValor").textContent = p && ok26 ? brR(G7) : "\u2014";
   if($("benefitsValue")) $("benefitsValue").textContent = G3 ? brR(benefitsValue) : "\u2014";
   if($("financialAdvantage")) $("financialAdvantage").textContent = p && ok26 ? brR(financialAdvantage) : "\u2014";
+  if($("totalFlexEconomy")) $("totalFlexEconomy").textContent = p && ok26 ? brR(totalFlexEconomy) : "\u2014";
 }
 function formatMoneyInput(id){
   const el = $(id);
