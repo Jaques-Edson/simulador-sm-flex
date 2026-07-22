@@ -116,11 +116,13 @@ input,select,button{font:inherit}
 .benefits-list{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:0;}
 .benefit-item{border:1px solid rgba(37,215,243,.22);border-radius:7px;background:rgba(37,215,243,.04);padding:6px 8px;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.4px;color:#d7e5f2;text-align:center;line-height:1.2;display:flex;align-items:center;justify-content:center;}
 .benefit-metrics{display:grid;grid-template-rows:repeat(3,1fr);gap:5px;}
-.benefit-metric{border:1px solid rgba(255,200,0,.38);border-radius:7px;background:rgba(255,200,0,.07);padding:5px 7px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;}
+.benefit-metric{border:1px solid rgba(255,200,0,.38);border-radius:7px;background:#06162a;padding:5px 7px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;}
 .benefit-metric strong{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.55px;color:#9db7cf;margin-bottom:3px;}
 .benefit-metric span{font-size:15px;font-weight:950;color:#ffd700;white-space:nowrap;font-variant-numeric:tabular-nums;}
-.benefit-metric.advantage{border-color:rgba(34,212,126,.38);background:rgba(34,212,126,.065);}
-.benefit-metric.advantage span{color:#22d47e;}
+.benefit-metric.advantage{border-color:rgba(255,200,0,.38);background:#06162a;}
+.benefit-metric.advantage span{color:#ffd700;}
+.calculation-guidance{display:none;margin-top:6px;border:1px solid rgba(240,82,82,.7);border-radius:7px;background:rgba(240,82,82,.09);padding:7px 9px;color:#ffb7b7;font-size:10px;font-weight:900;line-height:1.3;text-align:center;}
+.calculation-guidance.visible{display:block;}
 .phase-title{margin-top:7px;margin-bottom:4px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.9px;color:#ffd700;text-align:center;}
 .finance-help{margin-top:7px;border:1px solid rgba(37,215,243,.18);border-radius:8px;background:rgba(37,215,243,.04);padding:8px 9px;color:#9db7cf;font-size:9px;line-height:1.35;font-weight:800;}
 .prazo-flex-row{display:grid;grid-template-columns:minmax(0, 58%) minmax(190px, 220px);gap:8px;align-items:end;margin-top:6px;}
@@ -142,6 +144,8 @@ input[type="text"],input[type="number"],select{
   letter-spacing:-.2px;font-variant-numeric:tabular-nums;
   outline:none;transition:border-color .15s;
 }
+input:not([readonly]):not([type="range"]),select,textarea{background:#fff;color:#075aa5;}
+input[readonly],.ro-box,.installment-card,.benefit-metric{background-color:#06162a!important;color:#ffd700!important;}
 input::placeholder{color:rgba(120,155,185,.4);font-weight:400;}
 input:focus,select:focus{border-color:rgba(37,215,243,.65);box-shadow:0 0 0 2px rgba(37,215,243,.1);}
 select{
@@ -166,7 +170,7 @@ select{
 .flex-blk .phase2-grid .field label{font-size:12px;}
 .prazo-control #mesesLbl{font-size:11px;color:#ffd700;}
 .crediline-grid input,.bank-installment-row select{height:44px!important;font-size:22px!important;font-weight:950!important;letter-spacing:-.2px!important;}
-.bank-installment-row #parc{color:#f0f4ff!important;}
+.bank-installment-row #parc{background:#fff!important;color:#075aa5!important;cursor:text;}
 #compMes{color:#ffd700!important;}
 
 /* RANGE */
@@ -554,10 +558,12 @@ input[type="range"]::-webkit-slider-thumb{
         </div>
         <div class="benefit-metrics" aria-label="M&eacute;tricas financeiras">
           <div class="benefit-metric"><strong>Valor Benef&iacute;cios 12 meses</strong><span id="benefitsValue">&mdash;</span></div>
-          <div class="benefit-metric advantage"><strong>Vantagem SM Flex M12</strong><span id="financialAdvantage">&mdash;</span></div>
-          <div class="benefit-metric advantage"><strong>Economia Total Flex</strong><span id="totalFlexEconomy">&mdash;</span></div>
+          <div class="benefit-metric advantage"><strong id="financialAdvantageLabel">Economia SM Flex em 12 meses</strong><span id="financialAdvantage">&mdash;</span></div>
+          <div class="benefit-metric advantage"><strong id="totalFlexEconomyLabel">Economia Total Flex em 48 meses</strong><span id="totalFlexEconomy">&mdash;</span></div>
         </div>
       </div>
+
+      <div class="calculation-guidance" id="calculationGuidance" role="status" aria-live="polite"></div>
 
       <div class="phase-title">Entrada + Financiamento</div>
       <div class="phase2-grid">
@@ -762,9 +768,10 @@ function calc(){
   const E7 = ok26 ? G3*(D5-C6) : 0;
   const G7 = ok26 ? G6/(1-C6)*(1-D5) : 0;
   const benefitsValue = G3*0.088;
-  const financialAdvantage = ok26 ? benefitsValue-((G6-G4)*12) : 0;
+  const periodBenefitsValue = benefitsValue*(G5/12);
+  const financialAdvantage = ok26 ? periodBenefitsValue-((G6-G4)*G5) : 0;
   const bankTotal = E4Input+(G2*G4);
-  const flexTotal = ok26 ? E6+E7+(G5*G6)+((G2-G5)*G7)-benefitsValue : 0;
+  const flexTotal = ok26 ? E6+E7+(G5*G6)+((G2-G5)*G7)-periodBenefitsValue : 0;
   const totalFlexEconomy = ok26 ? bankTotal-flexTotal : 0;
 
   const F6lbl = `+ ${G5} Parcelas`;
@@ -774,6 +781,8 @@ function calc(){
 
   if($("ePct")) $("ePct").value = G3 && E4Input ? pct(C4) : "";
   $("mesesLbl").textContent = `${G5} meses`;
+  if($("financialAdvantageLabel")) $("financialAdvantageLabel").textContent = `Economia SM Flex em ${G5} meses`;
+  if($("totalFlexEconomyLabel")) $("totalFlexEconomyLabel").textContent = `Economia Total Flex em ${G2} meses`;
   if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = "(4 a 12 meses)";
   rf($("mesesFlex"));
 
@@ -795,9 +804,19 @@ function calc(){
   if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "\u2014";
   if($("finParcelasQtd")) $("finParcelasQtd").textContent = F7lbl;
   if($("finParcelasValor")) $("finParcelasValor").textContent = p && ok26 ? brR(G7) : "\u2014";
-  if($("benefitsValue")) $("benefitsValue").textContent = G3 ? brR(benefitsValue) : "\u2014";
+  if($("benefitsValue")) $("benefitsValue").textContent = p && ok26 ? brR(benefitsValue) : "\u2014";
   if($("financialAdvantage")) $("financialAdvantage").textContent = p && ok26 ? brR(financialAdvantage) : "\u2014";
   if($("totalFlexEconomy")) $("totalFlexEconomy").textContent = p && ok26 ? brR(totalFlexEconomy) : "\u2014";
+  const guidance = $("calculationGuidance");
+  if(guidance){
+    let message = "";
+    if(G3 && E4Input && (entradaForaFaixa || C4 < B18 || D5 < (C4-B19)))
+      message = "Ajuste o valor da Entrada para continuar a simula\u00e7\u00e3o.";
+    else if(G3 && E4Input && G4 && (parcelaForaFaixa || parcelaAbaixoMinima || G6 === "Revisar Banco"))
+      message = "Ajuste o valor da Parcela para continuar a simula\u00e7\u00e3o.";
+    guidance.textContent = message;
+    guidance.classList.toggle("visible", !!message);
+  }
 }
 function formatMoneyInput(id){
   const el = $(id);
