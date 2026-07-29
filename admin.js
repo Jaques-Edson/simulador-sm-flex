@@ -98,6 +98,28 @@
   ["searchInput","dateFrom","dateTo","termFilter","eligibleFilter"].forEach(id=>$(id).addEventListener(id==="searchInput"?"input":"change",applyFilters));
   $("backBtn").addEventListener("click",()=>location.href="index.html");
   $("logoutPanelBtn").addEventListener("click",async()=>{await client.auth.signOut();location.href="index.html";});
+  $("changePasswordBtn").addEventListener("click",()=>{
+    $("passwordForm").reset();
+    $("passwordMessage").className="message";
+    $("passwordMessage").textContent="";
+    $("passwordDialog").showModal();
+  });
+  $("cancelPassword").addEventListener("click",()=>$("passwordDialog").close());
+  $("passwordForm").addEventListener("submit",async event=>{
+    event.preventDefault();
+    const password=$("accountNewPassword").value;
+    const confirmation=$("accountConfirmPassword").value;
+    const message=$("passwordMessage");
+    message.className="message";
+    if(password.length<8){message.className="message error";message.textContent="A senha deve ter pelo menos oito caracteres.";return;}
+    if(password!==confirmation){message.className="message error";message.textContent="As senhas não conferem.";return;}
+    message.textContent="Salvando...";
+    const {error}=await client.auth.updateUser({password});
+    if(error){message.className="message error";message.textContent="Não foi possível alterar a senha. Tente novamente.";return;}
+    event.target.reset();
+    message.className="message success";
+    message.textContent="Senha atualizada com sucesso. Use-a no próximo acesso.";
+  });
 
   $("exportBtn").addEventListener("click",()=>{
     const data=filtered.map(row=>({

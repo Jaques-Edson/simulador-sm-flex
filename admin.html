@@ -13,7 +13,7 @@
 </style>
 </head>
 <body>
-<header class="top"><img src="logo_sm_flex.png" alt="San Marino Flex"><div class="top-actions"><div class="user" id="panelUser"><strong>--</strong></div><button class="btn secondary" id="backBtn">Simulador</button><button class="btn secondary" id="logoutPanelBtn">Sair</button></div></header>
+<header class="top"><img src="logo_sm_flex.png" alt="San Marino Flex"><div class="top-actions"><div class="user" id="panelUser"><strong>--</strong></div><button class="btn secondary" id="changePasswordBtn">Alterar minha senha</button><button class="btn secondary" id="backBtn">Simulador</button><button class="btn secondary" id="logoutPanelBtn">Sair</button></div></header>
 <main class="wrap">
   <div class="title-row"><div><h1>Simulações gravadas</h1><p id="accessDescription">Carregando permissões...</p></div><button class="btn primary" id="exportBtn">Exportar Excel</button></div>
   <section class="filters">
@@ -28,6 +28,7 @@
   <section class="admin-users" id="usersSection"><h2>Administração de usuários</h2><form class="user-form" id="createUserForm"><div class="field"><label>Nome</label><input id="newUserName" required></div><div class="field"><label>E-mail</label><input id="newUserEmail" type="email" required></div><div class="field"><label>Perfil</label><select id="newUserRole"><option value="operator">Operador</option><option value="manager">Gestor</option></select></div><div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" minlength="8" required></div><button class="btn primary" type="submit">Criar usuário</button></form><div class="message" id="userMessage"></div><div class="user-list" id="userList"></div></section>
 </main>
 <dialog id="editDialog"><form id="editForm"><h2>Editar simulação</h2><input id="editId" type="hidden"><div class="dialog-grid"><div class="field"><label>Data</label><input id="editDate" type="date" required></div><div class="field"><label>Telefone</label><input id="editPhone" required></div><div class="field wide"><label>Cliente</label><input id="editName" required></div><div class="field wide"><label>Observações</label><textarea id="editNotes"></textarea></div></div><div class="dialog-actions"><button class="btn secondary" id="cancelEdit" type="button">Cancelar</button><button class="btn primary" type="submit">Salvar</button></div></form></dialog>
+<dialog id="passwordDialog"><form id="passwordForm"><h2>Alterar minha senha</h2><div class="dialog-grid"><div class="field wide"><label>Nova senha</label><input id="accountNewPassword" type="password" minlength="8" autocomplete="new-password" required></div><div class="field wide"><label>Confirmar nova senha</label><input id="accountConfirmPassword" type="password" minlength="8" autocomplete="new-password" required></div></div><div class="message" id="passwordMessage" aria-live="polite"></div><div class="dialog-actions"><button class="btn secondary" id="cancelPassword" type="button">Cancelar</button><button class="btn primary" type="submit">Salvar nova senha</button></div></form></dialog>
 <script src="admin.js"></script>
 </body>
 </html>
