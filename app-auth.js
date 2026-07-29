@@ -59,9 +59,13 @@
     byId("loginError").textContent = message;
   }
 
-  function inviteFlowDetected(){
+  function passwordSetupFlowDetected(){
     const params = new URLSearchParams(location.search);
-    return location.hash.includes("type=invite") || params.get("type") === "invite";
+    const type = params.get("type");
+    return location.hash.includes("type=invite") ||
+      location.hash.includes("type=recovery") ||
+      type === "invite" ||
+      type === "recovery";
   }
 
   function showSetPassword(){
@@ -96,13 +100,15 @@
     const {data:{session}} = await client.auth.getSession();
     currentSession = session;
     if(session){
-      if(inviteFlowDetected()) showSetPassword();
+      if(passwordSetupFlowDetected()) showSetPassword();
       else await loadProfile(session.user);
     }else showLogin();
 
-    client.auth.onAuthStateChange(async (_event, sessionValue) => {
+    client.auth.onAuthStateChange(async (event, sessionValue) => {
       currentSession = sessionValue;
-      if(sessionValue && !inviteFlowDetected()){
+      if(sessionValue && (event === "PASSWORD_RECOVERY" || passwordSetupFlowDetected())){
+        showSetPassword();
+      }else if(sessionValue){
         try{ await loadProfile(sessionValue.user); }
         catch(error){ showLogin(error.message); }
       }else if(!sessionValue) showLogin();
@@ -111,6 +117,7 @@
 
   byId("loginForm").addEventListener("submit", async event => {
     event.preventDefault();
+    if(byId("newPassword")) return;
     const email = byId("loginEmail").value.trim().toLowerCase();
     const password = byId("loginPassword").value;
     byId("loginError").textContent = "Entrando...";
