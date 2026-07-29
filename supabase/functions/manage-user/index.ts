@@ -25,12 +25,35 @@ export default {
     if (claimsError || !claimsData?.claims?.sub) throw new Error("Sessão inválida.");
 
     const requesterEmail = String(claimsData.claims.email || "").trim().toLowerCase();
-    if (requesterEmail !== SUPER_ADMIN_EMAIL) {
-      return Response.json({ error: "Somente o administrador geral pode criar usuários." }, { status: 403, headers: corsHeaders });
+    const { data: requesterProfile, error: requesterProfileError } = await admin.from("profiles")
+      .select("role,active")
+      .eq("id", claimsData.claims.sub)
+      .single();
+    if (requesterProfileError || requesterEmail !== SUPER_ADMIN_EMAIL || requesterProfile?.role !== "super_admin" || !requesterProfile?.active) {
+      return Response.json({ error: "Somente o administrador geral ativo pode gerenciar senhas." }, { status: 403, headers: corsHeaders });
     }
 
     const body = await request.json();
-    if (body.action !== "create") throw new Error("Ação não permitida.");
+    const action = String(body.action || "");
+
+    if (action === "reset_password") {
+      const userId = String(body.user_id || "").trim();
+      const password = String(body.password || "");
+      if (!/^[0-9a-f-]{36}$/i.test(userId) || password.length < 8) throw new Error("Usuário e senha de oito caracteres são obrigatórios.");
+      if (userId === claimsData.claims.sub) throw new Error("Use a opção Alterar minha senha para sua própria conta.");
+
+      const { data: targetProfile, error: targetError } = await admin.from("profiles")
+        .select("id,email")
+        .eq("id", userId)
+        .single();
+      if (targetError || !targetProfile) throw new Error("Usuário não encontrado.");
+
+      const { error: updateError } = await admin.auth.admin.updateUserById(userId, { password });
+      if (updateError) throw updateError;
+      return Response.json({ id: userId, email: targetProfile.email }, { headers: corsHeaders });
+    }
+
+    if (action !== "create") throw new Error("Ação não permitida.");
     const fullName = String(body.full_name || "").trim();
     const email = String(body.email || "").trim().toLowerCase();
     const password = String(body.password || "");

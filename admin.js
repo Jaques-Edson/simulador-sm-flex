@@ -145,7 +145,7 @@
     if(profile?.role!=="super_admin")return;
     const {data,error}=await client.from("profiles").select("id,full_name,email,role,active").order("full_name");
     if(error){$("userMessage").textContent=error.message;return;}
-    $("userList").innerHTML=(data||[]).map(user=>`<div class="user-item"><strong>${safe(user.full_name)}</strong><span>${safe(user.email)}</span><select data-role-user="${user.id}" ${user.id===profile.id?"disabled":""}><option value="operator" ${user.role==="operator"?"selected":""}>Operador</option><option value="manager" ${user.role==="manager"?"selected":""}>Gestor</option></select><button class="btn ${user.active?"danger":"primary"}" data-toggle-user="${user.id}" data-active="${user.active}" ${user.id===profile.id?"disabled":""}>${user.active?"Desativar":"Ativar"}</button></div>`).join("");
+    $("userList").innerHTML=(data||[]).map(user=>`<div class="user-item"><strong>${safe(user.full_name)}</strong><span>${safe(user.email)}</span><select data-role-user="${user.id}" ${user.id===profile.id?"disabled":""}><option value="operator" ${user.role==="operator"?"selected":""}>Operador</option><option value="manager" ${user.role==="manager"?"selected":""}>Gestor</option></select><button class="btn secondary" data-password-user="${user.id}" data-password-email="${safe(user.email)}" ${user.id===profile.id?"disabled title=\"Use Alterar minha senha\"":""}>Nova senha</button><button class="btn ${user.active?"danger":"primary"}" data-toggle-user="${user.id}" data-active="${user.active}" ${user.id===profile.id?"disabled":""}>${user.active?"Desativar":"Ativar"}</button></div>`).join("");
   }
 
   $("createUserForm").addEventListener("submit",async event=>{
@@ -156,6 +156,32 @@
     message.className="message success";message.textContent="Usuário criado. Entregue a senha temporária de forma privada.";event.target.reset();await loadUsers();
   });
 
+  $("userList").addEventListener("click",event=>{
+    const userId=event.target.dataset.passwordUser;
+    if(!userId)return;
+    $("userPasswordForm").reset();
+    $("passwordUserId").value=userId;
+    $("passwordUserEmail").textContent=`Usuário: ${event.target.dataset.passwordEmail}`;
+    $("managedPasswordMessage").className="message";
+    $("managedPasswordMessage").textContent="";
+    $("userPasswordDialog").showModal();
+  });
+  $("cancelManagedPassword").addEventListener("click",()=>$("userPasswordDialog").close());
+  $("userPasswordForm").addEventListener("submit",async event=>{
+    event.preventDefault();
+    const password=$("managedNewPassword").value;
+    const confirmation=$("managedConfirmPassword").value;
+    const message=$("managedPasswordMessage");
+    message.className="message";
+    if(password.length<8){message.className="message error";message.textContent="A senha deve ter pelo menos oito caracteres.";return;}
+    if(password!==confirmation){message.className="message error";message.textContent="As senhas não conferem.";return;}
+    message.textContent="Atualizando senha...";
+    const {data,error}=await client.functions.invoke("manage-user",{body:{action:"reset_password",user_id:$("passwordUserId").value,password}});
+    if(error||data?.error){message.className="message error";message.textContent=await functionErrorMessage(error,data);return;}
+    event.target.reset();
+    message.className="message success";
+    message.textContent="Nova senha definida. Entregue-a ao usuário de forma privada.";
+  });
   $("userList").addEventListener("change",async event=>{
     const userId=event.target.dataset.roleUser;if(!userId)return;
     const {error}=await client.from("profiles").update({role:event.target.value}).eq("id",userId);if(error)alert(error.message);else await loadUsers();
