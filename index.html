@@ -610,21 +610,14 @@ input[type="range"]::-webkit-slider-thumb{
 const $=id=>document.getElementById(id);
 const NE="N\u00e3o Eleg\u00edvel";
 
-// CONSTANTES - Excel: SM Flex Simulador 2207 Calibrado Faixa Sinal v2.xlsx, aba "Planilha1"
-const B12 = 0.018;          // B9  CET minima Simulacao Efetiva (Nominal + 0,25%)
-const B14 = 12;             // B12 Maximo Meses Flex
-const B15 = 4;              // B13 Minimo Meses Flex
-const B18 = 0.30;           // B20 Entrada minima para elegibilidade
-const B19 = 0.10;           // B16 GAP Max Entrada X Simulacao Banco
-
-// D4: sinal calibrado pelo prazo do financiamento e pelo percentual de entrada.
-function flexSignalPct(entradaPct,prazo){
-  if(entradaPct < B18) return null;
-  if(prazo < 37) return entradaPct - 0.10;
-  if(prazo < 43) return entradaPct - 0.15;
-  if(entradaPct < 0.35) return entradaPct / 2;
-  return entradaPct - 0.175;
-}
+// CONSTANTES - Excel: SM Flex Simulador 2207 Faixa Sinal Calibrado Economia Flex.xlsx, aba "Planilha1"
+const TAXA_CET = 0.0175;        // B10 CET minima Simulacao Efetiva (Nominal + 0,25%)
+const MESES_FLEX_MAX = 12;      // B13 Maximo Meses Flex
+const MESES_FLEX_MIN = 4;       // B14 Minimo Meses Flex
+const SINAL_MINIMO = 0.20;      // B16 Sinal Minimo (checagem redundante mantida por fidelidade a planilha)
+const GAP_MAX_ENTRADA = 0.10;   // B17 GAP Max Entrada X Simulacao Banco
+const ENTRADA_MINIMA = 0.30;    // limite embutido na formula de B21 (D3<30%)
+const TOLERANCIA_PARCELA = 10;  // tolerancia de R$10 embutida em B21 (B11>G3+10)
 
 function pmt(rate,nper,pv){
   if(!rate) return pv/nper;
@@ -665,11 +658,17 @@ function fileSafe(s){
     .replace(/[^a-z0-9]+/gi,"-").toLowerCase();
 }
 function uiText(v){
-  if(v === "Entrada Incompat\u00edvel") return "Valor da entrada n\u00e3o confere";
   if(v === "Preco Fora") return "Check valor do ve\u00edculo";
   if(v === "Entrada Fora") return "Entrada fora do padr\u00e3o";
   if(v === "Parcela Fora") return "Parcela fora do padr\u00e3o";
-  const map={"Financiamento":"Check financiamento","Revisar Banco":"Check financiamento","Check Banco":"Check financiamento","Credline":"Check Credline","Reduzir Sinal":"Reduzir sinal","Prazo MultiFlex":"Prazo MultiFlex","N\u00e3o Eleg\u00edvel":"N\u00e3o eleg\u00edvel"};
+  if(v === "DATA") return "Informe a data da simula\u00e7\u00e3o";
+  const map={
+    "Entrada Banco":"Check Credline",
+    "Parcela Banco":"Check financiamento",
+    "Financiamento":"Check financiamento",
+    "Check Banco":"Check financiamento",
+    "Meses Flex":"Prazo MultiFlex"
+  };
   return map[v] || v;
 }
 function sc(id,v){
@@ -725,64 +724,86 @@ function syncVehicleYears(){
   if($("anoModelo")) $("anoModelo").value = data.modelo === "2027" ? "2027" : "2026";
 }
 function calc(){
-  // Entradas equivalentes da planilha: G1 data, E2 preco, F3 prazo Flex Line,
-  // G2 valor da entrada, D3 percentual calculado, G3 valor da parcela e G6 meses Flex.
-  const G1 = new Date();
-  const G2 = +$("flexLine")?.value || 48;
-  const G3 = numVal("preco");
-  const E3 = G3;
-  const E4Input = numVal("eVal");
-  const C4 = G3 ? E4Input/G3 : 0;
-  const G4 = numVal("parc");
-  const G5 = +$("mesesFlex").value || B14;
-  const precoForaFaixa = !!(G3 && (G3 < 30000 || G3 >= 1000000));
-  const entradaForaFaixa = !!(E4Input && (E4Input < 1000 || E4Input >= 1000000 || (G3 && E4Input > G3)));
-  const parcelaForaFaixa = !!(G4 && (G4 < 10 || G4 >= 10000));
+  // Mapeamento das c\u00e9lulas da planilha "SM Flex Simulador 2207 Faixa Sinal
+  // Calibrado Economia Flex.xlsx", aba "Planilha1". Coment\u00e1rios indicam a
+  // c\u00e9lula de origem de cada valor/f\u00f3rmula.
+  const G1 = new Date();                            // G1  Data
+  const F3 = +$("flexLine")?.value || 48;           // F3  Parcelas (prazo total do financiamento)
+  const E2 = numVal("preco");                       // E2  Pre\u00e7o de Venda
+  const G2 = numVal("eVal");                        // G2  Valor Entrada
+  const G3 = numVal("parc");                        // G3  Parcela Banco (simula\u00e7\u00e3o informada)
+  const G6 = +$("mesesFlex")?.value || MESES_FLEX_MIN; // G6  Meses Flex
 
-  const B13 = pmt(B12,G2,G3*(1-C4));              // B10 PMT Carnet Minima pelo prazo Flex Line
-  const parcelaAbaixoMinima = !!(G3 && E4Input && G4 && G4 < B13); // B20 trava PMT Banco
-  const C6 = flexSignalPct(C4,G2);                 // D4  Sinal a vista por prazo e entrada
-  const C7 = C6 === null ? 0 : C4 - C6 + 0.10;    // D5  Entrada a prazo
-  const D5 = C6 === null ? 0 : C6 + C7;           // D6  Sinal + entrada
-  const B7 = addMonths(G1,G5);
+  const precoForaFaixa = !!(E2 && (E2 < 30000 || E2 >= 1000000));
+  const entradaForaFaixa = !!(G2 && (G2 < 1000 || G2 >= 1000000 || (E2 && G2 > E2)));
+  const parcelaForaFaixa = !!(G3 && (G3 < 10 || G3 >= 10000));
 
-  let E6;
-  if(!G1) E6 = "DATA";
-  else if(precoForaFaixa) E6 = "Preco Fora";
-  else if(entradaForaFaixa) E6 = "Entrada Fora";
-  else if(parcelaForaFaixa) E6 = "Parcela Fora";
-  else if(G5 < B15 || G5 > B14) E6 = "Prazo MultiFlex";
-  else if(C6 === null || C4 < B18) E6 = "Credline";
-  else if(parcelaAbaixoMinima) E6 = "Financiamento";
-  else if(D5 < (C4-B19)) E6 = "Revisar Banco";
-  else E6 = G3*C6;
+  const D3 = E2 ? G2/E2 : 0;                        // D3 % Entrada = G2/E2
 
-  let G6 = 0;
-  if(typeof E6 === "number"){
-    const parcelaBase = C4 < 1 ? G4/(1-C4) : 0;   // G3/(1-C3): PMT Carnet 100%
-    G6 = parcelaBase < B13 ? "Revisar Banco" : parcelaBase*(1-C6);
-    if(typeof G6 === "string") E6 = G6;
-  }
+  const B11 = pmt(TAXA_CET, F3, E2*(1-D3));         // B11 PMT Carnet M\u00ednima = PMT(B10;F3;E2*(1-D3))*-1
+  const B12 = D3 < 1 ? G3/(1-D3) : Infinity;        // B12 PMT Carnet 100% = G3/(1-D3)
 
-  const ok26 = typeof E6 === "number" && typeof G6 === "number";
-  const E7 = ok26 ? G3*(D5-C6) : 0;
-  const G7 = ok26 ? G6/(1-C6)*(1-D5) : 0;
-  const benefitsValue = G3*0.088;
-  const periodBenefitsValue = benefitsValue*(G5/12);
-  const financialAdvantage = ok26 ? periodBenefitsValue-((G6-G4)*G5) : 0;
-  const bankTotal = E4Input+(G2*G4);
-  const flexTotal = ok26 ? E6+E7+(G5*G6)+((G2-G5)*G7)-periodBenefitsValue : 0;
-  const totalFlexEconomy = ok26 ? bankTotal-flexTotal : 0;
+  // B21: trava "Entrada Banco" (D3<30%) e trava "Parcela Banco" (B11>G3+10)
+  let B21;
+  if(D3 < ENTRADA_MINIMA) B21 = "Entrada Banco";
+  else if(B11 > G3 + TOLERANCIA_PARCELA) B21 = "Parcela Banco";
+  else B21 = 0;
 
-  const F6lbl = `+ ${G5} Parcelas`;
-  const F7lbl = `+ ${G2-G5} Parcelas`;
+  // D4 Sinal a Vista % \u2014 calibrado pelo prazo (F3) e pelo % de Entrada (D3),
+  // ou herda o erro de B21.
+  let D4;
+  if(typeof B21 === "string") D4 = B21;
+  else if(F3 < 37) D4 = D3 - 0.10;
+  else if(F3 < 43) D4 = D3 - 0.15;
+  else if(D3 < 0.35) D4 = D3 / 2;
+  else D4 = D3 - 0.175;
+
+  const D5 = typeof D4 === "string" ? D4 : (D3 - D4 + 0.10);   // D5 Entrada a Prazo % = D3-D4+10%
+  const D6 = typeof D4 === "string" ? D4 : (D4 + D5);          // D6 Sinal + Entrada % = D4+D5
+
+  // E4 Sinal a Vista ($) \u2014 combina as travas de data, prazo Flex e GAP banco.
+  let E4;
+  if(typeof D4 === "string") E4 = D4;
+  else if(!G1) E4 = "DATA";
+  else if(precoForaFaixa) E4 = "Preco Fora";
+  else if(entradaForaFaixa) E4 = "Entrada Fora";
+  else if(parcelaForaFaixa) E4 = "Parcela Fora";
+  else if(G6 < MESES_FLEX_MIN || G6 > MESES_FLEX_MAX) E4 = "Meses Flex";
+  else if(D6 < (D3 - GAP_MAX_ENTRADA)) E4 = "Check Banco";
+  else if(D3 < SINAL_MINIMO) E4 = "Entrada Banco"; // inalcan\u00e7\u00e1vel (ENTRADA_MINIMA j\u00e1 barra antes), mantido por fidelidade \u00e0 planilha
+  else E4 = E2 * D4;
+
+  // G4 Parcela Flex ($) \u2014 trava "Financiamento" quando B12<B11.
+  let G4;
+  if(typeof E4 === "string") G4 = E4;
+  else if(B12 < B11) G4 = "Financiamento";
+  else G4 = B12 * (1 - D4);
+
+  const okPrincipal = typeof E4 === "number";
+  const okFlexParcela = typeof G4 === "number";
+
+  const B7 = addMonths(G1, G6);                     // C5 Data fim do per\u00edodo Flex = G1+G6 meses
+  const E5 = okPrincipal ? E2*(D6-D4) : 0;          // E5 Entrada a Prazo ($) = E2*(D6-D4)
+  const G5v = (okPrincipal && okFlexParcela) ? G4/(1-D4)*(1-D6) : 0; // G5 Valor Parcela p\u00f3s-Flex
+
+  const benefitsValue = E2*0.088;                                   // 8,8% do Pre\u00e7o de Venda
+  const periodBenefitsValue = benefitsValue*(G6/12);
+  const financialAdvantage = (okPrincipal && okFlexParcela)         // D8 Economia Flex em G6 meses
+    ? periodBenefitsValue-((G4-G3)*G6) : 0;
+  const bankTotal = G2+(F3*G3);                                     // (E2*D3)+(F3*G3)
+  const flexTotal = (okPrincipal && okFlexParcela)
+    ? (E2*D6)+(G6*G4)+((F3-G6)*G5v)-periodBenefitsValue : 0;
+  const totalFlexEconomy = (okPrincipal && okFlexParcela) ? bankTotal-flexTotal : 0; // G8
+
+  const F4lbl = `+ ${G6} Parcelas`;
+  const F5lbl = `+ ${F3-G6} Parcelas`;
   const compStr = fmtMesAnoCampo(B7);
   const propStr = fmtData(G1);
 
-  if($("ePct")) $("ePct").value = G3 && E4Input ? pct(C4) : "";
-  $("mesesLbl").textContent = `${G5} meses`;
-  if($("financialAdvantageLabel")) $("financialAdvantageLabel").textContent = `Economia SM Flex em ${G5} meses`;
-  if($("totalFlexEconomyLabel")) $("totalFlexEconomyLabel").textContent = `Economia Total Flex em ${G2} meses`;
+  if($("ePct")) $("ePct").value = E2 && G2 ? pct(D3) : "";
+  $("mesesLbl").textContent = `${G6} meses`;
+  if($("financialAdvantageLabel")) $("financialAdvantageLabel").textContent = `Economia SM Flex em ${G6} meses`;
+  if($("totalFlexEconomyLabel")) $("totalFlexEconomyLabel").textContent = `Economia Total Flex em ${F3} meses`;
   if($("mesesMaxInfo")) $("mesesMaxInfo").textContent = "(4 a 12 meses)";
   rf($("mesesFlex"));
 
@@ -793,26 +814,26 @@ function calc(){
   if($("eVal")){
     $("eVal").classList.toggle("entry-error", entradaForaFaixa);
   }
-  if($("sPctAuto")) $("sPctAuto").value = G3 && C6 !== null ? pct(C6) : "";
-  if($("cPctAuto")) $("cPctAuto").value = G3 && C6 !== null ? pct(C7) : "";
-  const alerta = typeof E6 === "string" ? uiText(E6) : "";
-  $("sVal").value = ok26 ? brR(E6) : alerta;
+  if($("sPctAuto")) $("sPctAuto").value = E2 && typeof D4 === "number" ? pct(D4) : "";
+  if($("cPctAuto")) $("cPctAuto").value = E2 && typeof D4 === "number" ? pct(D5) : "";
+  const alerta = typeof E4 === "string" ? uiText(E4) : "";
+  $("sVal").value = okPrincipal ? brR(E4) : alerta;
   $("compMes").value = compStr;
-  $("cVal").value = ok26 ? brR(E7) : "";
-  const p = !!(G3 && G4);
-  if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = F6lbl;
-  if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && ok26 ? brR(G6) : "\u2014";
-  if($("finParcelasQtd")) $("finParcelasQtd").textContent = F7lbl;
-  if($("finParcelasValor")) $("finParcelasValor").textContent = p && ok26 ? brR(G7) : "\u2014";
-  if($("benefitsValue")) $("benefitsValue").textContent = p && ok26 ? brR(benefitsValue) : "\u2014";
-  if($("financialAdvantage")) $("financialAdvantage").textContent = p && ok26 ? brR(financialAdvantage) : "\u2014";
-  if($("totalFlexEconomy")) $("totalFlexEconomy").textContent = p && ok26 ? brR(totalFlexEconomy) : "\u2014";
+  $("cVal").value = okPrincipal ? brR(E5) : "";
+  const p = !!(E2 && G3);
+  if($("flexParcelasQtd")) $("flexParcelasQtd").textContent = F4lbl;
+  if($("flexParcelasValor")) $("flexParcelasValor").textContent = p && okFlexParcela ? brR(G4) : (p && typeof G4 === "string" ? uiText(G4) : "\u2014");
+  if($("finParcelasQtd")) $("finParcelasQtd").textContent = F5lbl;
+  if($("finParcelasValor")) $("finParcelasValor").textContent = p && okFlexParcela ? brR(G5v) : "\u2014";
+  if($("benefitsValue")) $("benefitsValue").textContent = p && okPrincipal ? brR(benefitsValue) : "\u2014";
+  if($("financialAdvantage")) $("financialAdvantage").textContent = p && okFlexParcela ? brR(financialAdvantage) : "\u2014";
+  if($("totalFlexEconomy")) $("totalFlexEconomy").textContent = p && okFlexParcela ? brR(totalFlexEconomy) : "\u2014";
   const guidance = $("calculationGuidance");
   if(guidance){
     let message = "";
-    if(G3 && E4Input && (entradaForaFaixa || C4 < B18 || D5 < (C4-B19)))
+    if(E2 && G2 && (entradaForaFaixa || (typeof E4 === "string" && (E4 === "Entrada Banco" || E4 === "Check Banco"))))
       message = "Ajuste o valor da Entrada para continuar a simula\u00e7\u00e3o.";
-    else if(G3 && E4Input && G4 && (parcelaForaFaixa || parcelaAbaixoMinima || G6 === "Revisar Banco"))
+    else if(E2 && G2 && G3 && (parcelaForaFaixa || (typeof G4 === "string" && G4 === "Financiamento") || (typeof E4 === "string" && E4 === "Parcela Banco")))
       message = "Ajuste o valor da Parcela para continuar a simula\u00e7\u00e3o.";
     guidance.textContent = message;
     guidance.classList.toggle("visible", !!message);
